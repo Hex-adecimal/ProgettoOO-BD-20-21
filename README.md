@@ -1,5 +1,5 @@
 # Progetto di basi di dati e object orientation 2021/2022
-### Traccia: NaN
+### Traccia: APPLICAZIONE DI E-LEARNING TRAMITE QUIZ
 ### Partecipanti del gruppo:
 - Luigi Penza        | N86003647 | lu.penza@studenti.unina.it
 - Stoycho Mutafchiev | N86003822 | s.mutafchiev@studenti.unina.it
