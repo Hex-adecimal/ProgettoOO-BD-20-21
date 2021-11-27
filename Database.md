@@ -6,3 +6,5 @@ user : postgres
 password : mfhnYbd1ea5ZnNKqNbvd
 
 porta : 5432
+
+sito : https://ap-northeast-2.console.aws.amazon.com/rds/home?region=ap-northeast-2#database:id=test-database;is-cluster=false;tab=connectivity
