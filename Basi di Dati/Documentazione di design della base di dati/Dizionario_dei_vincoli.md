@@ -7,7 +7,7 @@
 NOME VINCOLO | DESCRIZIONE
 - Valid_Name : Deve contenere solo caratteri compresi tra A-Z e a-z
 - Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle 
-- Valid_Test_Date : La data deve essere maggiore-uguale ad oggi
+- Valid_Test_Date : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 - Valid_Duration : La durata deve essere maggiore-uguale di 10 minuti
 - Valid_Max_Score : Il punteggio massimo deve essere maggiore di 0
 - Valid_Max_Length : La lunghezza massima deve essere maggiore di 0
@@ -15,13 +15,13 @@ NOME VINCOLO | DESCRIZIONE
 - Valid_Question : La domanda deve essere non nulla
 - Strong_Password : La password deve essere composta da più di 8 caratteri, almeno una lettera, almeno un numero ed almeno carattere speciale
 - Valid_CFU : Il numero di CFU deve essere compreso tra 1 e 20
-
+- 
 //Non è stato imposto nessun vincolo sul punteggio "Score" delle risposte, per lasciare più libertà ai professori nella scelta dello stesso
 
 Ecco la lista degli attributi parziali:
 - BeginDate, TestDuration (Se un professore vuole lasciare un fac-simile del test per un autovalutazione)
 - AnswerC, AnswerD (per una domanda vero/falso)
-- OpenAnswer.Answer 
+- OpenAnswer.Answer (se lo studente non risponde alla domanda)
 - ClosedAnswer.Answer (se lo studente non risponde alla domanda)
 
 L'insieme complementare di questi attributi è da considerarsi un insieme di attributi totali.
