@@ -1,59 +1,59 @@
-- Studente
-  - matricola (String) : 
-  - nome (String) :
-  - cognome (String) :
-  - username (String) :
-  - password (String) :
+- Student
+  - Matricola (String) : 
+  - FirstName (String) :
+  - LastName (String) :
+  - Username (String) :
+  - Password (String) :
 
 
-- Professore
-  - nome (String) :
-  - cognome (String) :
-  - username (String) :
-  - password (String) :
+- Professor
+  - FirstName (String) : 
+  - LastName (String) : 
+  - Username (String) : 
+  - Password (String) : 
 
 
-- QuizRispostaChiusa
-  - domanda (String) :
-  - a (String) :
-  - b (String) :
-  - c (String) :
-  - d (String) :
-  - rispostaCorretta (Enum) :
-  - puntiCorretti (Int) :
-  - puntiSbagliati (Int) :
+- ClosedQuiz
+  - Question (String) : La domanda
+  - AnswerA (String) : Una possibile risposta 
+  - AnswerB (String) : Una possibile risposta 
+  - AnswerC (String) : Una possibile risposta 
+  - AnswerD (String) : Una possibile risposta 
+  - RightAnswer (Enum) : La risposta corretta tra le quattro possibili
+  - ScoreIfRight (Int) : Il punteggio che si ottiene rispondendo correttamente
+  - ScoreIfWrong (Int) : Il punteggio che si ottiene non rispondendo correttamente
 
 
-- QuizRispostaAperta
-  - domanda (String) :
-  - maxLength (Int) :
-  - puntiMax (Float) :
-  - puntiMin (Float) :
+- OpenQuiz
+  - Question (String) : La domanda 
+  - MaxScore (Float) : Il massimo punteggio che si può ottenere rispondendo alla domanda
+  - MinScore (Float) : Il minimo punteggio che si può ottenere rispondendo correttamente alla domanda
+  - MaxLength (Int) : La massima lunghezza della risposta
 
-- RispostaChiusa
-  - rispostaData (Enum) :
-  - punteggio (Float) :
+- ClosedAnswer
+  - GivenAnswer (Enum) : La risposta, tra le quattro possibili, data dallo studente
+  - Score (Float) : Il punteggio che lo studente ha ottenuto
 
 - RispostaAperta
-  - testo (String) :
-  - punteggio (Float) :
+  - GivenAnswer (String) : La risposta data dallo studente
+  - Score (Float) : Il punteggio che lo studente ha ottenuto 
 
 - Corso
-  - nome (String) :
-  - anno (Date) :
-  - cfu (Int) :
+  - Name (String) : Il nome del corso
+  - Year (Date) : L'anno accademico in cui il corso è svolto
+  - CFU (Int) : Il numero di Crediti Formativi Universitari dedicati al corso
 
-- Lezione
-  - titolo (String) :
-  - file (String) :
+- Lecture
+  - Title (String) : Il titolo della lezione
+  - Link (String) : Un link ad un sito esterno dove è presente del materiale didattico rigardante la lezione
 
 - Test
-  - nome (String) :
-  - dataCreazione (Date) :
-  - dataOraInizio (Date) :
-  - durata (Int) :
+  - NameTest (String) : L'identificativo del test
+  - CreationDate (Date) : La data in cui il test viene creato
+  - BeginDate (Date) : La data e l'ora di inizio del test 
+  - TestDuration (Int) : La durata del test
 
-- TestSostenuto
-  - corretto : boolean
+- TestTaken
+  - Correct (Boolean) : Un valore che indica se il test è stato corretto dal professore oppure no
 
 
