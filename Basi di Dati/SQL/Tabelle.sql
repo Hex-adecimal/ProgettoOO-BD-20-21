@@ -1,0 +1,5 @@
+CREATE TABLE STUDENT(
+	Matricola VARCHAR(20) NOT NULL,
+	
+	PRIMARY KEY(Matricola)
+)
