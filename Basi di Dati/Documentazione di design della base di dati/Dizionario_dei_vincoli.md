@@ -1,1 +1,13 @@
-
+NOME VINCOLO | DESCRIZIONE
+- Valid_Name : Deve contenere solo caratteri compresi tra A-Z e a-z
+- Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle 
+- Valid_Test_Date : La data deve essere maggiore-uguale ad oggi
+- Valid_Duration : La durata deve essere maggiore-uguale di 10 minuti
+- Valid_Max_Score : Il punteggio massimo deve essere maggiore di 0
+- Valid_Max_Length : La lunghezza massima deve essere maggiore di 0
+- Valid_Answer : La risposta di una domanda multipla deve essere non nulla
+- Valid_Right_Answer : La risposta corretta non deve essere nulla
+- Valid_Question : La domanda deve essere non nulla
+- Unique_Username : L'username deve essere unico
+- Unique_Email : Non devono esistere più utenti con la stessa email
+- Strong_Password : La password deve essere composta da più di 8 caratteri, almeno una lettera, almeno un numero ed almeno carattere speciale
