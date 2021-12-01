@@ -29,3 +29,9 @@ L'insieme complementare di questi attributi è da considerarsi un insieme di att
 Lista di valori di default degli attributi
 - Correct = 0
 - "Everyone.Score" = 0
+
+### Vincoli di chiave
+- Student.StudentID è la chiave primaria dello studente
+- Test.Name è la chiave primaria del test
+
+Per tutte le altre entità verrano creati attributi specifici per rendere unica ogni istanza.
