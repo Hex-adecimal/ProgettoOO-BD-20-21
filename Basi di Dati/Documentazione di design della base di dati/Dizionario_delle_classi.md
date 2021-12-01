@@ -1,31 +1,31 @@
 - Student
-  - StudentID (String) : 
-  - FirstName (String) :
-  - LastName (String) :
-  - Username (String) :
-  - Password (String) :
+  - StudentID (String) : //
+  - FirstName (String) : //
+  - LastName (String) : //
+  - Username (String) : //
+  - Password (String) : //
 
 
 - Professor
-  - FirstName (String) : 
-  - LastName (String) : 
-  - Username (String) : 
-  - Password (String) : 
+  - FirstName (String) : //
+  - LastName (String) : //
+  - Username (String) : //
+  - Password (String) : //
 
 
 - ClosedQuiz
-  - Question (String) : 
+  - Question (String) : //
   - AnswerA (String) : Una possibile risposta 
-  - AnswerB (String) : Una possibile risposta 
-  - AnswerC (String) : Una possibile risposta 
-  - AnswerD (String) : Una possibile risposta 
+  - AnswerB (String) : //
+  - AnswerC (String) : // 
+  - AnswerD (String) : // 
   - RightAnswer (Enum) : La risposta corretta tra le quattro possibili
   - ScoreIfRight (Int) : Il punteggio che si ottiene rispondendo correttamente
   - ScoreIfWrong (Int) : Il punteggio che si ottiene non rispondendo correttamente
 
 
 - OpenQuiz
-  - Question (String) : 
+  - Question (String) : //
   - MaxScore (Float) : Il massimo punteggio che si può ottenere rispondendo alla domanda
   - MinScore (Float) : Il minimo punteggio che si può ottenere rispondendo correttamente alla domanda
   - MaxLength (Int) : La massima lunghezza della risposta
