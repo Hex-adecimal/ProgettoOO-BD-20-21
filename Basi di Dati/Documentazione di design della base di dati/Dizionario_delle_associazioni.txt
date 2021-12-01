@@ -1,0 +1,37 @@
+Non ho genio di inventare i nomi, seguo a capocchia il diagramma uml della commit ec2e18b
+
+- A
+	- Test [*] is created : Rappresenta il test che viene creato
+	- Professor [1] creates : Rappresenta il professore che crea il test
+- B
+	- Professor [1] holds : Rappresenta il professore che tiene la lezione
+	- Lecture [*] held by : Rappresenta la lezione che tenuta fatta dal prof
+- C
+	- Lecture [*] concerns : 
+	- Class [1] receives :
+- D
+	- Class [*] is taken by :
+	- Student [*] takes :
+- E
+	- Class [*] has :
+	- Professor [1] has :
+- F
+	- Student [1] 
+	- TestTaken [*] concerns :
+- G
+	- TestTaken [*] concerns :
+	- Test [1] concerns :
+- H 
+	- TestTaken [1] contains :
+	- OpenAnswer [*] belongs to :
+- I 
+	- TestTaken [1] contains :
+	- ClosedAnswer [*] belongs to :
+- J
+	- OpenAnswer [*] to :
+	- OpenQuiz [1] has :
+- K
+	- ClosedAnswer [*] to :
+	- ClosedQuiz [1] has :
+- L
+	NON LO SO QUESTA è L'AGGREGAZIONE
