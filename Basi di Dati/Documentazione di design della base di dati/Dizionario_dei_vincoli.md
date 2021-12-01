@@ -11,5 +11,6 @@ NOME VINCOLO | DESCRIZIONE
 - Unique_Username : L'username deve essere unico
 - Unique_Email : Non devono esistere più utenti con la stessa email
 - Strong_Password : La password deve essere composta da più di 8 caratteri, almeno una lettera, almeno un numero ed almeno carattere speciale
+- Valid_CFU : Il numero di CFU deve essere compreso tra 1 e 20
 
 Non è stato imposto nessun vincolo sul punteggio "Score" delle risposte, per lasciare più libertà ai professori nella scelta dello stesso
