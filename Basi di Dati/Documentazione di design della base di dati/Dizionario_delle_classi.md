@@ -50,10 +50,8 @@
 - Test
   - NameTest (String) : L'identificativo del test
   - CreationDate (Date) : La data in cui il test viene creato
-  - BeginDate (Date) : La data e l'ora di inizio del test 
+  - StartingDateTime (Datetime) : La data e l'ora di inizio del test 
   - TestDuration (Int) : La durata del test
 
 - TestTaken
-  - Correct (Boolean) : Un valore che indica se il test è stato corretto dal professore oppure no
-
-
+  - Revised (Boolean) : Un valore che indica se il test è stato corretto dal professore oppure no
