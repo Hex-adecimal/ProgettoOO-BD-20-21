@@ -1,7 +1,8 @@
 ### Vincoli di integrità interreferenziale
-- Unique_Username : L'username deve essere unico
+- Unique_Username : Non devono esistere più utenti con lo stesso username
 - Unique_Email : Non devono esistere più utenti con la stessa email
-- 
+
+
 ### Vincoli di dominio
 NOME VINCOLO | DESCRIZIONE
 - Valid_Name : Deve contenere solo caratteri compresi tra A-Z e a-z
