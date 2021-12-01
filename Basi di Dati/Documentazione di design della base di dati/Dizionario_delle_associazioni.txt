@@ -16,17 +16,17 @@ Non ho genio di inventare i nomi, seguo a capocchia il diagramma uml della commi
 	- Class [*] has :
 	- Professor [1] has :
 - F
-	- Student [1] 
-	- TestTaken [*] concerns :
+	- Student [1] turns in :
+	- TestTaken [*] turned in by :
 - G
 	- TestTaken [*] concerns :
 	- Test [1] concerns :
 - H 
 	- TestTaken [1] contains :
-	- OpenAnswer [*] belongs to :
+	- OpenAnswer [*] in :
 - I 
 	- TestTaken [1] contains :
-	- ClosedAnswer [*] belongs to :
+	- ClosedAnswer [*] in :
 - J
 	- OpenAnswer [*] to :
 	- OpenQuiz [1] has :
