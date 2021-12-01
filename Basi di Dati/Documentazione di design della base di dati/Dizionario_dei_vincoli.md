@@ -5,8 +5,7 @@ NOME VINCOLO | DESCRIZIONE
 - Valid_Duration : La durata deve essere maggiore-uguale di 10 minuti
 - Valid_Max_Score : Il punteggio massimo deve essere maggiore di 0
 - Valid_Max_Length : La lunghezza massima deve essere maggiore di 0
-- Valid_Answer : La risposta di una domanda multipla deve essere non nulla
-- Valid_Right_Answer : La risposta corretta non deve essere nulla
+- Valid_Answer : La risposta di una domanda multipla deve tra quelle possibili
 - Valid_Question : La domanda deve essere non nulla
 - Unique_Username : L'username deve essere unico
 - Unique_Email : Non devono esistere più utenti con la stessa email
@@ -14,3 +13,16 @@ NOME VINCOLO | DESCRIZIONE
 - Valid_CFU : Il numero di CFU deve essere compreso tra 1 e 20
 
 Non è stato imposto nessun vincolo sul punteggio "Score" delle risposte, per lasciare più libertà ai professori nella scelta dello stesso
+
+Ecco la lista degli attributi parziali:
+- BeginDate, TestDuration (Se un professore vuole lasciare un fac-simile del test per un autovalutazione)
+- AnswerC, AnswerD (per una domanda vero/falso)
+- OpenAnswer.Answer 
+- ClosedAnswer.Answer (se lo studente non risponde alla domanda)
+
+L'insieme complementare di questi attributi è da considerarsi un insieme di attributi totali.
+
+
+Lista di valori di default degli attributi
+- Correct = 0
+- "Everyone.Score" = 0
