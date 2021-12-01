@@ -1,5 +1,5 @@
 - Student
-  - Matricola (String) : 
+  - StudentID (String) : 
   - FirstName (String) :
   - LastName (String) :
   - Username (String) :
@@ -14,7 +14,7 @@
 
 
 - ClosedQuiz
-  - Question (String) : La domanda
+  - Question (String) : 
   - AnswerA (String) : Una possibile risposta 
   - AnswerB (String) : Una possibile risposta 
   - AnswerC (String) : Una possibile risposta 
@@ -25,7 +25,7 @@
 
 
 - OpenQuiz
-  - Question (String) : La domanda 
+  - Question (String) : 
   - MaxScore (Float) : Il massimo punteggio che si può ottenere rispondendo alla domanda
   - MinScore (Float) : Il minimo punteggio che si può ottenere rispondendo correttamente alla domanda
   - MaxLength (Int) : La massima lunghezza della risposta
@@ -34,11 +34,11 @@
   - GivenAnswer (Enum) : La risposta, tra le quattro possibili, data dallo studente
   - Score (Float) : Il punteggio che lo studente ha ottenuto
 
-- RispostaAperta
+- OpenAnswer
   - GivenAnswer (String) : La risposta data dallo studente
   - Score (Float) : Il punteggio che lo studente ha ottenuto 
 
-- Corso
+- Class
   - Name (String) : Il nome del corso
   - Year (Date) : L'anno accademico in cui il corso è svolto
   - CFU (Int) : Il numero di Crediti Formativi Universitari dedicati al corso
@@ -51,7 +51,8 @@
   - NameTest (String) : L'identificativo del test
   - CreationDate (Date) : La data in cui il test viene creato
   - StartingDateTime (Datetime) : La data e l'ora di inizio del test 
-  - TestDuration (Int) : La durata del test
+  - Duration (Int) : La durata del test
+  - MinScore (Float) : Il punteggio minimo per passare il test
 
 - TestTaken
   - Revised (Boolean) : Un valore che indica se il test è stato corretto dal professore oppure no
