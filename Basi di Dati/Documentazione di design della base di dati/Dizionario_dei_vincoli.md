@@ -5,7 +5,7 @@
 
 ### Vincoli di dominio
 NOME VINCOLO | DESCRIZIONE
-- Valid_Name : Deve contenere solo caratteri compresi tra A-Z e a-z. Inoltre deve avere al più 35 caratteri.
+- Valid_Name : I nomi devono contenere solo caratteri compresi tra A-Z e a-z. Inoltre devono avere almeno 1 carattere e al più 35 caratteri.
 - Valid_Test_Name : Il nome del test può contenere caratteri compresi tra A-Z e a-z, ed inoltre può contenere numeri 0-9 ed anche i seguenti '-', '_'
 - Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle 
 - Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
