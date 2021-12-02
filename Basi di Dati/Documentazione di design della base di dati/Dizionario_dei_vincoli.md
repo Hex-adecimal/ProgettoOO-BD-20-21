@@ -22,8 +22,8 @@ NOME VINCOLO | DESCRIZIONE
 Ecco la lista degli attributi parziali:
 - BeginDate, TestDuration (Se un professore vuole lasciare un fac-simile del test per un autovalutazione)
 - AnswerC, AnswerD (per una domanda vero/falso)
-- OpenAnswer.Answer (se lo studente non risponde alla domanda)
-- ClosedAnswer.Answer (se lo studente non risponde alla domanda)
+- OpenAnswer.GivenAnswer (se lo studente non risponde alla domanda)
+- ClosedAnswer.GivenAnswer (se lo studente non risponde alla domanda)
 
 L'insieme complementare di questi attributi è da considerarsi un insieme di attributi totali.
 
