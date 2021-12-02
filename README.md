@@ -18,3 +18,13 @@ sito = https://ap-northeast-2.console.aws.amazon.com/rds/home?region=ap-northeas
 ---
 
 ![display](https://user-images.githubusercontent.com/91316353/142188431-f09972c3-6016-470b-a46f-489dc55243ec.jpeg)
+
+```java
+quizzone
+root
+tgLFb2hEAfxjNX8L
+5432
+
+Quizzone
+
+```
