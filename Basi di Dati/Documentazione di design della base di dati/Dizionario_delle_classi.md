@@ -2,16 +2,16 @@
   - StudentID (String) : //
   - FirstName (String) : //
   - LastName (String) : //
+  - Email (String) : //
   - Username (String) : //
   - Password (String) : //
-
 
 - Professor
   - FirstName (String) : //
   - LastName (String) : //
+  - Email (String) : //
   - Username (String) : //
   - Password (String) : //
-
 
 - ClosedQuiz
   - Question (String) : //
@@ -22,7 +22,6 @@
   - RightAnswer (Enum) : La risposta corretta tra le quattro possibili
   - ScoreIfRight (Int) : Il punteggio che si ottiene rispondendo correttamente
   - ScoreIfWrong (Int) : Il punteggio che si ottiene non rispondendo correttamente
-
 
 - OpenQuiz
   - Question (String) : //
