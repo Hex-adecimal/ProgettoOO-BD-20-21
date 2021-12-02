@@ -34,4 +34,8 @@ Non ho genio di inventare i nomi, seguo a capocchia il diagramma uml della commi
 	- ClosedAnswer [*] to :
 	- ClosedQuiz [1] has :
 - L
-	NON LO SO QUESTA è L'AGGREGAZIONE
+	- ClosedQuiz [*] in :
+	- Test [1] has :
+- M
+	- OpenQuiz [*] in :
+	- Test [1] has :
