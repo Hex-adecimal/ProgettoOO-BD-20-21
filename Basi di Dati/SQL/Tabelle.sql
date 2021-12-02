@@ -1,5 +1,9 @@
+-- Lunghezza dei nomi, cognomi 35 caratteri
 CREATE TABLE STUDENT(
-	Matricola VARCHAR(20) NOT NULL,
+	StudentID VARCHAR(9) NOT NULL,
+	FirstName VARCHAR(35) NOT NULL,
+	LastName VARCHAR(35) NOT NULL
+	Email 
 	
 	PRIMARY KEY(Matricola)
 )
