@@ -1,4 +1,4 @@
-- TEST(**NameTest**, CreationDate, BeginDate, TestDuration, CodP)
+- TEST(**Name**, CreationDate, StartingDateTime, Duration, MinScore, CodP)
   - CodP -> PROFSSOR.CodP
 - PROFESSOR(**CodP**, FirstName, LastName, Email, Username, Password)
 - LECTURE(**Title**, Link, **CodP**)
@@ -7,17 +7,23 @@
   - NameTest -> TEST.NameTest
 - CLOSEDQUIZ(**CodCQ**, Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, NameTest)
   - NameTest -> TEST.NameTest
-- CLASS(**CodC**, Name, Year, CFU, **CodP**)
+- CLASS(**CodC**, Name, Year, CFU, CodP)
   - CodP -> PROFESSOR.CodP
-- OPENANSWER(**CodOA**, Answer, Score, CodOQ, NameTest, StudentID)
+- TAKE(**CodC, StudentID**)
+  - CodC -> CLASS.CodC
+  - StudentID -> STUDENT.StudentID
+- OPENANSWER(**CodOA**, GivenAnswer, Score, CodOQ, NameTest, StudentID)
   - CodOQ -> OPENQUIZ.CodOQ
   - NameTest -> TESTTAKEN.NameTest
   - StudentID -> TESTTAKEN.StudentID
-- CLOSEDANSWER(**CodCA**, Answer, Score, CodCQ, NameTest, StudentID)
+- CLOSEDANSWER(**CodCA**, GivenAnswer, Score, CodCQ, NameTest, StudentID)
   - CodCQ -> CLOSEDQUIZ.CodCQ
   - NameTest -> TESTTAKEN.NameTest
   - StudentID -> TESTTAKEN.StudentID
 - STUDENT(**StudentID**, FirstName, LastName, Email, Username, Password)
-- TESTTAKEN(**NameTest, StudentID**)
+- TESTTAKEN(**NameTest, StudentID**, Revised)
   - NameTest -> TEST.NameTest
   - StudentID -> STUDENT.StudentID 
+
+//codice classe e non tutte pk perchè dopo la chiave va memoriazzata in take
+// In ClosedAnswer e OpenAnswer cosa conviene? più chiavi o no?
