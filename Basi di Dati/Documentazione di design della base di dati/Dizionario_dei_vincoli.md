@@ -1,7 +1,7 @@
-### Vincoli di integrità interreferenziale
+### Vincoli di integrità intrarelazionale
 - Unique_Username : Non devono esistere più utenti con lo stesso username
 - Unique_Email : Non devono esistere più utenti con la stessa email
-
+- Unique_NameTest: Non devono esistere più test con lo stesso nome
 
 ### Vincoli di dominio
 NOME VINCOLO | DESCRIZIONE
@@ -9,7 +9,7 @@ NOME VINCOLO | DESCRIZIONE
 - Valid_Test_Name : Il nome del test può contenere caratteri compresi tra A-Z e a-z, ed inoltre può contenere numeri 0-9, e spazi, può avere un numero di caratteri compreso tra 1 e 30.
 - Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle 
 - Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
-- Valid_Duration : La durata deve essere maggiore-uguale di 10 minuti
+- Valid_ClosingDateTime : La differenza tra ClosingDateTime e StartingDateTime deve essere maggiore o uguale di 10 minuti
 - Valid_Max_Score : Il punteggio massimo deve essere maggiore di 0
 - Valid_Max_Length : La lunghezza massima deve essere maggiore di 0
 - Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle possibili
