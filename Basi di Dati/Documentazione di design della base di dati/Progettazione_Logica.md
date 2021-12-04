@@ -24,6 +24,3 @@
 - TESTTAKEN(**CodTest, StudentID**, Revised)
   - CodTest -> TEST.CodTest
   - StudentID -> STUDENT.StudentID 
-
-//codice classe e non tutte pk perchè dopo la chiave va memoriazzata in take
-// In ClosedAnswer e OpenAnswer cosa conviene? più chiavi o no?
