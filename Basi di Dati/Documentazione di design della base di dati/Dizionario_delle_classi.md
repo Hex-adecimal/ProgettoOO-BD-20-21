@@ -15,10 +15,10 @@
 
 - ClosedQuiz
   - Question (String) : //
-  - AnswerA (String) : Una possibile risposta 
-  - AnswerB (String) : //
-  - AnswerC (String) : // 
-  - AnswerD (String) : // 
+  - AnswerA (String) : Una possibile risposta, questo campo è totale
+  - AnswerB (String) : Una possibile risposta, questo campo è totale
+  - AnswerC (String) : Una possibile risposta, questo campo è parziale
+  - AnswerD (String) : Una possibile risposta, questo campo è parziale 
   - RightAnswer (Enum) : La risposta corretta tra le quattro possibili
   - ScoreIfRight (Int) : Il punteggio che si ottiene rispondendo correttamente
   - ScoreIfWrong (Int) : Il punteggio che si ottiene non rispondendo correttamente
@@ -47,11 +47,14 @@
   - Link (String) : Un link ad un sito esterno dove è presente del materiale didattico rigardante la lezione
 
 - Test
-  - NameTest (String) : L'identificativo del test
+  - Name (String) : L'identificativo del test
   - CreationDate (Date) : La data in cui il test viene creato
   - StartingDateTime (Datetime) : La data e l'ora di inizio del test 
-  - Duration (Int) : La durata del test
+  - ClosingDateTime (Datetime) : La durata del test
   - MinScore (Float) : Il punteggio minimo per passare il test
 
 - TestTaken
   - Revised (Boolean) : Un valore che indica se il test è stato corretto dal professore oppure no
+  - Passed (Boolean) : Indica se lo studente ha passato quel test
+  - TotalScore (Float) : Il punteggio ottenuto dallo studente in quel test
+
