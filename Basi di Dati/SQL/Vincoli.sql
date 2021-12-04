@@ -27,7 +27,7 @@ CREATE DOMAIN CLOSED_ANSWER AS CHAR(1)
 	CHECK ( VALUE IN ('a', 'b', 'c', 'd') ); -- Aggiungere il controllo per c e d
 	
 -- Valid_CFU : Il numero di CFU deve essere compreso tra 1 e 20
-CREATE DOMAIN CFU AS INTEGER
+CREATE DOMAIN VALID_CFU AS INTEGER
 	CHECK ( VALUE BETWEEN 1 AND 20 );
 
 
