@@ -30,4 +30,10 @@ CREATE DOMAIN CLOSED_ANSWER AS CHAR(1)
 CREATE DOMAIN VALID_CFU AS INTEGER
 	CHECK ( VALUE BETWEEN 1 AND 20 );
 
-
+CREATE CONSTRAINT MaxLength_UpperBound
+	CHECK ( VALUE BETWEEN 1 AND 1024 );
+	
+-- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato
+CREATE ASSERTION Valid_GivenAnswer
+	CHECK NOT EXISTS
+		(
