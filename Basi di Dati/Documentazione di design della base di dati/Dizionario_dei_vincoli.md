@@ -21,7 +21,7 @@ NOME VINCOLO | DESCRIZIONE
 //Non è stato imposto nessun vincolo sul punteggio "Score" delle risposte, per lasciare più libertà ai professori nella scelta dello stesso
 
 Ecco la lista degli attributi parziali:
-- BeginDate, TestDuration (Se un professore vuole lasciare un fac-simile del test per un autovalutazione)
+- ClosingDateTime, StartingDateTime (Se un professore vuole lasciare un fac-simile del test per un autovalutazione)
 - AnswerC, AnswerD (per una domanda vero/falso)
 - OpenAnswer.GivenAnswer (se lo studente non risponde alla domanda)
 - ClosedAnswer.GivenAnswer (se lo studente non risponde alla domanda)
