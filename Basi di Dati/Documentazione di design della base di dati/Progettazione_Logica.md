@@ -41,7 +41,7 @@
 - STUDENT(**StudentID**, FirstName, LastName, Email, Username, Password)
 
 
-- TESTTAKEN(**CodTest, StudentID**, Revised)
+- TESTTAKEN(**CodTest, StudentID**, Revised, Passed, TotalScore)
   - CodTest -> TEST.CodTest
   - StudentID -> STUDENT.StudentID 
 
