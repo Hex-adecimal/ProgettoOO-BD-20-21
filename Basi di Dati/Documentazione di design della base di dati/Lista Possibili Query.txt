@@ -8,7 +8,7 @@
 
 4) elenco TestTaken ASSOCIATI al Test scelto dal Professor
 
-5) elenco OpenAnswer e OpenQuiz ASSOCIATI al TestTaken scelto dal Professor
+5) elenco Answer e Quiz ASSOCIATI al TestTaken scelto dal Professor
 
 6) update "score" in OpenAnswer
 
