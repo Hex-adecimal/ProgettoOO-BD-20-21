@@ -1,5 +1,5 @@
-- TEST(**Name**, CreationDate, StartingDateTime, Duration, MinScore, CodP)
-  - CodP -> PROFSSOR.CodP
+- TEST(**CodTest**, Name, CreationDate, StartingDateTime, ClosingDateTime, MinScore, CodP)
+  - CodP -> PROFESSOR.CodP
 - PROFESSOR(**CodP**, FirstName, LastName, Email, Username, Password)
 - LECTURE(**Title**, Link, **CodP**)
   - CodP -> PROFESSOR.CodP
@@ -21,8 +21,8 @@
   - NameTest -> TESTTAKEN.NameTest
   - StudentID -> TESTTAKEN.StudentID
 - STUDENT(**StudentID**, FirstName, LastName, Email, Username, Password)
-- TESTTAKEN(**NameTest, StudentID**, Revised)
-  - NameTest -> TEST.NameTest
+- TESTTAKEN(**CodTest, StudentID**, Revised)
+  - CodTest -> TEST.CodTest
   - StudentID -> STUDENT.StudentID 
 
 //codice classe e non tutte pk perchè dopo la chiave va memoriazzata in take
