@@ -1,0 +1,19 @@
+1) elenco Test ASSOCIATI ai Professor ASSOCIATI ai Class ASSOCIATI allo Student;
+	- per i Test ancora aperti aggiungi il bottone Sostieni
+	- per i Test chiusi, aggiungi il bottone Visualizza
+
+2) elenco Quiz ASSOCIATI al Test scelto dallo Student
+
+3) elenco Test CREATI dal Professor
+
+4) elenco TestTaken ASSOCIATI al Test scelto dal Professor
+
+5) elenco OpenAnswer e OpenQuiz ASSOCIATI al TestTaken scelto dal Professor
+
+6) update "score" in OpenAnswer
+
+7) elenco TestTaken ASSOCIATI allo Student
+
+8) elenco Answer ASSOCIATI al TestTaken scelto dallo Student
+	- se "revised" = False, elenco ClosedAnswer con "score" + elenco OpenAnswer SENZA "score", NO "totalscore";
+	- se "revised" = True,  elenco ClosedAnswer con "score" + elenco OpenAnswer CON "score" + "totalscore";
