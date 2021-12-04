@@ -10,7 +10,6 @@ NOME VINCOLO | DESCRIZIONE
 - Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle 
 - Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 - Valid_ClosingDateTime : La differenza tra ClosingDateTime e StartingDateTime deve essere maggiore o uguale di 10 minuti
-- Valid_Max_Score : Il punteggio massimo deve essere maggiore di 0
 - Valid_Max_Length : La lunghezza massima deve essere maggiore di 0
 - Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle possibili (Dominio = {'a', 'b', 'c', 'd'})
 - Valid_Question : La domanda deve essere non nulla
