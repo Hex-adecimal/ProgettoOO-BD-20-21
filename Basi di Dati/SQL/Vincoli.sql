@@ -7,19 +7,21 @@ CREATE DOMAIN TEST_NAME AS VARCHAR(30)
   CHECK ( VALUE <> '' );
   
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
-CREATE CONSTRAINT Valid_Starting_DateTime 
+ALTER TABLE TEST
+ADD CONSTRAINT Valid_Starting_DateTime 
 	CHECK ( DATE(StartingDateTime) > CreationDate );
 	
 -- Valid_ClosingDateTime : La differenza tra ClosingDateTime e StartingDateTime deve essere maggiore o uguale di 10 minuti
-CREATE CONSTRAINT Valid_ClosingDateTime
-	CHECK ( DATEDIFF(minute, StartingDateTime, ClosingDateTime) >= 10);
+ALTER TABLE TEST
+ADD CONSTRAINT Valid_ClosingDateTime
+	CHECK ( DATE_PART('minute', ClosingDateTime - StartingDateTime ) >= 10);
 
 -- Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle
 CREATE DOMAIN EMAIL AS VARCHAR(254)
 	CHECK ( VALUE LIKE '_%@_%._%' );
 	
 -- Strong_Password : La password deve essere composta da più di 8 caratteri, almeno una lettera, almeno un numero ed almeno carattere speciale (!"£$%&/()=_:;,.-+*#)
-CREATE DOMAIN PASSWORD AS VARCHAR(128)
+CREATE DOMAIN PASSWORD_D AS VARCHAR(128)
 	CHECK ( VALUE LIKE '________' AND VALUE LIKE '%[a-z]%' AND VALUE LIKE '%[0-9]%' AND VALUE LIKE '%[!"£$%&/()=_:;,.-+*#]%');
 
 -- Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle possibili (Dominio = {'a', 'b', 'c', 'd'})
