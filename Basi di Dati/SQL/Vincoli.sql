@@ -3,7 +3,7 @@ CREATE DOMAIN PERSON_NAME AS VARCHAR(35)
   CHECK ( VALUE <> '' );
 
 -- Valid_Test_Name : Il nome del test può contenere caratteri compresi tra A-Z e a-z, ed inoltre può contenere numeri 0-9, e spazi, può avere un numero di caratteri compreso tra 1 e 30.
-CREATE DOMAIN TEST_NAME AS VARCHAR(30)
+CREATE DOMAIN TEST_NAME AS VARCHAR(128)
   CHECK ( VALUE <> '' );
   
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
