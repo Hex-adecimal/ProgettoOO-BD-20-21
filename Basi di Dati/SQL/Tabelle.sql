@@ -27,8 +27,8 @@ CREATE TABLE TEST
 	CodTest SERIAL NOT NULL,
 	Name TEST_NAME,
 	CreationDate DATE,
-	StartingDateTime DATETIME,
-	ClosingDateTime DATETIME,
+	StartingDateTime TIMESTAMP,
+	ClosingDateTime TIMESTAMP,
 	MinScore DECIMAL(3,2),
 	CodP SERIAL,
 
