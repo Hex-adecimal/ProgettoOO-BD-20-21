@@ -1,9 +1,9 @@
 -- Valid_Name : I nomi non devono contenere numeri e devono avere almeno 1 carattere e al più 35 caratteri.
-CREATE DOMAIN PERSON_NAME AS VARCHAR(50)
+CREATE DOMAIN PERSON_NAME AS VARCHAR(35)
   CHECK ( VALUE <> '' AND VALUE NOT SIMILAR TO '%[0-9]+%' );
 
--- Valid_Test_Name : Il nome del test può avere un numero di caratteri compreso tra 1 e 30.
-CREATE DOMAIN TEST_NAME AS VARCHAR(128)
+-- Valid_Test_Name : Il nome del test può avere un numero di caratteri compreso tra 1 e 50.
+CREATE DOMAIN TEST_NAME AS VARCHAR(50)
   CHECK ( VALUE <> '' );
 
 -- Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle
