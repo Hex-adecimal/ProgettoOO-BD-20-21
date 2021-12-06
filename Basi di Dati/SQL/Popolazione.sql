@@ -3,7 +3,7 @@ INSERT INTO PROFESSOR(FirstName, LastName, Email, Username, Pw) VALUES
 	('Silvio', 'Barra', 'silvio.barra@unina.it', 'SilvioBarra', 'LaPasswordSegretaDelProfessore!1'),
   	('Porfirio', 'Tramontana', 'porfirio.tramontana@unina.it', 'PorfirioTramontana', 'LaPasswordSegretaDelProfessore!2'),
   	('Guglielmo', 'Tamburrini', 'guglielmo.tamburrini@unina.it', 'GuglielmoTamburrini', 'LaPasswordSegretaDelProfessore!3'),
-  	('Fabio', 'Mogaver', 'fabio.mogaver@unina.it', 'FabioMogaver', 'LaPasswordSegretaDelProfessore!4'),
+  	('Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogaver', 'LaPasswordSegretaDelProfessore!4'),
   	('Eleonora', 'Messina', 'eleonora.messina@unina.it', 'EleonoraMessina', 'LaPasswordSegretaDelProfessore!5'),
   	('Giovanni', 'Cutolo', 'giovanni.cutolo@unina.it', 'GiovanniCutolo', 'LaPasswordSegretaDelProfessore!6'),
   	('Francesca', 'Cioffi', 'francesca.cioffi@unina.it', 'FrancescaCioffi', 'LaPasswordSegretaDelProfessore!7'),
@@ -19,8 +19,17 @@ INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES
   	('Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?');
 	
 -- //------------------------------------------------------ CLASS ---------------------------------------------------------------// 
-INSERT INTO CLASS(Name, Year, CFU, CodP) VALUES
-  	('', '', '', '')
+INSERT INTO CLASS(Name, Year, CFU, CodP) VALUES -- Aggiungere i codici prof
+  	('Basi di dati', '2021', 9, ''),
+	('Object orientation', '2021', 6, ''),
+	('Elementi di informatica teorica', '2021', 6, ''),
+	('Algoritmi e strutture dati', '2021', 9, ''),
+	('Scientific computing', '2021', 6, ''),
+	('Algebra', '2020', 9, ''),
+	('Geometria', '2021', 6, ''),
+	('Analisi I', '2021', 9, ''),
+	('Architettura degli elaboratori', '2021', 9, ''),
+	('Laboratorio di programmazione', '2021', 9, '');
   
 -- //------------------------------------------------------ TAKE ----------------------------------------------------------------// 
 INSERT INTO TAKE VALUES
@@ -28,30 +37,34 @@ INSERT INTO TAKE VALUES
   
 -- //------------------------------------------------------ OPENANSWER ----------------------------------------------------------// 
 INSERT INTO OPENANSWER VALUES
-	
+	()
 
 -- //------------------------------------------------------ CLOSEDANSWER --------------------------------------------------------// 
 INSERT INTO CLOSEDANSWER VALUES
-
+	
 
 -- //------------------------------------------------------ TESTTAKEN -----------------------------------------------------------// 
 INSERT INTO TESTTAKEN VALUES
-
+	
 
 -- //------------------------------------------------------ CLOSEDQUIZ ----------------------------------------------------------// 
-INSERT INTO CLOSEDQUIZ VALUES
-
+INSERT INTO CLOSEDQUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
+	('Cosa sono le derivate parziali?', 'Qualcosa di bello', 'Qualcosa di carino', 'Qualcosa di brutto', 'Qualcosa di qualcosa', 'b', 1, 0, ''),
+	
 
 -- //------------------------------------------------------ OPENQUIZ ------------------------------------------------------------// 
-INSERT INTO OPENQUIZ VALUES
-
+INSERT INTO OPENQUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
+	('Di che colore era il cavallo bianco di napoleone?', 1 , 0, 10, ''),
+	
 
 -- //------------------------------------------------------ LECTURE -------------------------------------------------------------// 
 INSERT INTO LECTURE VALUES
-
+	('Il metodo del gradiente', 'www.matlab.com', ''),
+	
 
 -- //------------------------------------------------------ TEST ---------------------------------------------------------------// 
-INSERT INTO TEST VALUES
-
-
+INSERT INTO TEST(Name, CodP) VALUES
+	('Prima prova intercorso di Geometria 2020-2021', ''),
+	
+	
 
