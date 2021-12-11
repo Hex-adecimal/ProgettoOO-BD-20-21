@@ -5,8 +5,9 @@
 - PROFESSOR(**CodP**, FirstName, LastName, Email, Username, Password)
 
 
-- LECTURE(**Title**, Link, **CodP**)
+- LECTURE(**CodL** ,Title, Link, CodP, CodC)
   - CodP -> PROFESSOR.CodP
+  - CodC -> CLASS.CodC
 
 
 - OPENQUIZ(**CodOQ**, Question, MaxScore, MinScore, MaxLength, CodTest)
