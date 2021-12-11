@@ -27,7 +27,6 @@ CREATE DOMAIN CLOSED_ANSWER_D AS CHAR(1)
 CREATE DOMAIN VALID_CFU AS INTEGER
 	CHECK ( VALUE BETWEEN 1 AND 20 );
 
-
 -- //-------------------------------------------------------------------------//
 -- CREAZIONE DELLE TABELLE
 -- //-------------------------------------------------------------------------//
