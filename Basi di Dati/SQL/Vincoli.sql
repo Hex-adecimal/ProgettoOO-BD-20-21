@@ -39,7 +39,7 @@ CREATE ASSERTION Valid_GivenAnswer
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 ALTER TABLE TEST
 ADD CONSTRAINT Valid_Starting_DateTime 
-	CHECK ( DATE(StartingDateTime) > CreationDate );
+	CHECK ( DATE(StartingDateTime) > CreationDate AND StartingDateTime > LOCALTIMESTAMP);
 	
 -- Valid_ClosingDateTime : La differenza tra ClosingDateTime e StartingDateTime deve essere maggiore o uguale di 10 minuti
 ALTER TABLE TEST
