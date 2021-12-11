@@ -245,14 +245,18 @@ INSERT INTO PROFESSOR VALUES
   	(10, 'Francesco', 'Isgrò', 'francesc.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
   
 -- //------------------------------ STUDENT ----------------------------------// 
-INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES
+INSERT INTO STUDENT VALUES
   	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_'),
-  	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'Rosso2?'),
-  	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico$'),
+  	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?'),
+  	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$'),
   	(4, 'Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?');
-	
--- //------------------------------ CLASS ------------------------------------// 
-INSERT INTO CLASS VALUES 
+
+-- //------------------------------ TEST -------------------------------------// 
+INSERT INTO TEST(CodTest, Name, CodP) VALUES
+	(1, 'Prima prova intercorso di Geometria 2020-2021', 7);
+
+-- //------------------------------ CLASS_T ----------------------------------// 
+INSERT INTO CLASS_T VALUES 
   	(1, 'Basi di dati', '2021', 9, 1),
 	(2, 'Object orientation', '2021', 6, 2),
 	(3, 'Elementi di informatica teorica', '2021', 6, 3),
@@ -263,13 +267,33 @@ INSERT INTO CLASS VALUES
 	(8, 'Analisi I', '2021', 9, 8),
 	(9, 'Architettura degli elaboratori', '2021', 9, 9),
 	(10, 'Laboratorio di programmazione', '2021', 9, 10);
-  
+ 
+ -- //------------------------------ LECTURE ----------------------------------// 
+INSERT INTO LECTURE VALUES
+	(1, 'Il metodo del gradiente', 'www.matlab.com', 5, 5);
+
+-- //------------------------------ OPENQUIZ ---------------------------------// 
+INSERT INTO OPEN_QUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
+	('Di che colore era il cavallo bianco di napoleone?', 1 , 0, 10, 1),
+	('Cos è uno spazio vettoriale?', 1 , 0, 10, 1);
+
+-- //------------------------------ CLOSEDQUIZ -------------------------------// 
+INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
+	('Cos è un sistema lineare?', 'Qualcosa di bello', 'Qualcosa di carino', 'Qualcosa di brutto', 'Qualcosa di qualcosa', 'b', 1, 0, 1),
+	('Cos è un autovettore?', 'Un vettore che va in auto', 'Un vettore che dopo una trasformazione lineare viene solo scalato', 'Non lo so', 'Per me è la cipolla', 'b', 1, 0, 1);
+INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
+	('Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 1);
+
 -- //------------------------------ TAKE -------------------------------------// 
 INSERT INTO TAKE VALUES
 	(1, 1),
-	(3, 6),
-	(2, 5);
-  
+	(6, 3),
+	(5, 2);
+ 
+ -- //------------------------------ TESTTAKEN --------------------------------// 
+--INSERT INTO TEST_TAKEN VALUES
+	
+ 
 -- //------------------------------ OPENANSWER -------------------------------// 
 --INSERT INTO OPEN_ANSWER VALUES
 	
@@ -277,27 +301,3 @@ INSERT INTO TAKE VALUES
 -- //------------------------------ CLOSEDANSWER -----------------------------// 
 --INSERT INTO CLOSED_ANSWER VALUES
 	
-
--- //------------------------------ TESTTAKEN --------------------------------// 
---INSERT INTO TEST_TAKEN VALUES
-	
-
--- //------------------------------ CLOSEDQUIZ -------------------------------// 
-INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
-	('Cos è un sistema lineare?', 'Qualcosa di bello', 'Qualcosa di carino', 'Qualcosa di brutto', 'Qualcosa di qualcosa', 'b', 1, 0, 1),
-	('Cos è un autovettore?', 'Un vettore che va in auto', 'Un vettore che dopo una trasformazione lineare viene solo scalato', 'Non lo so', 'Per me è la cipolla', 'b', 1, 0, 1),
-	('Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 1);
-	
--- //------------------------------ OPENQUIZ ---------------------------------// 
-INSERT INTO OPEN_QUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
-	('Di che colore era il cavallo bianco di napoleone?', 1 , 0, 10, 1),
-	('Cos è uno spazio vettoriale?', 1 , 0, 10, 1);
-
--- //------------------------------ LECTURE ----------------------------------// 
-INSERT INTO LECTURE VALUES
-	(1, 'Il metodo del gradiente', 'www.matlab.com', 5, 5);
-	
-
--- //------------------------------ TEST -------------------------------------// 
-INSERT INTO TEST(CodTest, Name, CodP) VALUES
-	(1, 'Prima prova intercorso di Geometria 2020-2021', 7);
