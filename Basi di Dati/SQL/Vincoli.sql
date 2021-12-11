@@ -23,11 +23,13 @@ CREATE DOMAIN CLOSED_ANSWER AS CHAR(1)
 CREATE DOMAIN VALID_CFU AS INTEGER
 	CHECK ( VALUE BETWEEN 1 AND 20 );
 
-CREATE CONSTRAINT MaxLength_UpperBound
-	CHECK ( VALUE BETWEEN 1 AND 1024 );
+- //---------------------------------------------------------------------------------------------------------------------------// 
+- //---------------------------------------------------------------------------------------------------------------------------// 
 
-- //---------------------------------------------------------------------------------------------------------------------------// 
-- //---------------------------------------------------------------------------------------------------------------------------// 
+-- MaxLength_UpperBound : La possibilità della lughezza della risposta aperta deve essere compresa tra 1 e 1024
+ALTER TABLE OPEN_QUIZ
+ADD CONSTRAINT MaxLength_UpperBound
+	CHECK ( VALUE BETWEEN 1 AND 1024 );
 
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 ALTER TABLE TEST
