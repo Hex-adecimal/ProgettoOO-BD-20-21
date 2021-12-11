@@ -28,18 +28,13 @@ CREATE DOMAIN VALID_CFU AS INTEGER
 CREATE CONSTRAINT MaxLength_UpperBound
 	CHECK ( VALUE BETWEEN 1 AND 1024 );
 
--- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato
-CREATE ASSERTION Valid_GivenAnswer
-	CHECK NOT EXISTS
-		( )
-
 - //---------------------------------------------------------------------------------------------------------------------------// 
 - //---------------------------------------------------------------------------------------------------------------------------// 
 
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 ALTER TABLE TEST
 ADD CONSTRAINT Valid_Starting_DateTime 
-	CHECK ( DATE(StartingDateTime) > CreationDate AND StartingDateTime > LOCALTIMESTAMP);
+	CHECK ( StartingDateTime > CreationDateTime );
 	
 -- Valid_ClosingDateTime : La differenza tra ClosingDateTime e StartingDateTime deve essere maggiore o uguale di 10 minuti
 ALTER TABLE TEST
