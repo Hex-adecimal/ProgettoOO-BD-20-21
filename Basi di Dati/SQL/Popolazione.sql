@@ -36,24 +36,24 @@ INSERT INTO TAKE VALUES
 	('', '')
   
 -- //------------------------------------------------------ OPENANSWER ----------------------------------------------------------// 
-INSERT INTO OPENANSWER VALUES
+INSERT INTO OPEN_ANSWER VALUES
 	()
 
 -- //------------------------------------------------------ CLOSEDANSWER --------------------------------------------------------// 
-INSERT INTO CLOSEDANSWER VALUES
+INSERT INTO CLOSED_ANSWER VALUES
 	
 
 -- //------------------------------------------------------ TESTTAKEN -----------------------------------------------------------// 
-INSERT INTO TESTTAKEN VALUES
+INSERT INTO TEST_TAKEN VALUES
 	
 
 -- //------------------------------------------------------ CLOSEDQUIZ ----------------------------------------------------------// 
-INSERT INTO CLOSEDQUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
+INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
 	('Cosa sono le derivate parziali?', 'Qualcosa di bello', 'Qualcosa di carino', 'Qualcosa di brutto', 'Qualcosa di qualcosa', 'b', 1, 0, ''),
 	
 
 -- //------------------------------------------------------ OPENQUIZ ------------------------------------------------------------// 
-INSERT INTO OPENQUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
+INSERT INTO OPEN_QUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
 	('Di che colore era il cavallo bianco di napoleone?', 1 , 0, 10, ''),
 	
 
