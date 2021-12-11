@@ -1,3 +1,8 @@
+## Istruzioni per leggere ALL-IN-ONE
+- Dalla riga 1 alla riga 30 viene mostrata la creazione dei **domini**;
+- Dalla riga 30 alla riga 229 viene mostrata le creazione delle **tabelle**;
+- Dalla riga 229 alla riga 303 viene mostrala la **popolazione** del database.
+
 ## Istruzioni per la creazione di un utente, e per la gestione dei privilegi
 Per creare un nuovo utente si usa il comando:
 ```SQL
