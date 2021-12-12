@@ -4,11 +4,11 @@
 
 -- Valid_Name : I nomi non devono contenere numeri e devono avere almeno 1 carattere e al più 35 caratteri.
 CREATE DOMAIN PERSON_NAME AS VARCHAR(35)
-  CHECK ( VALUE <> '' AND VALUE NOT SIMILAR TO '%[0-9]+%' );
+	CHECK ( VALUE <> '' AND VALUE NOT SIMILAR TO '%[0-9]+%' );
 
 -- Valid_Test_Name : Il nome del test può avere un numero di caratteri compreso tra 1 e 55.
 CREATE DOMAIN TEST_NAME AS VARCHAR(55)
-  CHECK ( VALUE <> '' );
+	CHECK ( VALUE <> '' );
 
 -- Valid_Email : La mail deve avere la forma di u@v.w con u, v, w stringhe non nulle
 CREATE DOMAIN EMAIL AS VARCHAR(254)
@@ -50,12 +50,12 @@ ALTER TABLE PROFESSOR
 -- Tabella STUDENT
 
 CREATE TABLE STUDENT(
-    StudentID SERIAL NOT NULL,
-    FirstName PERSON_NAME NOT NULL,
-    LastName PERSON_NAME NOT NULL,
-    Email EMAIL UNIQUE NOT NULL,
-    Username VARCHAR(35) UNIQUE NOT NULL,
-    Pw PASSWORD_D NOT NULL
+	StudentID SERIAL NOT NULL,
+	FirstName PERSON_NAME NOT NULL,
+	LastName PERSON_NAME NOT NULL,
+	Email EMAIL UNIQUE NOT NULL,
+	Username VARCHAR(35) UNIQUE NOT NULL,
+	Pw PASSWORD_D NOT NULL
 );
 -- Aggiunta del vincolo di chiave primaria
 ALTER TABLE STUDENT
@@ -77,8 +77,8 @@ CREATE TABLE TEST(
 ALTER TABLE TEST
 	ADD CONSTRAINT test_pk PRIMARY KEY(CodTest),
 	ADD CONSTRAINT test_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 ALTER TABLE TEST
@@ -94,44 +94,44 @@ ADD CONSTRAINT Valid_ClosingDateTime
 -- TABELLA CLASS_T
 
 CREATE TABLE CLASS_T(
-    CodC SERIAL NOT NULL,
-    Name VARCHAR(50) NOT NULL UNIQUE,
-    Year INT DEFAULT DATE_PART('year', LOCALTIMESTAMP),
-    CFU VALID_CFU NOT NULL,
-    CodP SERIAL
+	CodC SERIAL NOT NULL,
+	Name VARCHAR(50) NOT NULL UNIQUE,
+	Year INT DEFAULT DATE_PART('year', LOCALTIMESTAMP),
+	CFU VALID_CFU NOT NULL,
+	CodP SERIAL
 );
 -- Aggiunta del vincolo di chiave primaria, e della chiave esterna sulla tabella PROFESSOR
 ALTER TABLE CLASS_T
-    ADD CONSTRAINT class_pk PRIMARY KEY(CodC),
-    ADD CONSTRAINT class_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT class_pk PRIMARY KEY(CodC),
+	ADD CONSTRAINT class_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA LECTURE
 
 CREATE TABLE LECTURE(
-    CodL SERIAL NOT NULL,
-    Title VARCHAR(30) NOT NULL UNIQUE,
-    Link VARCHAR(512),
-    CodP SERIAL NOT NULL,
-    CodC SERIAL NOT NULL
+	CodL SERIAL NOT NULL,
+	Title VARCHAR(30) NOT NULL UNIQUE,
+	Link VARCHAR(512),
+	CodP SERIAL NOT NULL,
+	CodC SERIAL NOT NULL
 );
 -- Aggiunta del vincolo di chiave primaria, e delle chiavi esterne sulle tabelle PROFESSOR e CLASS_T
 ALTER TABLE LECTURE
 	ADD CONSTRAINT lecture_pk PRIMARY KEY(CodL),
-    ADD CONSTRAINT lecture_professor_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    ADD CONSTRAINT lecture_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT lecture_professor_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT,
+	ADD CONSTRAINT lecture_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA OPEN_QUIZ
 
 CREATE TABLE OPEN_QUIZ(
-    CodOQ SERIAL NOT NULL,
+	CodOQ SERIAL NOT NULL,
 	Question VARCHAR(512) NOT NULL,
 	MaxScore DECIMAL(4,3) NOT NULL,
 	MinScore DECIMAL(4,3) NOT NULL,
@@ -140,21 +140,20 @@ CREATE TABLE OPEN_QUIZ(
 );
 -- Aggiunta del vincolo di chiave primaria, e della chiave esterna sulla tabella TEST
 ALTER TABLE OPEN_QUIZ
-    ADD CONSTRAINT open_quiz_pk PRIMARY KEY(CodOQ),
-    ADD CONSTRAINT open_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT open_quiz_pk PRIMARY KEY(CodOQ),
+	ADD CONSTRAINT open_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- MaxLength_UpperBound : La possibilità della lughezza della risposta aperta deve essere compresa tra 1 e 1024
 ALTER TABLE OPEN_QUIZ
-ADD CONSTRAINT MaxLength_UpperBound
-	CHECK ( MaxLength BETWEEN 1 AND 1024 );
+	ADD CONSTRAINT MaxLength_UpperBound
+		CHECK ( MaxLength BETWEEN 1 AND 1024 );
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA CLOSED_QUIZ
 
-CREATE TABLE CLOSED_QUIZ
-(
+CREATE TABLE CLOSED_QUIZ(
 	CodCQ SERIAL NOT NULL,
 	Question VARCHAR(512) NOT NULL,
 	AnswerA VARCHAR(128) NOT NULL,
@@ -168,89 +167,89 @@ CREATE TABLE CLOSED_QUIZ
 );
 -- Aggiunta della chiave primaria, e della chiave esterna sulla tabella TEST
 ALTER TABLE CLOSED_QUIZ
-    ADD CONSTRAINT closed_quiz_pk PRIMARY KEY(CodCQ),
-    ADD CONSTRAINT closed_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT closed_quiz_pk PRIMARY KEY(CodCQ),
+	ADD CONSTRAINT closed_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA TAKE
 
 CREATE TABLE TAKE(
-    CodC SERIAL NOT NULL,
+	CodC SERIAL NOT NULL,
 	StudentID SERIAL NOT NULL
 );
 -- Aggiunta della chiave primaria, delle chiavi esterne su CLASS_T e STUDENT
 ALTER TABLE TAKE
-    ADD CONSTRAINT take_pk PRIMARY KEY(CodC, StudentID),
-    ADD CONSTRAINT take_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    ADD CONSTRAINT take_student_fk FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT take_pk PRIMARY KEY(CodC, StudentID),
+	ADD CONSTRAINT take_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT,
+	ADD CONSTRAINT take_student_fk FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA TEST_TAKEN
 
 CREATE TABLE TEST_TAKEN(
-    CodTestTaken SERIAL NOT NULL,
-    CodTest SERIAL NOT NULL,
-    StudentID SERIAL NOT NULL,
-    Revised BOOLEAN DEFAULT FALSE,
-    Passed BOOLEAN,
-    TotalScore DECIMAL(5,4) DEFAULT 0
+	CodTestTaken SERIAL NOT NULL,
+	CodTest SERIAL NOT NULL,
+	StudentID SERIAL NOT NULL,
+	Revised BOOLEAN DEFAULT FALSE,
+	Passed BOOLEAN,
+	TotalScore DECIMAL(5,4) DEFAULT 0
 );
 -- Aggiunta della chiave primaria, e delle chiavi esterne su TEST e STUDENT
 ALTER TABLE TEST_TAKEN
-    ADD CONSTRAINT test_taken_pk PRIMARY KEY(CodTestTaken),
-    ADD CONSTRAINT unique_student_test UNIQUE(StudentID, CodTest),
-    ADD CONSTRAINT test_taken_test_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    ADD CONSTRAINT test_taken_student FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT test_taken_pk PRIMARY KEY(CodTestTaken),
+	ADD CONSTRAINT unique_student_test UNIQUE(StudentID, CodTest),
+	ADD CONSTRAINT test_taken_test_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT,
+	ADD CONSTRAINT test_taken_student FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA OPEN_ANSWER
 
 CREATE TABLE OPEN_ANSWER(
-    CodOA SERIAL NOT NULL,
-    GivenAnswer VARCHAR(1024),
-    Score DECIMAL(4,3) DEFAULT 0,
-    CodOQ SERIAL NOT NULL,
-    CodTest_Taken SERIAL NOT NULL
+	CodOA SERIAL NOT NULL,
+	GivenAnswer VARCHAR(1024),
+	Score DECIMAL(4,3) DEFAULT 0,
+	CodOQ SERIAL NOT NULL,
+	CodTest_Taken SERIAL NOT NULL
 );
 -- Aggiunta della chiave primaria, e delle chiavi esterne su OPEN_QUIZ e TEST_TAKEN
 ALTER TABLE OPEN_ANSWER
-    ADD CONSTRAINT open_answer_pk PRIMARY KEY(CodOA),
-    ADD CONSTRAINT open_answer_open_quiz_fk FOREIGN KEY(CodOQ) REFERENCES OPEN_QUIZ(CodOQ)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    ADD CONSTRAINT open_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT open_answer_pk PRIMARY KEY(CodOA),
+	ADD CONSTRAINT open_answer_open_quiz_fk FOREIGN KEY(CodOQ) REFERENCES OPEN_QUIZ(CodOQ)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT,
+	ADD CONSTRAINT open_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA CLOSED_ANSWER
 
 CREATE TABLE CLOSED_ANSWER(
-    CodCA SERIAL NOT NULL,
-    GivenAnswer CHAR,
+	CodCA SERIAL NOT NULL,
+	GivenAnswer CHAR,
 	Score DECIMAL(4,3) DEFAULT 0,
 	CodCQ SERIAL NOT NULL,
 	CodTest_Taken SERIAL NOT NULL
 );
 -- Aggiunta della chiave primaria, e delle chiavi esterne su OPEN_QUIZ e TEST_TAKEN
 ALTER TABLE CLOSED_ANSWER
-    ADD CONSTRAINT closed_answer_pk PRIMARY KEY(CodCA),
-    ADD CONSTRAINT closed_answer_closed_quiz_fk FOREIGN KEY(CodCQ) REFERENCES CLOSED_QUIZ(CodCQ)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    ADD CONSTRAINT closed_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT;
+	ADD CONSTRAINT closed_answer_pk PRIMARY KEY(CodCA),
+	ADD CONSTRAINT closed_answer_closed_quiz_fk FOREIGN KEY(CodCQ) REFERENCES CLOSED_QUIZ(CodCQ)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT,
+	ADD CONSTRAINT closed_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken)
+		ON UPDATE CASCADE
+		ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- Funzioni e Trigger
@@ -293,22 +292,22 @@ FOR EACH ROW EXECUTE PROCEDURE UCQS_function();
 -- //------------------------------ PROFESSOR --------------------------------//
 INSERT INTO PROFESSOR VALUES
 	(1, 'Silvio', 'Barra', 'silvio.barra@unina.it', 'SilvioBarra', 'LaPasswordSegretaDelProfessore!1'),
-  	(2, 'Porfirio', 'Tramontana', 'porfirio.tramontana@unina.it', 'PorfirioTramontana', 'LaPasswordSegretaDelProfessore!2'),
-  	(3, 'Guglielmo', 'Tamburrini', 'guglielmo.tamburrini@unina.it', 'GuglielmoTamburrini', 'LaPasswordSegretaDelProfessore!3'),
-  	(4, 'Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogaver', 'LaPasswordSegretaDelProfessore!4'),
-  	(5, 'Eleonora', 'Messina', 'eleonora.messina@unina.it', 'EleonoraMessina', 'LaPasswordSegretaDelProfessore!5'),
-  	(6, 'Giovanni', 'Cutolo', 'giovanni.cutolo@unina.it', 'GiovanniCutolo', 'LaPasswordSegretaDelProfessore!6'),
-  	(7, 'Francesca', 'Cioffi', 'francesca.cioffi@unina.it', 'FrancescaCioffi', 'LaPasswordSegretaDelProfessore!7'),
-  	(8, 'Daniele', 'Castorina', 'daniele.castorina@unina.it', 'DanieleCastorina', 'LaPasswordSegretaDelProfessore!8'),
-  	(9, 'Silvia', 'Rossi', 'silvia.rossi@unina.it', 'SilviaRossi', 'LaPasswordSegretaDelProfessore!9'),
-  	(10, 'Francesco', 'Isgrò', 'francesc.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
-
+	(2, 'Porfirio', 'Tramontana', 'porfirio.tramontana@unina.it', 'PorfirioTramontana', 'LaPasswordSegretaDelProfessore!2'),
+	(3, 'Guglielmo', 'Tamburrini', 'guglielmo.tamburrini@unina.it', 'GuglielmoTamburrini', 'LaPasswordSegretaDelProfessore!3'),
+	(4, 'Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogaver', 'LaPasswordSegretaDelProfessore!4'),
+	(5, 'Eleonora', 'Messina', 'eleonora.messina@unina.it', 'EleonoraMessina', 'LaPasswordSegretaDelProfessore!5'),
+	(6, 'Giovanni', 'Cutolo', 'giovanni.cutolo@unina.it', 'GiovanniCutolo', 'LaPasswordSegretaDelProfessore!6'),
+	(7, 'Francesca', 'Cioffi', 'francesca.cioffi@unina.it', 'FrancescaCioffi', 'LaPasswordSegretaDelProfessore!7'),
+	(8, 'Daniele', 'Castorina', 'daniele.castorina@unina.it', 'DanieleCastorina', 'LaPasswordSegretaDelProfessore!8'),
+	(9, 'Silvia', 'Rossi', 'silvia.rossi@unina.it', 'SilviaRossi', 'LaPasswordSegretaDelProfessore!9'),
+	(10, 'Francesco', 'Isgrò', 'francesc.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
+	
 -- //------------------------------ STUDENT ----------------------------------//
 INSERT INTO STUDENT VALUES
-  	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_'),
-  	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?'),
-  	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$'),
-  	(4, 'Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?');
+	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_'),
+	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?'),
+	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$'),
+	(4, 'Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?');
 
 -- //------------------------------ TEST -------------------------------------//
 INSERT INTO TEST(CodTest, Name, CodP) VALUES
@@ -316,7 +315,7 @@ INSERT INTO TEST(CodTest, Name, CodP) VALUES
 
 -- //------------------------------ CLASS_T ----------------------------------//
 INSERT INTO CLASS_T VALUES
-  	(1, 'Basi di dati', '2021', 9, 1),
+	(1, 'Basi di dati', '2021', 9, 1),
 	(2, 'Object orientation', '2021', 6, 2),
 	(3, 'Elementi di informatica teorica', '2021', 6, 3),
 	(4, 'Algoritmi e strutture dati', '2021', 9, 4),
@@ -351,8 +350,8 @@ INSERT INTO TAKE VALUES
 
  -- //------------------------------ TESTTAKEN --------------------------------//
 INSERT INTO TEST_TAKEN(CodTestTaken, CodTest, StudentID) VALUES
-    (1, 1, 3),
-    (2, 1, 1);
+	(1, 1, 3),
+	(2, 1, 1);
 
 -- //------------------------------ OPENANSWER -------------------------------//
 --INSERT INTO OPEN_ANSWER VALUES
