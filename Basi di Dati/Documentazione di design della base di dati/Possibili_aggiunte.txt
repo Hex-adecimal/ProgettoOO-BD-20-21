@@ -1,1 +1,0 @@
-- Attributo in TestTaken che rappresenta il timestamp di quando lo studente ha consegnato il test;
