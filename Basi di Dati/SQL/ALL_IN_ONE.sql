@@ -255,6 +255,8 @@ ALTER TABLE CLOSED_ANSWER
 -- Funzioni e Trigger
 -- //-------------------------------------------------------------------------//
 
+-- //-------------------------------------------------------------------------//
+-- Update_Closed_Quiz_Score : Correzione automatica delle domande a risposta chiusa
 CREATE FUNCTION UCQS_function() RETURNS TRIGGER AS $Update_CQ_Score$
 DECLARE
     ScoreRight CLOSED_QUIZ.ScoreIfRight%TYPE;
@@ -283,7 +285,66 @@ END;
 $Update_CQ_Score$ LANGUAGE plpgsql;
 
 CREATE TRIGGER Update_CQ_Score AFTER INSERT ON CLOSED_ANSWER
-FOR EACH ROW EXECUTE PROCEDURE UCQS_function();
+FOR EACH ROW EXECUTE PROCEDURE UCQS_function(); -- Forse non c'è bisgno del for each row
+
+-- //-------------------------------------------------------------------------//
+-- Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle possibili
+CREATE FUNCTION VRA_Function() RETURNS TRIGGER AS $Valid_Right_Answer$
+DECLARE
+	-- Indicano le rispettive risposte a quella domanda
+	-- (se la risposta è opzionale resteranno NULL)
+	flagC CLOSED_QUIZ.AnswerC%TYPE := NULL;
+	flagD CLOSED_QUIZ.AnswerD%TYPE := NULL;
+BEGIN
+
+	-- Prendo il valore della risposta C
+	SELECT AnswerC INTO flagC
+	FROM CLOSED_QUIZ
+	WHERE CodCQ = NEW.CodCQ;
+
+	IF NEW.GivenAnswer = 'c' AND flagC IS NULL
+		DELETE * FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
+		RAISE EXCEPTION 'La risposta data non è tra quelle possibili ';
+	END IF;
+
+	-- Prendo il valore della risposta D
+	SELECT AnswerD INTO flagD
+	FROM CLOSED_QUIZ
+	WHERE CodCQ = NEW.CodCQ;
+
+	IF NEW.GivenAnswer = 'd' AND flagD IS NULL
+		DELETE * FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
+		RAISE EXCEPTION 'La risposta data non è tra quelle possibili ';
+	END IF;
+
+	RETURN NULL;
+END;
+$Valid_Right_Answer$ LANGUAGE plpgsql;
+
+CREATE TRIGGER Valid_Right_Answer AFTER INSERT ON CLOSED_ANSWER
+FOR EACH ROW EXECUTE PROCEDURE VRA_Function();
+
+-- //-------------------------------------------------------------------------//
+-- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato
+CREATE FUNCTION VGA_function() RETURNS TRIGGER AS $$
+BEGIN
+	IF LENGTH(NEW.GivenAnswer) > (	SELECT MaxLength
+									FROM OPEN_ANSWER AS OA, OPEN_QUIZ AS OQ
+									WHERE OA.CodOQ = OQ.CodOQ
+										AND OA.CodOA = NEW.CodOA ) THEN
+
+		DELETE * FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
+		RAISE EXCEPTION 'ERRORE! Risposta troppo lunga!';
+
+	END IF;
+
+	RETURN NEW;
+END; $$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER Valid_GivenAnswer
+AFTER INSERT ON OPEN_ANSWER
+FOR EACH ROW
+EXECUTE PROCEDURE VGA_function();
 
 -- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
@@ -294,14 +355,14 @@ INSERT INTO PROFESSOR VALUES
 	(1, 'Silvio', 'Barra', 'silvio.barra@unina.it', 'SilvioBarra', 'LaPasswordSegretaDelProfessore!1'),
 	(2, 'Porfirio', 'Tramontana', 'porfirio.tramontana@unina.it', 'PorfirioTramontana', 'LaPasswordSegretaDelProfessore!2'),
 	(3, 'Guglielmo', 'Tamburrini', 'guglielmo.tamburrini@unina.it', 'GuglielmoTamburrini', 'LaPasswordSegretaDelProfessore!3'),
-	(4, 'Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogaver', 'LaPasswordSegretaDelProfessore!4'),
+	(4, 'Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogavero', 'LaPasswordSegretaDelProfessore!4'),
 	(5, 'Eleonora', 'Messina', 'eleonora.messina@unina.it', 'EleonoraMessina', 'LaPasswordSegretaDelProfessore!5'),
 	(6, 'Giovanni', 'Cutolo', 'giovanni.cutolo@unina.it', 'GiovanniCutolo', 'LaPasswordSegretaDelProfessore!6'),
 	(7, 'Francesca', 'Cioffi', 'francesca.cioffi@unina.it', 'FrancescaCioffi', 'LaPasswordSegretaDelProfessore!7'),
 	(8, 'Daniele', 'Castorina', 'daniele.castorina@unina.it', 'DanieleCastorina', 'LaPasswordSegretaDelProfessore!8'),
 	(9, 'Silvia', 'Rossi', 'silvia.rossi@unina.it', 'SilviaRossi', 'LaPasswordSegretaDelProfessore!9'),
-	(10, 'Francesco', 'Isgrò', 'francesc.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
-	
+	(10, 'Francesco', 'Isgrò', 'francesco.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
+
 -- //------------------------------ STUDENT ----------------------------------//
 INSERT INTO STUDENT VALUES
 	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_'),
