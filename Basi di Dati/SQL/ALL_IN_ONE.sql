@@ -225,6 +225,40 @@ ALTER TABLE CLOSED_ANSWER
     ADD CONSTRAINT closed_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken);
 
 -- //-------------------------------------------------------------------------//
+-- Funzioni e Trigger
+-- //-------------------------------------------------------------------------//
+
+CREATE FUNCTION UCQS_function() RETURNS TRIGGER AS $Update_CQ_Score$
+DECLARE
+    ScoreRight CLOSED_QUIZ.ScoreIfRight%TYPE;
+    ScoreWrong CLOSED_QUIZ.ScoreIfWrong%TYPE;
+    RA CLOSED_QUIZ.RightAnswer%TYPE;
+BEGIN
+    -- Salvo i valori
+    SELECT ScoreIfRight, ScoreIfWrong, RightAnswer
+    INTO ScoreRight, ScoreWrong, RA
+    FROM CLOSED_ANSWER CA JOIN CLOSED_QUIZ CQ ON CA.CodCQ = CQ.CodCQ
+    WHERE CA.CodCA = NEW.CodCA;
+
+    IF (NEW.GivenAnswer = RA) THEN -- Aggiorno se la risposta è corretta
+	    UPDATE CLOSED_ANSWER
+	    SET Score = ScoreRight
+        WHERE CodCA = NEW.CodCA;
+	END IF;
+
+    IF (NEW.GivenAnswer <> RA AND NEW.GivenAnswer IS NOT NULL) THEN -- Aggiorno se la risposta è sbagliata
+	    UPDATE CLOSED_ANSWER
+	    SET Score = ScoreWrong
+        WHERE CodCA = NEW.CodCA;
+    END IF;
+	RETURN NULL;
+END;
+$Update_CQ_Score$ LANGUAGE plpgsql;
+
+CREATE TRIGGER Update_CQ_Score AFTER INSERT ON CLOSED_ANSWER
+FOR EACH ROW EXECUTE PROCEDURE UCQS_function();
+
+-- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
 
@@ -278,8 +312,8 @@ INSERT INTO OPEN_QUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
 INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
 	('Cos è un sistema lineare?', 'Qualcosa di bello', 'Qualcosa di carino', 'Qualcosa di brutto', 'Qualcosa di qualcosa', 'b', 1, 0, 1),
 	('Cos è un autovettore?', 'Un vettore che va in auto', 'Un vettore che dopo una trasformazione lineare viene solo scalato', 'Non lo so', 'Per me è la cipolla', 'b', 1, 0, 1);
-INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
-	('Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 1);
+INSERT INTO CLOSED_QUIZ(CodCQ, Question, AnswerA, AnswerB, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
+	(3, 'Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 1);
 
 -- //------------------------------ TAKE -------------------------------------//
 INSERT INTO TAKE VALUES
@@ -288,12 +322,15 @@ INSERT INTO TAKE VALUES
 	(5, 2);
 
  -- //------------------------------ TESTTAKEN --------------------------------//
---INSERT INTO TEST_TAKEN VALUES
-
+INSERT INTO TEST_TAKEN(CodTestTaken, CodTest, StudentID) VALUES
+    (1, 1, 3),
+    (2, 1, 1);
 
 -- //------------------------------ OPENANSWER -------------------------------//
 --INSERT INTO OPEN_ANSWER VALUES
 
 
 -- //------------------------------ CLOSEDANSWER -----------------------------//
---INSERT INTO CLOSED_ANSWER VALUES
+INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
+    ('b', 3, 1),
+    ('c', 2, 2);
