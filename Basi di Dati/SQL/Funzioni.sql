@@ -7,41 +7,7 @@ CREATE DOMAIN CLOSED_ANSWER AS CHAR(1)
 -- Questo vincolo verrà implementato tramite funzione
 
 -- //-------------------------------------------------------------------------//
--- Quando viene aggiunta una risposta ad una domanda chiusa, si controlla se le soluzioni delle domande a risposta multipla date sono corrette;
-CREATE FUNCTION UCQS_function() RETURNS TRIGGER AS $$
-BEGIN
-	
-	IF EXISTS  (SELECT *
-				FROM CLOSED_ANSWER AS CA, CLOSED_QUIZ AS CQ
-				WHERE CA.CodCQ = CQ.CodCQ
-					AND CA.CodCA = NEW.CodCA
-					AND CA.GivenAnswer = CQ.RightAnswer) THEN
-		
-		UPDATE CLOSED_ANSWER
-		SET Score = (SELECT ScoreIfRight
-					 FROM CLOSED_ANSWER AS CA, CLOSED_QUIZ AS CQ
-					 WHERE CA.CodCQ = CQ.CodCQ
-						AND CA.CodCA = NEW.CodCA);
-		
-	ELSE
 
-		UPDATE CLOSED_ANSWER
-		SET Score = (SELECT ScoreIfWrong
-					 FROM CLOSED_ANSWER AS CA, CLOSED_QUIZ AS CQ
-					 WHERE CA.CodCQ = CQ.CodCQ
-						AND CA.CodCA = NEW.CodCA);
-
-	END IF;
-
-	RETURN NEW;
-END; $$ LANGUAGE PLPGSQL;
-
-CREATE TRIGGER Update_CQ_Score
-AFTER INSERT ON CLOSED_ANSWER
-FOR EACH ROW
-EXECUTE PROCEDURE UCQS_function();
-
--- //-------------------------------------------------------------------------//
 -- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato
 CREATE FUNCTION VGA_function() RETURNS TRIGGER AS $$
 BEGIN
