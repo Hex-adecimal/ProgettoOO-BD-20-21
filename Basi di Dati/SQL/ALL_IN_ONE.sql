@@ -302,8 +302,8 @@ BEGIN
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
 
-	IF NEW.GivenAnswer = 'c' AND flagC IS NULL
-		DELETE * FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
+	IF NEW.GivenAnswer = 'c' AND flagC IS NULL THEN
+		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
 		RAISE EXCEPTION 'La risposta data non è tra quelle possibili ';
 	END IF;
 
@@ -312,8 +312,8 @@ BEGIN
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
 
-	IF NEW.GivenAnswer = 'd' AND flagD IS NULL
-		DELETE * FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
+	IF NEW.GivenAnswer = 'd' AND flagD IS NULL THEN
+		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
 		RAISE EXCEPTION 'La risposta data non è tra quelle possibili ';
 	END IF;
 
@@ -333,7 +333,7 @@ BEGIN
 									WHERE OA.CodOQ = OQ.CodOQ
 										AND OA.CodOA = NEW.CodOA ) THEN
 
-		DELETE * FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
+		DELETE FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
 		RAISE EXCEPTION 'ERRORE! Risposta troppo lunga!';
 
 	END IF;
