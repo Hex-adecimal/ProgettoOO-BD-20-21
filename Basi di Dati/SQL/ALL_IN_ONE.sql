@@ -241,14 +241,14 @@ BEGIN
     WHERE CA.CodCA = NEW.CodCA;
 
     IF (NEW.GivenAnswer = RA) THEN -- Aggiorno se la risposta è corretta
-	    UPDATE CLOSED_ANSWER
-	    SET Score = ScoreRight
+        UPDATE CLOSED_ANSWER
+        SET Score = ScoreRight
         WHERE CodCA = NEW.CodCA;
 	END IF;
 
     IF (NEW.GivenAnswer <> RA AND NEW.GivenAnswer IS NOT NULL) THEN -- Aggiorno se la risposta è sbagliata
-	    UPDATE CLOSED_ANSWER
-	    SET Score = ScoreWrong
+        UPDATE CLOSED_ANSWER
+        SET Score = ScoreWrong
         WHERE CodCA = NEW.CodCA;
     END IF;
 	RETURN NULL;
