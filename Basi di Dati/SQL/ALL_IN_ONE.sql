@@ -76,7 +76,9 @@ CREATE TABLE TEST(
 -- Aggiunta del vincolo di chiave primaria, e della chiave esterna sulla tabella PROFESSOR
 ALTER TABLE TEST
 	ADD CONSTRAINT test_pk PRIMARY KEY(CodTest),
-	ADD CONSTRAINT test_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP);
+	ADD CONSTRAINT test_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- Valid_Starting_Date_Time : La data di inizio del test deve essere successiva al giorno in cui viene creato il test
 ALTER TABLE TEST
@@ -101,7 +103,9 @@ CREATE TABLE CLASS_T(
 -- Aggiunta del vincolo di chiave primaria, e della chiave esterna sulla tabella PROFESSOR
 ALTER TABLE CLASS_T
     ADD CONSTRAINT class_pk PRIMARY KEY(CodC),
-    ADD CONSTRAINT class_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP);
+    ADD CONSTRAINT class_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA LECTURE
@@ -116,8 +120,12 @@ CREATE TABLE LECTURE(
 -- Aggiunta del vincolo di chiave primaria, e delle chiavi esterne sulle tabelle PROFESSOR e CLASS_T
 ALTER TABLE LECTURE
 	ADD CONSTRAINT lecture_pk PRIMARY KEY(CodL),
-    ADD CONSTRAINT lecture_professor_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP),
-    ADD CONSTRAINT lecture_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC);
+    ADD CONSTRAINT lecture_professor_fk FOREIGN KEY(CodP) REFERENCES PROFESSOR(CodP)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    ADD CONSTRAINT lecture_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA OPEN_QUIZ
@@ -133,7 +141,9 @@ CREATE TABLE OPEN_QUIZ(
 -- Aggiunta del vincolo di chiave primaria, e della chiave esterna sulla tabella TEST
 ALTER TABLE OPEN_QUIZ
     ADD CONSTRAINT open_quiz_pk PRIMARY KEY(CodOQ),
-    ADD CONSTRAINT open_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest);
+    ADD CONSTRAINT open_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- MaxLength_UpperBound : La possibilità della lughezza della risposta aperta deve essere compresa tra 1 e 1024
 ALTER TABLE OPEN_QUIZ
@@ -159,7 +169,9 @@ CREATE TABLE CLOSED_QUIZ
 -- Aggiunta della chiave primaria, e della chiave esterna sulla tabella TEST
 ALTER TABLE CLOSED_QUIZ
     ADD CONSTRAINT closed_quiz_pk PRIMARY KEY(CodCQ),
-    ADD CONSTRAINT closed_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest);
+    ADD CONSTRAINT closed_quiz_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA TAKE
@@ -171,8 +183,12 @@ CREATE TABLE TAKE(
 -- Aggiunta della chiave primaria, delle chiavi esterne su CLASS_T e STUDENT
 ALTER TABLE TAKE
     ADD CONSTRAINT take_pk PRIMARY KEY(CodC, StudentID),
-    ADD CONSTRAINT take_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC),
-    ADD CONSTRAINT take_student_fk FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID);
+    ADD CONSTRAINT take_class_fk FOREIGN KEY(CodC) REFERENCES CLASS_T(CodC)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    ADD CONSTRAINT take_student_fk FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA TEST_TAKEN
@@ -189,8 +205,12 @@ CREATE TABLE TEST_TAKEN(
 ALTER TABLE TEST_TAKEN
     ADD CONSTRAINT test_taken_pk PRIMARY KEY(CodTestTaken),
     ADD CONSTRAINT unique_student_test UNIQUE(StudentID, CodTest),
-    ADD CONSTRAINT test_taken_test_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest),
-    ADD CONSTRAINT test_taken_student FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID);
+    ADD CONSTRAINT test_taken_test_fk FOREIGN KEY(CodTest) REFERENCES TEST(CodTest)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    ADD CONSTRAINT test_taken_student FOREIGN KEY(StudentID) REFERENCES STUDENT(StudentID)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA OPEN_ANSWER
@@ -205,8 +225,12 @@ CREATE TABLE OPEN_ANSWER(
 -- Aggiunta della chiave primaria, e delle chiavi esterne su OPEN_QUIZ e TEST_TAKEN
 ALTER TABLE OPEN_ANSWER
     ADD CONSTRAINT open_answer_pk PRIMARY KEY(CodOA),
-    ADD CONSTRAINT open_answer_open_quiz_fk FOREIGN KEY(CodOQ) REFERENCES OPEN_QUIZ(CodOQ),
-    ADD CONSTRAINT open_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken);
+    ADD CONSTRAINT open_answer_open_quiz_fk FOREIGN KEY(CodOQ) REFERENCES OPEN_QUIZ(CodOQ)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    ADD CONSTRAINT open_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- TABELLA CLOSED_ANSWER
@@ -221,8 +245,12 @@ CREATE TABLE CLOSED_ANSWER(
 -- Aggiunta della chiave primaria, e delle chiavi esterne su OPEN_QUIZ e TEST_TAKEN
 ALTER TABLE CLOSED_ANSWER
     ADD CONSTRAINT closed_answer_pk PRIMARY KEY(CodCA),
-    ADD CONSTRAINT closed_answer_closed_quiz_fk FOREIGN KEY(CodCQ) REFERENCES CLOSED_QUIZ(CodCQ),
-    ADD CONSTRAINT closed_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken);
+    ADD CONSTRAINT closed_answer_closed_quiz_fk FOREIGN KEY(CodCQ) REFERENCES CLOSED_QUIZ(CodCQ)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    ADD CONSTRAINT closed_answer_test_taken_fk FOREIGN KEY(CodTest_Taken) REFERENCES TEST_TAKEN(CodTestTaken)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT;
 
 -- //-------------------------------------------------------------------------//
 -- Funzioni e Trigger
