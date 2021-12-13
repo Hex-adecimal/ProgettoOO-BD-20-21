@@ -1,18 +1,14 @@
-## Istruzioni per leggere ALL-IN-ONE
+### Istruzioni per leggere ALL-IN-ONE
 - Dalla riga 1 alla riga 30 viene mostrata la creazione dei **domini**;
 - Dalla riga 30 alla riga 255 viene mostrata le creazione delle **tabelle**;
 - Dalla riga 255 alla riga 395 vengono mostrati i **trigger** e le **procedure** implementate;
 - Dalla riga 395 alla riga 470 viene mostrala la **popolazione** del database.
 
-## Istruzioni per la creazione di un utente, e per la gestione dei privilegi
-Per creare un nuovo utente si usa il comando:
+### Istruzioni per la creazione di un utente, e per la gestione dei privilegi
 ```SQL
-CREATE USER Professore PASSWORD 'LaPasswordSegretaPerIlProfessore'
-```
-
-Per garantire/revocare dei privilegi si usa il comando:
-```SQL
-GRANT privileges ON table TO user -- privilegies can be ALL
+CREATE USER Professore PASSWORD 'LeUltimeCinqueCifreDelPiGreco'; -- Per creare un nuovo utente
+GRANT privilegies ON table TO user -- Per garantire/revocare dei privilegi
+-- privilegies can be ALL
 ```
 ### Vincoli implementati tramite trigger e procedure
 - Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato.
