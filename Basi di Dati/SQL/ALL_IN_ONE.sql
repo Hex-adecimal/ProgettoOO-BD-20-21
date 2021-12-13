@@ -347,6 +347,27 @@ FOR EACH ROW
 EXECUTE PROCEDURE VGA_function();
 
 -- //-------------------------------------------------------------------------//
+-- Evaluate_Total_Score : Quando viene corretta una risposta, viene aggiornato il risultato totale.
+CREATE FUNCTION ETS_function() RETURNS TRIGGER AS $Evaluate_Total_Score$
+BEGIN
+	UPDATE TEST_TAKEN
+	SET TotalScore = TotalScore + NEW.Score - OLD.Score
+	WHERE NEW.CodTest_Taken = CodTestTaken;
+	RETURN NEW;
+END; $Evaluate_Total_Score$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER Evaluate_Total_Score_Open
+AFTER UPDATE OF Score ON OPEN_ANSWER  -- Update_Closed_Quiz_Score si occupa dell'update dell'attributo
+FOR EACH ROW
+EXECUTE PROCEDURE ETS_function();
+
+CREATE TRIGGER Evaluate_Total_Score_Closed
+AFTER UPDATE OF Score ON CLOSED_ANSWER  -- Update_Closed_Quiz_Score si occupa dell'update dell'attributo
+FOR EACH ROW
+EXECUTE PROCEDURE ETS_function();
+
+
+-- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
 
@@ -394,7 +415,7 @@ INSERT INTO LECTURE VALUES
 -- //------------------------------ OPENQUIZ ---------------------------------//
 INSERT INTO OPEN_QUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
 	('Di che colore era il cavallo bianco di napoleone?', 1 , 0, 10, 1),
-	('Cos è uno spazio vettoriale?', 1 , 0, 10, 1);
+	('Cos è uno spazio vettoriale?', 1 , 0, 100, 1);
 
 -- //------------------------------ CLOSEDQUIZ -------------------------------//
 INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
@@ -415,8 +436,9 @@ INSERT INTO TEST_TAKEN(CodTestTaken, CodTest, StudentID) VALUES
 	(2, 1, 1);
 
 -- //------------------------------ OPENANSWER -------------------------------//
---INSERT INTO OPEN_ANSWER VALUES
-
+INSERT INTO OPEN_ANSWER(GivenAnswer, CodOQ, CodTest_Taken) VALUES
+	('Not white', 1, 1),
+	('Uno spazio vettoriale è una struttura algebrica V, K, +, * con 5 proprietà ...', 2, 1);
 
 -- //------------------------------ CLOSEDANSWER -----------------------------//
 INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
