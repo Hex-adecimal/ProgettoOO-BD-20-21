@@ -347,6 +347,20 @@ FOR EACH ROW
 EXECUTE PROCEDURE VGA_function();
 
 -- //-------------------------------------------------------------------------//
+-- Evaluate_Total_Score : Quando viene corretta una risposta, viene aggiornato il risultato totale.
+CREATE FUNCTION ETS_function() RETURN TRIGGER AS $Evaluate_Total_Score$
+BEGIN
+	UPDATE TEST_TAKEN
+	SET TotalScore = TotalScore + NEW.Score - OLD.Score
+	WHERE NEW.CodTest_Taken = CodTestTaken;
+END; $Evaluate_Total_Score$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER Evaluate_Total_Score
+AFTER UPDATE ON OPEN_ANSWER OF OPEN_ANSWER.Score OR UPDATE ON CLOSED_ANSWER OF CLOSED_ANSWER.Score -- Update_Closed_Quiz_Score si occupa dell'update dell'attributo
+-- FOR EACH ROW
+EXECUTE PROCEDURE ETS_function();
+
+-- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
 
