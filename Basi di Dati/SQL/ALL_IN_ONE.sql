@@ -366,6 +366,30 @@ AFTER UPDATE OF Score ON CLOSED_ANSWER  -- Update_Closed_Quiz_Score si occupa de
 FOR EACH ROW
 EXECUTE PROCEDURE ETS_function();
 
+-- //-------------------------------------------------------------------------//
+-- Valid_Open_Score : Il punteggio dato alla risposta aperta, deve essere compreso tra maxScore e minScore.
+CREATE FUNCTION VOS_function() RETURNS TRIGGER AS $Valid_Open_Score$
+DECLARE
+	min OPEN_QUIZ.MinScore%TYPE;
+	max OPEN_QUIZ.MaxScore%TYPE;
+BEGIN
+	SELECT MinScore, MaxScore INTO min, max
+	FROM OPEN_QUIZ
+	WHERE CodOQ = NEW.CodOQ;
+
+	--RAISE NOTICE 'Value: % %', min, max;
+
+	IF NEW.Score NOT BETWEEN min AND max THEN
+		UPDATE OPEN_ANSWER SET Score = 0 WHERE CodOA = NEW.CodOA;
+		RAISE EXCEPTION 'Il punteggio deve essere compreso tra i valori fissati!';
+	END IF;
+	RETURN NEW;
+END; $Valid_Open_Score$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER Valid_Open_Score
+AFTER UPDATE ON OPEN_ANSWER
+FOR EACH ROW
+EXECUTE PROCEDURE VOS_function();
 
 -- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
