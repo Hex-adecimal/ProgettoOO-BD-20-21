@@ -14,6 +14,8 @@ GRANT privilegies ON table TO user -- Per garantire/revocare dei privilegi
 - Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato.
 - Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle possibili.
 - Valid_Open_Score : Il punteggio dato alla risposta aperta, deve essere compreso tra maxScore e minScore.
+- Unique_Username : Non devono esistere più utenti con lo stesso username
+- Unique_Email : Non devono esistere più utenti con la stessa email
 
 ### Operazioni automatiche
 - Update_Closed_Quiz_Score : Correzione automatica delle domande a risposta chiusa.
