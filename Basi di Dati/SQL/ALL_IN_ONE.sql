@@ -26,6 +26,9 @@ CREATE DOMAIN CLOSED_ANSWER_D AS CHAR(1)
 CREATE DOMAIN VALID_CFU AS INTEGER
 	CHECK ( VALUE BETWEEN 1 AND 20 );
 
+-- Dominio per i punteggi dei quiz
+CREATE DOMAIN SCORE_D AS FLOAT ;
+
 -- //-------------------------------------------------------------------------//
 -- CREAZIONE DELLE TABELLE
 -- //-------------------------------------------------------------------------//
@@ -69,7 +72,7 @@ CREATE TABLE TEST(
 	CreationDateTime TIMESTAMP DEFAULT LOCALTIMESTAMP,
 	StartingDateTime TIMESTAMP,
 	ClosingDateTime TIMESTAMP,
-	MinScore DECIMAL(4,3),
+	MinScore SCORE_D,
 	CodP SERIAL NOT NULL
 );
 -- Aggiunta del vincolo di chiave primaria, e della chiave esterna sulla tabella PROFESSOR
@@ -132,8 +135,8 @@ ALTER TABLE LECTURE
 CREATE TABLE OPEN_QUIZ(
 	CodOQ SERIAL NOT NULL,
 	Question VARCHAR(512) NOT NULL,
-	MaxScore DECIMAL(4,3) NOT NULL,
-	MinScore DECIMAL(4,3) NOT NULL,
+	MaxScore SCORE_D NOT NULL,
+	MinScore SCORE_D NOT NULL,
 	MaxLength INT DEFAULT 1024,
 	CodTest SERIAL NOT NULL
 );
@@ -160,8 +163,8 @@ CREATE TABLE CLOSED_QUIZ(
 	AnswerC VARCHAR(128),
 	AnswerD VARCHAR(128),
 	RightAnswer CLOSED_ANSWER_D NOT NULL,
-	ScoreIfRight DECIMAL(4,3) NOT NULL,
-	ScoreIfWrong DECIMAL(4,3) NOT NULL,
+	ScoreIfRight SCORE_D NOT NULL,
+	ScoreIfWrong SCORE_D NOT NULL,
 	CodTest SERIAL NOT NULL
 );
 -- Aggiunta della chiave primaria, e della chiave esterna sulla tabella TEST
@@ -197,7 +200,7 @@ CREATE TABLE TEST_TAKEN(
 	StudentID SERIAL NOT NULL,
 	Revised BOOLEAN DEFAULT FALSE,
 	Passed BOOLEAN,
-	TotalScore DECIMAL(5,4) DEFAULT 0
+	TotalScore SCORE_D DEFAULT 0
 );
 -- Aggiunta della chiave primaria, e delle chiavi esterne su TEST e STUDENT
 ALTER TABLE TEST_TAKEN
@@ -216,7 +219,7 @@ ALTER TABLE TEST_TAKEN
 CREATE TABLE OPEN_ANSWER(
 	CodOA SERIAL NOT NULL,
 	GivenAnswer VARCHAR(1024),
-	Score DECIMAL(4,3) DEFAULT 0,
+	Score SCORE_D DEFAULT 0,
 	CodOQ SERIAL NOT NULL,
 	CodTest_Taken SERIAL NOT NULL
 );
@@ -236,7 +239,7 @@ ALTER TABLE OPEN_ANSWER
 CREATE TABLE CLOSED_ANSWER(
 	CodCA SERIAL NOT NULL,
 	GivenAnswer CHAR,
-	Score DECIMAL(4,3) DEFAULT 0,
+	Score SCORE_D DEFAULT 0,
 	CodCQ SERIAL NOT NULL,
 	CodTest_Taken SERIAL NOT NULL
 );
