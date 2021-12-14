@@ -1,8 +1,8 @@
 ### Istruzioni per leggere ALL-IN-ONE
-- Dalla riga 1 alla riga 30 viene mostrata la creazione dei **domini**;
-- Dalla riga 30 alla riga 255 viene mostrata le creazione delle **tabelle**;
-- Dalla riga 255 alla riga 395 vengono mostrati i **trigger** e le **procedure** implementate;
-- Dalla riga 395 alla riga 470 viene mostrala la **popolazione** del database.
+- Dalla riga 1 alla riga 39 viene mostrata la creazione dei **domini**;
+- Dalla riga 40 alla riga 288 viene mostrata le creazione delle **tabelle**;
+- Dalla riga 289 alla riga 523 vengono mostrati i **trigger** e le **procedure** implementate;
+- Dalla riga 524 alla riga 710 viene mostrala la **popolazione** del database.
 
 ### Istruzioni per la creazione di un utente, e per la gestione dei privilegi
 ```SQL
