@@ -295,26 +295,33 @@ CREATE FUNCTION UCQS_function() RETURNS TRIGGER AS $Update_CQ_Score$
 DECLARE
     ScoreRight CLOSED_QUIZ.ScoreIfRight%TYPE;
     ScoreWrong CLOSED_QUIZ.ScoreIfWrong%TYPE;
-    RA CLOSED_QUIZ.RightAnswer%TYPE;
+    RA CLOSED_QUIZ.RightAnswer%TYPE; -- Risposta corretta
+	info INT := 0; -- Flag che mi dice se posso eseguire le query
 BEGIN
-    -- Salvo i valori
-    SELECT ScoreIfRight, ScoreIfWrong, RightAnswer
-    INTO ScoreRight, ScoreWrong, RA
+	-- Controllo che la query restituisca una sola tupla
+	SELECT COUNT(*) INTO info
     FROM CLOSED_ANSWER CA JOIN CLOSED_QUIZ CQ ON CA.CodCQ = CQ.CodCQ
     WHERE CA.CodCA = NEW.CodCA;
+	IF info = 1 THEN
+		-- Salvo i valori
+    	SELECT ScoreIfRight, ScoreIfWrong, RightAnswer
+    	INTO ScoreRight, ScoreWrong, RA
+    	FROM CLOSED_ANSWER CA JOIN CLOSED_QUIZ CQ ON CA.CodCQ = CQ.CodCQ
+    	WHERE CA.CodCA = NEW.CodCA;
 
-    IF (NEW.GivenAnswer = RA) THEN -- Aggiorno se la risposta è corretta
-        UPDATE CLOSED_ANSWER
-        SET Score = ScoreRight
-        WHERE CodCA = NEW.CodCA;
+    	IF (NEW.GivenAnswer = RA) THEN -- Aggiorno se la risposta è corretta
+        	UPDATE CLOSED_ANSWER
+        	SET Score = ScoreRight
+        	WHERE CodCA = NEW.CodCA;
+		END IF;
+
+		-- Aggiorno se la risposta è sbagliata
+    	IF (NEW.GivenAnswer <> RA AND NEW.GivenAnswer IS NOT NULL) THEN
+        	UPDATE CLOSED_ANSWER
+        	SET Score = ScoreWrong
+        	WHERE CodCA = NEW.CodCA;
+    	END IF;
 	END IF;
-
-	-- Aggiorno se la risposta è sbagliata
-    IF (NEW.GivenAnswer <> RA AND NEW.GivenAnswer IS NOT NULL) THEN
-        UPDATE CLOSED_ANSWER
-        SET Score = ScoreWrong
-        WHERE CodCA = NEW.CodCA;
-    END IF;
 	RETURN NULL;
 
 EXCEPTION
@@ -338,10 +345,11 @@ DECLARE
 	info int := 0; -- Flag che mi dice se posso eseguire le query
 BEGIN
 
-	-- Controllo di sicurezza sul numero di tuple
-	SELECT Count(AnswerC) INTO info
+	-- Controllo che la query restituisca una sola tupla
+	SELECT COUNT(*) INTO info -- Conto * perchè null non viene contato
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
+
 	IF info = 1 THEN
 		-- Prendo il valore della risposta C
 		SELECT AnswerC INTO flagC
@@ -355,7 +363,7 @@ BEGIN
 	END IF;
 
 	-- Controllo di sicurezza sul numero di tuple
-	SELECT COUNT(AnswerD) INTO info
+	SELECT COUNT(*) INTO info -- Conto * perchè null non viene contato
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
 	IF info = 1 THEN
@@ -596,7 +604,7 @@ INSERT INTO OPEN_QUIZ(Question, MaxScore, MinScore, MaxLength, CodTest) VALUES
 	('Dimostrare che in R derivabile implica differenziabile e viceversa', 2, 0, 100, 8),
 	('Che cos è un flip flop?', 2, 0, 100, 9),
 	('Descrivere le architetture RAM', 2, 0, 100, 9),
-	('Qual è la differenza tra un header file ed una libreria?', 2, 0, 100, 10),
+	('Qual è la differenza tra un header file ed una libreria?', 2, 0, 120, 10),
 	('Come si alloca una matrice dinamicamente?', 2, 0, 100, 10);
 
 -- //------------------------------ CLOSEDQUIZ -------------------------------//
@@ -624,7 +632,7 @@ INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswe
 
 INSERT INTO CLOSED_QUIZ(CodCQ, Question, AnswerA, AnswerB, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
 	(21, 'Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 7),
-	(22, 'Di che colore era il cavallo bianco di napoleone?', 'Vero', 'Falso', 'b', 1, 0, 7);
+	(42, 'Di che colore era il cavallo bianco di napoleone?', 'Vero', 'Falso', 'b', 1, 0, 7);
 
 -- //------------------------------ TAKE -------------------------------------//
 INSERT INTO TAKE VALUES
@@ -644,14 +652,73 @@ INSERT INTO TAKE VALUES
  -- //------------------------------ TESTTAKEN --------------------------------//
 INSERT INTO TEST_TAKEN(CodTestTaken, CodTest, StudentID) VALUES
 	(1, 1, 3),
-	(2, 1, 1);
+	(2, 2, 3),
+	(3, 3, 3),
+	(4, 4, 3),
+	(5, 5, 3),
+	(6, 6, 3),
+	(7, 7, 3),
+	(8, 8, 3),
+	(9, 9, 3),
+	(10, 10, 3),
+	(11, 1, 1);
 
 -- //------------------------------ OPENANSWER -------------------------------//
 INSERT INTO OPEN_ANSWER(GivenAnswer, CodOQ, CodTest_Taken) VALUES
-	('Not white', 1, 1),
-	('Uno spazio vettoriale è una struttura algebrica V, K, +, * con 5 proprietà ...', 2, 1);
+	('Data definition language, Data query language, Data manipulation language, Data control language', 1, 1),
+	('Una vista è una query memorizzata all interno del database', 2, 1),
+	('I design pattern sono dei modelli standard per risolvere problemi, MVC, DAO, Composite e Observer', 3, 2),
+	('Quando nessun oggetto fa riferimento ad x, il garbage collector dealloca x', 4, 2),
+	('Un linguaggio context free è l insieme di parole derivate da una grammatica context free ', 5, 3),
+	('//', 6, 3),
+	('//', 7, 4),
+	('//', 8, 4),
+	('E una matrice tridiagonale e a diagonale strettamente dominante', 9, 5),
+	('Il metodo di eulero', 10, 5),
+	('Quando m è primo', 11, 6),
+	('Tramite il Teorema di Eisenstein o scomponendo il polinomio in fattori', 12, 6),
+	('//', 13, 7),
+	('//', 14, 7),
+	('Tende a meno infinito', 15, 8),
+	('//', 16, 8),
+	('Qualcosa che fa flip e poi flop', 17, 9),
+	('//', 18, 9),
+	('Un header file contiene le dichiarazioni delle funzioni e dei tipi. Una libreria contiene il corpo delle funzioni.', 19, 10),
+	('//', 20, 10);
 
 -- //------------------------------ CLOSEDANSWER -----------------------------//
 INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
-    ('b', 3, 1),
-    ('c', 2, 2);
+    ('a', 1, 1),
+	('b', 2, 1),
+	('c', 3, 2),
+	('d', 4, 2),
+	('a', 5, 3),
+	('b', 6, 3),
+	('c', 7, 4),
+	('d', 8, 4),
+	('a', 9, 5),
+	('b', 10, 5),
+	('c', 11, 6),
+	('d', 12, 6),
+	('a', 13, 7),
+	('b', 14, 7),
+	('c', 15, 8),
+	('d', 16, 8),
+	('a', 17, 9),
+	('b', 18, 9),
+	('c', 19, 10),
+	('d', 20, 10);
+
+-- Ecco delle insert che violano i vincoli scritti da noi
+--INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES ('c', 42, 7); -- Valid_Right_Answer
+
+--INSERT INTO OPEN_ANSWER(GivenAnswer, CodOQ, CodTest_Taken) -- Valid_GivenAnswer
+--VALUES ('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+--	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+--	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+--	Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+--	Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 1, 11);
+
+--UPDATE OPEN_ANSWER SET Score = 69*420 WHERE CodOA = 17;  -- Valid_Open_Score
+
+--INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES ('Alpha', 'Beta', 'a@b.c', 'FrancescaCioffi', 'MyPw!123');
