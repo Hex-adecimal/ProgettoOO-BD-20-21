@@ -33,7 +33,6 @@ CREATE DOMAIN SCORE_D AS FLOAT ;
 -- CREAZIONE DELLE TABELLE
 -- //-------------------------------------------------------------------------//
 
--- //-------------------------------------------------------------------------//
 -- Tabella PROFESSOR
 
 CREATE TABLE PROFESSOR(
@@ -257,7 +256,6 @@ ALTER TABLE CLOSED_ANSWER
 -- Funzioni e Trigger
 -- //-------------------------------------------------------------------------//
 
--- //-------------------------------------------------------------------------//
 -- Update_Closed_Quiz_Score : Correzione automatica delle domande a risposta chiusa
 CREATE FUNCTION UCQS_function() RETURNS TRIGGER AS $Update_CQ_Score$
 DECLARE
@@ -283,6 +281,7 @@ BEGIN
         WHERE CodCA = NEW.CodCA;
     END IF;
 	RETURN NULL;
+	
 EXCEPTION
 	WHEN OTHERS THEN
 		ROLLBACK;
@@ -336,15 +335,18 @@ BEGIN
 	END IF;
 
 	RETURN NULL;
-EXCEPTION -- Eccezioni
+	
+EXCEPTION
   	WHEN SQLSTATE 'E000C' THEN -- E000C errore per c
 		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
 		RAISE NOTICE 'La risposta "C" non è tra quelle possibili ';
 		RETURN NULL;
+		
 	WHEN SQLSTATE 'E000D' THEN -- E000D errore per d
 		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
 		RAISE NOTICE 'La risposta "D" non è tra quelle possibili ';
 		RETURN NULL;
+		
 	WHEN OTHERS THEN
 		ROLLBACK;
 		RETURN NULL;
@@ -380,7 +382,7 @@ BEGIN
 	RETURN NEW;
 
 EXCEPTION
-	WHEN SQLSTATE 'T00LG' THEN
+	WHEN SQLSTATE 'T00LG' THEN 
 		DELETE FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
 		RAISE NOTICE 'ERRORE! Risposta troppo lunga!';
 		RETURN NULL;
