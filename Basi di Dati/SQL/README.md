@@ -20,3 +20,10 @@ GRANT privilegies ON table TO user -- Per garantire/revocare dei privilegi
 ### Operazioni automatiche
 - Update_Closed_Quiz_Score : Correzione automatica delle domande a risposta chiusa.
 - Evaluate_Total_Score : Quando viene corretta una risposta, viene aggiornato il risultato totale.
+
+### Eccezioni 
+- E000C : Eccezione nel caso in cui l'utente abbia risposta 'c' ad una domanda a risposta multipla, quando quella non è presente tra le possibili risposte;
+- E000D : Eccezione nel caso in cui l'utente abbia risposta 'd' ad una domanda a risposta multipla, quando quella non è presente tra le possibili risposte;
+- T00LG : Eccezione nel caso in cui l'utente abbia risposto con un numero di caratteri maggiori di quelli consentiti dalla domanda;
+- SF001 : Eccezione se la select restituisce più di una tupla;
+- SNIMM : Eccezione se il voto inserito dal professore, per una domanda a risposta aperta, non è compreso tra quelli consentiti;
