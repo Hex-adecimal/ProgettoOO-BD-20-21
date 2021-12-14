@@ -283,8 +283,11 @@ BEGIN
         WHERE CodCA = NEW.CodCA;
     END IF;
 	RETURN NULL;
-END;
-$Update_CQ_Score$ LANGUAGE plpgsql;
+EXCEPTION
+	WHEN OTHERS THEN
+		ROLLBACK;
+		RETURN NULL;
+END; $Update_CQ_Score$ LANGUAGE plpgsql;
 
 CREATE TRIGGER Update_CQ_Score AFTER INSERT ON CLOSED_ANSWER
 FOR EACH ROW EXECUTE PROCEDURE UCQS_function(); -- Forse non c'è bisgno del for each row
@@ -297,31 +300,55 @@ DECLARE
 	-- (se la risposta è opzionale resteranno NULL)
 	flagC CLOSED_QUIZ.AnswerC%TYPE := NULL;
 	flagD CLOSED_QUIZ.AnswerD%TYPE := NULL;
+	info int := 0; -- Flag che mi dice se posso eseguire le query
 BEGIN
 
-	-- Prendo il valore della risposta C
-	SELECT AnswerC INTO flagC
+	-- Controllo di sicurezza sul numero di tuple
+	SELECT Count(AnswerC) INTO info
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
+	IF info = 1 THEN
+		-- Prendo il valore della risposta C
+		SELECT AnswerC INTO flagC
+		FROM CLOSED_QUIZ
+		WHERE CodCQ = NEW.CodCQ;
 
-	IF NEW.GivenAnswer = 'c' AND flagC IS NULL THEN
-		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
-		RAISE EXCEPTION 'La risposta data non è tra quelle possibili ';
+		-- Se è stata inserita la risposta C ma non era una risposta possibile
+		IF NEW.GivenAnswer = 'c' AND flagC IS NULL THEN
+			RAISE EXCEPTION USING ERRCODE='E000C';
+		END IF;
 	END IF;
 
-	-- Prendo il valore della risposta D
-	SELECT AnswerD INTO flagD
+	-- Controllo di sicurezza sul numero di tuple
+	SELECT COUNT(AnswerD) INTO info
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
+	IF info = 1 THEN
+		-- Prendo il valore della risposta D
+		SELECT AnswerD INTO flagD
+		FROM CLOSED_QUIZ
+		WHERE CodCQ = NEW.CodCQ;
 
-	IF NEW.GivenAnswer = 'd' AND flagD IS NULL THEN
-		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
-		RAISE EXCEPTION 'La risposta data non è tra quelle possibili ';
+		-- Se è stata inserita la risposta D ma non era una risposta possibile
+		IF NEW.GivenAnswer = 'd' AND flagD IS NULL THEN
+			RAISE EXCEPTION USING ERRCODE='E000D';
+		END IF;
 	END IF;
 
 	RETURN NULL;
-END;
-$Valid_Right_Answer$ LANGUAGE plpgsql;
+EXCEPTION -- Eccezioni
+  	WHEN SQLSTATE 'E000C' THEN -- E000C errore per c
+		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
+		RAISE NOTICE 'La risposta "C" non è tra quelle possibili ';
+		RETURN NULL;
+	WHEN SQLSTATE 'E000D' THEN -- E000D errore per d
+		DELETE FROM CLOSED_ANSWER WHERE CodCA = NEW.CodCA;
+		RAISE NOTICE 'La risposta "D" non è tra quelle possibili ';
+		RETURN NULL;
+	WHEN OTHERS THEN
+		ROLLBACK;
+		RETURN NULL;
+END; $Valid_Right_Answer$ LANGUAGE plpgsql;
 
 CREATE TRIGGER Valid_Right_Answer AFTER INSERT ON CLOSED_ANSWER
 FOR EACH ROW EXECUTE PROCEDURE VRA_Function();
@@ -329,18 +356,37 @@ FOR EACH ROW EXECUTE PROCEDURE VRA_Function();
 -- //-------------------------------------------------------------------------//
 -- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare MaxLength dell'OpenQuiz associato
 CREATE FUNCTION VGA_function() RETURNS TRIGGER AS $$
+DECLARE
+	info INT := 0;
+	len INT;
 BEGIN
-	IF LENGTH(NEW.GivenAnswer) > (	SELECT MaxLength
-					FROM OPEN_ANSWER AS OA, OPEN_QUIZ AS OQ
-					WHERE OA.CodOQ = OQ.CodOQ
-						AND OA.CodOA = NEW.CodOA ) THEN
+	-- Controllo sul numero di tuple
+	SELECT COUNT(MaxLength) INTO info
+	FROM OPEN_ANSWER AS OA, OPEN_QUIZ AS OQ
+	WHERE OA.CodOQ = OQ.CodOQ AND OA.CodOA = NEW.CodOA;
+	IF info = 1 THEN
+		-- Cerco la massima lunghezza della risposta
+		SELECT MaxLength INTO len
+		FROM OPEN_ANSWER AS OA, OPEN_QUIZ AS OQ
+		WHERE OA.CodOQ = OQ.CodOQ AND OA.CodOA = NEW.CodOA;
 
-		DELETE FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
-		RAISE EXCEPTION 'ERRORE! Risposta troppo lunga!';
-
+		IF LENGTH(NEW.GivenAnswer) > len THEN
+			RAISE EXCEPTION USING ERRCODE='T00LG';
+		END IF;
+	ELSE
+		RAISE EXCEPTION USING ERRCODE='SF001';
 	END IF;
 
 	RETURN NEW;
+
+EXCEPTION
+	WHEN SQLSTATE 'T00LG' THEN
+		DELETE FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
+		RAISE NOTICE 'ERRORE! Risposta troppo lunga!';
+		RETURN NULL;
+	WHEN SQLSTATE 'SF001' THEN
+		RAISE NOTICE 'Errore nel numero di tuple nella select';
+		RETURN NULL;
 END; $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER Valid_GivenAnswer
@@ -374,24 +420,54 @@ CREATE FUNCTION VOS_function() RETURNS TRIGGER AS $Valid_Open_Score$
 DECLARE
 	min OPEN_QUIZ.MinScore%TYPE;
 	max OPEN_QUIZ.MaxScore%TYPE;
+	info INT := 0;
 BEGIN
-	SELECT MinScore, MaxScore INTO min, max
+	-- Controllo sul numero di tuple
+	SELECT COUNT(*) INTO info
 	FROM OPEN_QUIZ
 	WHERE CodOQ = NEW.CodOQ;
+	IF info = 1 THEN
+		-- Prendo il minimo ed il massimo
+		SELECT MinScore, MaxScore INTO min, max
+		FROM OPEN_QUIZ
+		WHERE CodOQ = NEW.CodOQ;
 
-	--RAISE NOTICE 'Value: % %', min, max;
+		--RAISE NOTICE 'Value: % %', min, max;
 
-	IF NEW.Score NOT BETWEEN min AND max THEN
-		UPDATE OPEN_ANSWER SET Score = 0 WHERE CodOA = NEW.CodOA;
-		RAISE EXCEPTION 'Il punteggio deve essere compreso tra i valori fissati!';
+		IF NEW.Score NOT BETWEEN min AND max THEN
+			RAISE EXCEPTION USING ERRCODE='SNIMM';
+		END IF;
+	ELSE
+		RAISE EXCEPTION 'SF001';
 	END IF;
+
 	RETURN NEW;
+EXCEPTION
+	WHEN SQLSTATE 'SNIMM' THEN
+		UPDATE OPEN_ANSWER SET Score = 0 WHERE CodOA = NEW.CodOA;
+		RAISE NOTICE 'Il punteggio deve essere compreso tra i valori fissati!';
+		RETURN NULL;
+	WHEN SQLSTATE 'SF001' THEN
+		ROLLBACK;
+		RAISE NOTICE 'Errore nel numero di tuple nella select';
+		RETURN NULL;
 END; $Valid_Open_Score$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER Valid_Open_Score
 AFTER UPDATE ON OPEN_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE VOS_function();
+
+-- Unique_Username : Non devono esistere più utenti con lo stesso username
+-- Unique_Email : Non devono esistere più utenti con la stessa email
+-- //-------------------------------------------------------------------------//
+-- SI RISOLVE TRAMITE SQL DINAMICO E CURSORE
+--CREATE FUNCTION UU_function(tab ) RETURNS NULL AS $$
+--BEGIN
+--END; $$ LANGUAGE PLPGSQL;
+
+-- CREARE 4 TRIGGER PER INSERIMENTI E UPDATE DI EMAIL E USERNAME DI PROF E STUDENTI
+
 
 -- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
@@ -412,10 +488,10 @@ INSERT INTO PROFESSOR VALUES
 
 -- //------------------------------ STUDENT ----------------------------------//
 INSERT INTO STUDENT VALUES
-	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_'),
-	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?'),
-	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$'),
-	(4, 'Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?');
+	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_!'),
+	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?!'),
+	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$!'),
+	(4, 'Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?!');
 
 -- //------------------------------ TEST -------------------------------------//
 INSERT INTO TEST(CodTest, Name, CodP) VALUES
