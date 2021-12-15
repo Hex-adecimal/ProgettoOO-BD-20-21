@@ -673,6 +673,39 @@ END; $Test_Is_Passed$ LANGUAGE PLPGSQL;
 CREATE TRIGGER Test_Is_Passed AFTER UPDATE OF TotalScore ON TEST_TAKEN
 EXECUTE PROCEDURE TIP_function();
 
+-- //-------------------------------------------------------------------------//
+-- Has_Been_Revised : Quando il professore ha corretto tutte le domande a
+-- risposta aperta di un test, allora viene aggiornato l'attributo Revised in test taken
+-- Se in partenza il cursore è null, non c'è nessuna domanda a risposta aperta
+CREATE FUNCTION HBR_function() RETURNS TRIGGER AS $Has_Been_Revised$
+DECLARE
+    CURSOR cur_score IS
+        SELECT *
+        FROM OPEN_ANSWER
+        WHERE CodTest_Taken = NEW.CodTest_Taken;
+    info INT := 0;
+BEGIN
+
+    -- Scorro tutte le risposte
+    FOR i IN cur_score LOOP
+        -- Se uno degli score è null, allora non è stata corretta quella risposta
+        IF i.Score IS NULL THEN
+            info := 1;
+            EXIT LOOP;
+        END IF;
+    END LOOP;
+
+    -- Se tutte le risposte sono state corrette, allora il test è stato corretto
+    IF info = 0 THEN
+        UPDATE TEST_TAKEN
+        SET Revised = 1
+        WHERE CodTestTaken = NEW.CodTest_Taken;
+    END IF;
+
+END; $Has_Been_Revised$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER Has_Been_Revised AFTER INSERT OR UPDATE OF Score ON OPEN_ANSWER
+EXECUTE PROCEDURE HBR_function();
 
 
 -- //-------------------------------------------------------------------------//
