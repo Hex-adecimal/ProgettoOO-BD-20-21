@@ -330,8 +330,10 @@ EXCEPTION
 		RETURN NULL;
 END; $Update_CQ_Score$ LANGUAGE plpgsql;
 
-CREATE TRIGGER Update_CQ_Score AFTER INSERT ON CLOSED_ANSWER
-FOR EACH ROW EXECUTE PROCEDURE UCQS_function();
+CREATE TRIGGER Update_CQ_Score
+AFTER INSERT ON CLOSED_ANSWER
+FOR EACH ROW
+EXECUTE PROCEDURE UCQS_function();
 
 -- //-------------------------------------------------------------------------//
 -- Valid_Right_Answer : La risposta di una domanda multipla deve
@@ -396,8 +398,10 @@ EXCEPTION
 		RETURN NULL;
 END; $Valid_Right_Answer$ LANGUAGE plpgsql;
 
-CREATE TRIGGER Valid_Right_Answer AFTER INSERT ON CLOSED_ANSWER
-FOR EACH ROW EXECUTE PROCEDURE VRA_Function();
+CREATE TRIGGER Valid_Right_Answer
+AFTER INSERT ON CLOSED_ANSWER
+FOR EACH ROW
+EXECUTE PROCEDURE VRA_Function();
 
 -- //-------------------------------------------------------------------------//
 -- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare
@@ -514,9 +518,113 @@ EXECUTE PROCEDURE VOS_function();
 -- Unique_Email : Non devono esistere più utenti con la stessa email
 -- //-------------------------------------------------------------------------//
 -- SI RISOLVE TRAMITE SQL DINAMICO E CURSORE
---CREATE FUNCTION UU_function(tab ) RETURNS NULL AS $$
---BEGIN
---END; $$ LANGUAGE PLPGSQL;
+
+CREATE FUNCTION UU_function() RETURNS TRIGGER AS $$
+DECLARE
+	ris VARCHAR(1000);
+	tempUsername VARCHAR(1000);
+	tempEmail VARCHAR(1000);
+	stmt VARCHAR(1000);tab VARCHAR(1000);
+	x VARCHAR(1000);
+	tab VARCHAR(1000);
+	tab2 VARCHAR(1000);
+BEGIN
+	tab := TG_ARGV[0];
+	x := TG_ARGV[1];
+
+	IF tab = 'PROFESSOR' THEN
+		
+		tab2 := 'STUDENT';
+		
+		IF X = 'Username' THEN
+
+			SELECT P.Username
+			INTO tempUsername
+			FROM PROFESSOR AS P
+			WHERE P.CodP = NEW.CodP;
+
+			stmt := concat(stmt, 'SELECT Username FROM ', tab2, ' WHERE Username = ''', tempUsername, '''');
+		
+		ELSIF x = 'Email' THEN
+		
+			SELECT P.Email
+			INTO tempEmail
+			FROM PROFESSOR AS P
+			WHERE P.CodP = NEW.CodP;
+
+			stmt := concat(stmt, 'SELECT Email FROM ', tab2, ' WHERE Email = ''', tempEmail, '''');
+		
+		END IF;
+
+	ELSIF tab = 'STUDENT' THEN
+	
+		tab2 := 'PROFESSOR';
+		
+		IF x = 'Username' THEN
+
+			SELECT S.Username
+			INTO tempUsername
+			FROM STUDENT AS S
+			WHERE S.StudentID = NEW.StudentID;
+
+			stmt := concat(stmt, 'SELECT Username FROM ', tab2, ' WHERE Username = ''', tempUsername, '''');
+		
+		ELSIF x = 'Email' THEN
+		
+			SELECT S.Email
+			INTO tempEmail
+			FROM STUDENT AS S
+			WHERE S.StudentID = NEW.StudentID;
+
+			stmt := concat(stmt, 'SELECT Email FROM ', tab2, ' WHERE Email = ''', tempEmail, '''');
+		
+		END IF;
+
+	END IF;
+	
+	EXECUTE stmt INTO ris;
+
+	IF ris = tempUsername THEN
+	
+		stmt := concat('DELETE FROM ', tab, ' AS T WHERE T.Username = ''', tempUsername, '''');
+		EXECUTE stmt;
+		RAISE NOTICE 'Username già esistente!';
+
+	ELSIF ris = tempEmail THEN
+
+		stmt := concat('DELETE FROM ', tab, ' AS T WHERE T.Email = ''', tempEmail, '''');
+		EXECUTE stmt;
+		RAISE NOTICE 'Email già utilizzata da un altro utente!';
+	
+	END IF;
+
+	RETURN NULL;
+
+END; $$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER unique_student_username
+AFTER INSERT OR UPDATE OF Username, Email
+ON STUDENT
+FOR EACH ROW
+EXECUTE PROCEDURE UU_function('STUDENT', 'Username');
+
+CREATE TRIGGER unique_student_email
+AFTER INSERT OR UPDATE OF Username, Email
+ON STUDENT
+FOR EACH ROW
+EXECUTE PROCEDURE UU_function('STUDENT', 'Email');
+
+CREATE TRIGGER unique_professor_username
+AFTER INSERT OR UPDATE OF Username, Email
+ON PROFESSOR
+FOR EACH ROW
+EXECUTE PROCEDURE UU_function('PROFESSOR', 'Username');
+
+CREATE TRIGGER unique_professor_email
+AFTER INSERT OR UPDATE OF Username, Email
+ON PROFESSOR
+FOR EACH ROW
+EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
 
 -- CREARE 4 TRIGGER PER INSERIMENTI E UPDATE DI EMAIL E USERNAME DI PROF E STUDENTI
 
