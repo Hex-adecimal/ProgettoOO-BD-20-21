@@ -517,7 +517,6 @@ EXECUTE PROCEDURE VOS_function();
 -- Unique_Username : Non devono esistere più utenti con lo stesso username
 -- Unique_Email : Non devono esistere più utenti con la stessa email
 -- //-------------------------------------------------------------------------//
--- SI RISOLVE TRAMITE SQL DINAMICO E CURSORE
 
 CREATE FUNCTION UU_function() RETURNS TRIGGER AS $$
 DECLARE
@@ -603,30 +602,77 @@ BEGIN
 END; $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER unique_student_username
-AFTER INSERT OR UPDATE OF Username, Email
-ON STUDENT
+AFTER INSERT OR UPDATE OF Username ON STUDENT
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('STUDENT', 'Username');
 
 CREATE TRIGGER unique_student_email
-AFTER INSERT OR UPDATE OF Username, Email
-ON STUDENT
+AFTER INSERT OR UPDATE OF Email ON STUDENT
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('STUDENT', 'Email');
 
 CREATE TRIGGER unique_professor_username
-AFTER INSERT OR UPDATE OF Username, Email
-ON PROFESSOR
+AFTER INSERT OR UPDATE OF Username ON PROFESSOR
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('PROFESSOR', 'Username');
 
 CREATE TRIGGER unique_professor_email
-AFTER INSERT OR UPDATE OF Username, Email
-ON PROFESSOR
+AFTER INSERT OR UPDATE OF Email ON PROFESSOR
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
 
--- CREARE 4 TRIGGER PER INSERIMENTI E UPDATE DI EMAIL E USERNAME DI PROF E STUDENTI
+-- //-------------------------------------------------------------------------//
+-- Test_Is_Passed : Quando il total score supera il min score,
+-- allora lo studente ha passato il test
+-- Ogni volta che viene cambiato il total score, controllo se il test è stato passato
+-- Uno studente può aver passato un test, anche se non è stato ancora corretto dal prof
+-- Potrebbe bastare rispondere alle domande a risposta chiusa
+CREATE FUNCTION TIP_function() RETURNS TRIGGER AS $Test_Is_Passed$
+DECLARE
+    minScore TEST.MinScore%TYPE;
+    info INT := 0;
+BEGIN
+    -- Controllo che l'output sia di una sola tupla
+    SELECT COUNT(*) INTO info
+    FROM TEST
+    WHERE CodTest = NEW.CodTest;
+
+    IF info = 1 THEN
+        SELECT minScore INTO minScore
+        FROM TEST
+        WHERE CodTest = NEW.CodTest;
+
+        IF minScore <= TotalScore THEN -- Passato
+            UPDATE TEST_TAKEN
+            SET Passed = true
+            WHERE CodTestTaken = NEW.CodTestTaken;
+        ELSE -- Non passato
+            UPDATE TEST_TAKEN
+            SET Passed = false
+            WHERE CodTestTaken = NEW.CodTestTaken;
+        END IF;
+    -- Se non ho alcuna tupla, il minScore è null, quindi il test è banalmente passato
+    ELSE IF info = 0 THEN
+        UPDATE TEST_TAKEN
+        SET Passed = true
+        WHERE CodTestTaken = NEW.CodTestTaken;
+    ELSE
+        RAISE EXCEPTION ERRCODE='SF001';
+    END IF;
+    RETURN NEW;
+
+EXCEPTION
+    WHEN SQLSTATE 'SF001' THEN
+        RAISE NOTICE 'Errore nel numero di tuple nella select'
+        RETURN NULL;
+    WHEN OTHER THEN
+        ROLLBACK;
+        RETURN NULL;
+END; $Test_Is_Passed$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER Test_Is_Passed AFTER UPDATE OF TotalScore ON TEST_TAKEN
+EXECUTE PROCEDURE TIP_function();
+
 
 
 -- //-------------------------------------------------------------------------//
