@@ -291,7 +291,7 @@ ALTER TABLE CLOSED_ANSWER
 -- //-------------------------------------------------------------------------//
 
 -- Update_Closed_Quiz_Score : Correzione automatica risposte chiuse
-CREATE FUNCTION UCQS_function() RETURNS TRIGGER AS $Update_CQ_Score$
+CREATE OR REPLACE FUNCTION UCQS_function() RETURNS TRIGGER AS $Update_CQ_Score$
 DECLARE
     ScoreRight CLOSED_QUIZ.ScoreIfRight%TYPE;
     ScoreWrong CLOSED_QUIZ.ScoreIfWrong%TYPE;
@@ -302,6 +302,7 @@ BEGIN
 	SELECT COUNT(*) INTO info
     FROM CLOSED_ANSWER CA JOIN CLOSED_QUIZ CQ ON CA.CodCQ = CQ.CodCQ
     WHERE CA.CodCA = NEW.CodCA;
+
 	IF info = 1 THEN
 		-- Salvo i valori
     	SELECT ScoreIfRight, ScoreIfWrong, RightAnswer
@@ -322,15 +323,15 @@ BEGIN
         	WHERE CodCA = NEW.CodCA;
     	END IF;
 	END IF;
-	RETURN NULL;
+	RETURN NEW;
 
 EXCEPTION
 	WHEN OTHERS THEN
-		ROLLBACK;
+		RAISE NOTICE 'SQLSTATE : %', SQLSTATE;
 		RETURN NULL;
 END; $Update_CQ_Score$ LANGUAGE plpgsql;
 
-CREATE TRIGGER Update_CQ_Score
+CREATE OR REPLACE TRIGGER Update_CQ_Score
 AFTER INSERT ON CLOSED_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE UCQS_function();
@@ -338,7 +339,7 @@ EXECUTE PROCEDURE UCQS_function();
 -- //-------------------------------------------------------------------------//
 -- Valid_Right_Answer : La risposta di una domanda multipla deve
 -- essere tra quelle possibili
-CREATE FUNCTION VRA_Function() RETURNS TRIGGER AS $Valid_Right_Answer$
+CREATE OR REPLACE FUNCTION VRA_Function() RETURNS TRIGGER AS $Valid_Right_Answer$
 DECLARE
 	-- Indicano le rispettive risposte a quella domanda
 	-- (se la risposta è opzionale resteranno NULL)
@@ -380,7 +381,7 @@ BEGIN
 		END IF;
 	END IF;
 
-	RETURN NULL;
+	RETURN NEW;
 
 EXCEPTION
   	WHEN SQLSTATE 'E000C' THEN -- E000C errore per c
@@ -394,11 +395,11 @@ EXCEPTION
 		RETURN NULL;
 
 	WHEN OTHERS THEN
-		ROLLBACK;
+		RAISE NOTICE 'SQLSTATE : %', SQLSTATE;
 		RETURN NULL;
 END; $Valid_Right_Answer$ LANGUAGE plpgsql;
 
-CREATE TRIGGER Valid_Right_Answer
+CREATE OR REPLACE TRIGGER Valid_Right_Answer
 AFTER INSERT ON CLOSED_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE VRA_Function();
@@ -406,7 +407,7 @@ EXECUTE PROCEDURE VRA_Function();
 -- //-------------------------------------------------------------------------//
 -- Valid_GivenAnswer: La lunghezza della risposta data NON deve superare
 -- MaxLength dell'OpenQuiz associato
-CREATE FUNCTION VGA_function() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION VGA_function() RETURNS TRIGGER AS $$
 DECLARE
 	info INT := 0;
 	len INT;
@@ -441,7 +442,7 @@ EXCEPTION
 		RETURN NULL;
 END; $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER Valid_GivenAnswer
+CREATE OR REPLACE TRIGGER Valid_GivenAnswer
 AFTER INSERT ON OPEN_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE VGA_function();
@@ -449,21 +450,22 @@ EXECUTE PROCEDURE VGA_function();
 -- //-------------------------------------------------------------------------//
 -- Evaluate_Total_Score : Quando viene corretta una risposta,
 -- viene aggiornato il risultato totale.
-CREATE FUNCTION ETS_function() RETURNS TRIGGER AS $Evaluate_Total_Score$
+CREATE OR REPLACE FUNCTION ETS_function() RETURNS TRIGGER AS $Evaluate_Total_Score$
 BEGIN
 	UPDATE TEST_TAKEN
 	SET TotalScore = TotalScore + NEW.Score - OLD.Score
 	WHERE NEW.CodTest_Taken = CodTestTaken;
 	RETURN NEW;
+	CALL TIP_function();
 END; $Evaluate_Total_Score$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER Evaluate_Total_Score_Open
+CREATE OR REPLACE TRIGGER Evaluate_Total_Score_Open
 AFTER UPDATE OF Score ON OPEN_ANSWER
 -- Update_Closed_Quiz_Score si occupa dell'update dell'attributo
 FOR EACH ROW
 EXECUTE PROCEDURE ETS_function();
 
-CREATE TRIGGER Evaluate_Total_Score_Closed
+CREATE OR REPLACE TRIGGER Evaluate_Total_Score_Closed
 AFTER UPDATE OF Score ON CLOSED_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE ETS_function();
@@ -471,7 +473,7 @@ EXECUTE PROCEDURE ETS_function();
 -- //-------------------------------------------------------------------------//
 -- Valid_Open_Score : Il punteggio dato alla risposta aperta,
 -- deve essere compreso tra maxScore e minScore.
-CREATE FUNCTION VOS_function() RETURNS TRIGGER AS $Valid_Open_Score$
+CREATE OR REPLACE FUNCTION VOS_function() RETURNS TRIGGER AS $Valid_Open_Score$
 DECLARE
 	min OPEN_QUIZ.MinScore%TYPE;
 	max OPEN_QUIZ.MaxScore%TYPE;
@@ -493,7 +495,7 @@ BEGIN
 			RAISE EXCEPTION USING ERRCODE='SNIMM';
 		END IF;
 	ELSE
-		RAISE EXCEPTION 'SF001';
+		RAISE EXCEPTION USING ERRCODE='SF001';
 	END IF;
 
 	RETURN NEW;
@@ -509,7 +511,7 @@ EXCEPTION
 		RETURN NULL;
 END; $Valid_Open_Score$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER Valid_Open_Score
+CREATE OR REPLACE TRIGGER Valid_Open_Score
 AFTER UPDATE ON OPEN_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE VOS_function();
@@ -517,13 +519,14 @@ EXECUTE PROCEDURE VOS_function();
 -- Unique_Username : Non devono esistere più utenti con lo stesso username
 -- Unique_Email : Non devono esistere più utenti con la stessa email
 -- //-------------------------------------------------------------------------//
-
-CREATE FUNCTION UU_function() RETURNS TRIGGER AS $$
+-- si può usare anche TG_TABLE_NAME
+-- Data type name; the name of the table that caused the trigger invocation.
+CREATE OR REPLACE FUNCTION UU_function() RETURNS TRIGGER AS $$
 DECLARE
 	ris VARCHAR(1000);
 	tempUsername VARCHAR(1000);
 	tempEmail VARCHAR(1000);
-	stmt VARCHAR(1000);tab VARCHAR(1000);
+	stmt VARCHAR(1000);
 	x VARCHAR(1000);
 	tab VARCHAR(1000);
 	tab2 VARCHAR(1000);
@@ -532,9 +535,9 @@ BEGIN
 	x := TG_ARGV[1];
 
 	IF tab = 'PROFESSOR' THEN
-		
+
 		tab2 := 'STUDENT';
-		
+
 		IF X = 'Username' THEN
 
 			SELECT P.Username
@@ -543,22 +546,22 @@ BEGIN
 			WHERE P.CodP = NEW.CodP;
 
 			stmt := concat(stmt, 'SELECT Username FROM ', tab2, ' WHERE Username = ''', tempUsername, '''');
-		
+
 		ELSIF x = 'Email' THEN
-		
+
 			SELECT P.Email
 			INTO tempEmail
 			FROM PROFESSOR AS P
 			WHERE P.CodP = NEW.CodP;
 
 			stmt := concat(stmt, 'SELECT Email FROM ', tab2, ' WHERE Email = ''', tempEmail, '''');
-		
+
 		END IF;
 
 	ELSIF tab = 'STUDENT' THEN
-	
+
 		tab2 := 'PROFESSOR';
-		
+
 		IF x = 'Username' THEN
 
 			SELECT S.Username
@@ -567,24 +570,24 @@ BEGIN
 			WHERE S.StudentID = NEW.StudentID;
 
 			stmt := concat(stmt, 'SELECT Username FROM ', tab2, ' WHERE Username = ''', tempUsername, '''');
-		
+
 		ELSIF x = 'Email' THEN
-		
+
 			SELECT S.Email
 			INTO tempEmail
 			FROM STUDENT AS S
 			WHERE S.StudentID = NEW.StudentID;
 
 			stmt := concat(stmt, 'SELECT Email FROM ', tab2, ' WHERE Email = ''', tempEmail, '''');
-		
+
 		END IF;
 
 	END IF;
-	
+
 	EXECUTE stmt INTO ris;
 
 	IF ris = tempUsername THEN
-	
+
 		stmt := concat('DELETE FROM ', tab, ' AS T WHERE T.Username = ''', tempUsername, '''');
 		EXECUTE stmt;
 		RAISE NOTICE 'Username già esistente!';
@@ -594,29 +597,29 @@ BEGIN
 		stmt := concat('DELETE FROM ', tab, ' AS T WHERE T.Email = ''', tempEmail, '''');
 		EXECUTE stmt;
 		RAISE NOTICE 'Email già utilizzata da un altro utente!';
-	
+
 	END IF;
 
 	RETURN NULL;
 
 END; $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER unique_student_username
+CREATE OR REPLACE TRIGGER unique_student_username
 AFTER INSERT OR UPDATE OF Username ON STUDENT
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('STUDENT', 'Username');
 
-CREATE TRIGGER unique_student_email
+CREATE OR REPLACE TRIGGER unique_student_email
 AFTER INSERT OR UPDATE OF Email ON STUDENT
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('STUDENT', 'Email');
 
-CREATE TRIGGER unique_professor_username
+CREATE OR REPLACE TRIGGER unique_professor_username
 AFTER INSERT OR UPDATE OF Username ON PROFESSOR
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('PROFESSOR', 'Username');
 
-CREATE TRIGGER unique_professor_email
+CREATE OR REPLACE TRIGGER unique_professor_email
 AFTER INSERT OR UPDATE OF Email ON PROFESSOR
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
@@ -627,59 +630,73 @@ EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
 -- Ogni volta che viene cambiato il total score, controllo se il test è stato passato
 -- Uno studente può aver passato un test, anche se non è stato ancora corretto dal prof
 -- Potrebbe bastare rispondere alle domande a risposta chiusa
-CREATE FUNCTION TIP_function() RETURNS TRIGGER AS $Test_Is_Passed$
+CREATE OR REPLACE FUNCTION TIP_function() RETURNS TRIGGER AS $Test_Is_Passed$
 DECLARE
     minScore TEST.MinScore%TYPE;
     info INT := 0;
 BEGIN
     -- Controllo che l'output sia di una sola tupla
-    SELECT COUNT(*) INTO info
+	RAISE NOTICE '% - % - % - % - % - %', NEW.CodTestTaken, NEW.CodTest, NEW.StudentID, NEW.Revised, NEW.Passed,NEW.TotalScore;
+	-- MI DICE CHE ENTRAMBI SONO NULL, ANCHE SE METTO OLD
+
+	SELECT COUNT(*) INTO info
     FROM TEST
     WHERE CodTest = NEW.CodTest;
 
+	RAISE NOTICE '%', info;
+
     IF info = 1 THEN
+
         SELECT minScore INTO minScore
         FROM TEST
         WHERE CodTest = NEW.CodTest;
+
+		raise notice '%', info; --
 
         IF minScore <= TotalScore THEN -- Passato
             UPDATE TEST_TAKEN
             SET Passed = true
             WHERE CodTestTaken = NEW.CodTestTaken;
+			raise notice 'Fratm';
         ELSE -- Non passato
             UPDATE TEST_TAKEN
             SET Passed = false
             WHERE CodTestTaken = NEW.CodTestTaken;
         END IF;
+	END IF;
+
     -- Se non ho alcuna tupla, il minScore è null, quindi il test è banalmente passato
-    ELSE IF info = 0 THEN
+    IF info = 0 THEN
         UPDATE TEST_TAKEN
         SET Passed = true
         WHERE CodTestTaken = NEW.CodTestTaken;
-    ELSE
-        RAISE EXCEPTION ERRCODE='SF001';
     END IF;
+
+	IF info <> 1 AND info <> 0 THEN
+        RAISE EXCEPTION USING ERRCODE='SF001';
+	END IF;
     RETURN NEW;
 
 EXCEPTION
     WHEN SQLSTATE 'SF001' THEN
-        RAISE NOTICE 'Errore nel numero di tuple nella select'
+        RAISE NOTICE 'Errore nel numero di tuple nella select';
         RETURN NULL;
-    WHEN OTHER THEN
-        ROLLBACK;
+
+    WHEN OTHERS THEN
+		RAISE NOTICE 'SQLSTATE : %', SQLSTATE;
         RETURN NULL;
 END; $Test_Is_Passed$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER Test_Is_Passed AFTER UPDATE OF TotalScore ON TEST_TAKEN
+CREATE OR REPLACE TRIGGER Test_Is_Passed AFTER UPDATE OF TotalScore ON TEST_TAKEN
 EXECUTE PROCEDURE TIP_function();
 
 -- //-------------------------------------------------------------------------//
 -- Has_Been_Revised : Quando il professore ha corretto tutte le domande a
 -- risposta aperta di un test, allora viene aggiornato l'attributo Revised in test taken
 -- Se in partenza il cursore è null, non c'è nessuna domanda a risposta aperta
-CREATE FUNCTION HBR_function() RETURNS TRIGGER AS $Has_Been_Revised$
+CREATE OR REPLACE FUNCTION HBR_function() RETURNS TRIGGER AS $Has_Been_Revised$
 DECLARE
-    CURSOR cur_score IS
+    cur_score CURSOR FOR
         SELECT *
         FROM OPEN_ANSWER
         WHERE CodTest_Taken = NEW.CodTest_Taken;
@@ -688,75 +705,82 @@ BEGIN
 
     -- Scorro tutte le risposte
     FOR i IN cur_score LOOP
+		RAISE NOTICE 'score = %', i.score;
         -- Se uno degli score è null, allora non è stata corretta quella risposta
         IF i.Score IS NULL THEN
             info := 1;
-            EXIT LOOP;
+            EXIT;
         END IF;
     END LOOP;
 
     -- Se tutte le risposte sono state corrette, allora il test è stato corretto
     IF info = 0 THEN
         UPDATE TEST_TAKEN
-        SET Revised = 1
+        SET Revised = true
         WHERE CodTestTaken = NEW.CodTest_Taken;
     END IF;
 
+	RETURN NEW;
 END; $Has_Been_Revised$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER Has_Been_Revised AFTER INSERT OR UPDATE OF Score ON OPEN_ANSWER
-EXECUTE PROCEDURE HBR_function();
+CREATE OR REPLACE TRIGGER Has_Been_Revised AFTER UPDATE OF Score ON OPEN_ANSWER
+EXECUTE PROCEDURE HBR_function(); -- Se il professore corregge
 
+CREATE OR REPLACE TRIGGER Has_Been_Revised AFTER INSERT ON CLOSED_ANSWER
+EXECUTE PROCEDURE HBR_function(); -- Se ci sono solo domande a risposta chiusa
 
 -- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
 
 -- //------------------------------ PROFESSOR --------------------------------//
-INSERT INTO PROFESSOR VALUES
-	(1, 'Silvio', 'Barra', 'silvio.barra@unina.it', 'SilvioBarra', 'LaPasswordSegretaDelProfessore!1'),
-	(2, 'Porfirio', 'Tramontana', 'porfirio.tramontana@unina.it', 'PorfirioTramontana', 'LaPasswordSegretaDelProfessore!2'),
-	(3, 'Guglielmo', 'Tamburrini', 'guglielmo.tamburrini@unina.it', 'GuglielmoTamburrini', 'LaPasswordSegretaDelProfessore!3'),
-	(4, 'Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogavero', 'LaPasswordSegretaDelProfessore!4'),
-	(5, 'Eleonora', 'Messina', 'eleonora.messina@unina.it', 'EleonoraMessina', 'LaPasswordSegretaDelProfessore!5'),
-	(6, 'Giovanni', 'Cutolo', 'giovanni.cutolo@unina.it', 'GiovanniCutolo', 'LaPasswordSegretaDelProfessore!6'),
-	(7, 'Francesca', 'Cioffi', 'francesca.cioffi@unina.it', 'FrancescaCioffi', 'LaPasswordSegretaDelProfessore!7'),
-	(8, 'Daniele', 'Castorina', 'daniele.castorina@unina.it', 'DanieleCastorina', 'LaPasswordSegretaDelProfessore!8'),
-	(9, 'Silvia', 'Rossi', 'silvia.rossi@unina.it', 'SilviaRossi', 'LaPasswordSegretaDelProfessore!9'),
-	(10, 'Francesco', 'Isgrò', 'francesco.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
+INSERT INTO PROFESSOR(FirstName, LastName, Email, Username, Pw) VALUES
+	('Silvio', 'Barra', 'silvio.barra@unina.it', 'SilvioBarra', 'LaPasswordSegretaDelProfessore!1'),
+	('Porfirio', 'Tramontana', 'porfirio.tramontana@unina.it', 'PorfirioTramontana', 'LaPasswordSegretaDelProfessore!2'),
+	('Guglielmo', 'Tamburrini', 'guglielmo.tamburrini@unina.it', 'GuglielmoTamburrini', 'LaPasswordSegretaDelProfessore!3'),
+	('Fabio', 'Mogavero', 'fabio.mogavero@unina.it', 'FabioMogavero', 'LaPasswordSegretaDelProfessore!4'),
+	('Eleonora', 'Messina', 'eleonora.messina@unina.it', 'EleonoraMessina', 'LaPasswordSegretaDelProfessore!5'),
+	('Giovanni', 'Cutolo', 'giovanni.cutolo@unina.it', 'GiovanniCutolo', 'LaPasswordSegretaDelProfessore!6'),
+	('Francesca', 'Cioffi', 'francesca.cioffi@unina.it', 'FrancescaCioffi', 'LaPasswordSegretaDelProfessore!7'),
+	('Daniele', 'Castorina', 'daniele.castorina@unina.it', 'DanieleCastorina', 'LaPasswordSegretaDelProfessore!8'),
+	('Silvia', 'Rossi', 'silvia.rossi@unina.it', 'SilviaRossi', 'LaPasswordSegretaDelProfessore!9'),
+	('Francesco', 'Isgrò', 'francesco.isgro@unina.it', 'FrancescoIsgro', 'LaPasswordSegretaDelProfessore!10');
 
 -- //------------------------------ STUDENT ----------------------------------//
-INSERT INTO STUDENT VALUES
-	(1, 'Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_!'),
-	(2, 'Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?!'),
-	(3, 'Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$!'),
-	(4, 'Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?!');
+INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES
+	('Francesco', 'Orlando', 'f.orlando@studenti.unina.it', 'Effeo', 'Giallo1_!'),
+	('Alfredo', 'Laino', 'a.laino@studenti.unina.it', 'pino.pompino', 'RossoCarminio2?!'),
+	('Marco', 'Pastore', 'm.pastore@studenti.unina.it', 'marco_pastazio', 'BluElettrico6$!'),
+	('Giorgio', 'Longobardo', 'g.longobardo@studenti.unina.it', 'giovgio', 'RamarroMarron3?!');
 
 -- //------------------------------ TEST -------------------------------------//
-INSERT INTO TEST(CodTest, Name, MinScore,CodP) VALUES
-	(1, 'Prova intercorso di Basi di dati 2021-2022', 18, 1),
-	(2, 'Prova intercorso di Object orientation', 18, 2),
-	(3, 'Prova intercorso di Elementi di Informatica teorica', 15, 3),
-	(4, 'Prova intercorso di Algoritmi e Strutture dati', 30, 4),
-	(5, 'Prova intercorso di Scientific Computing', 18, 5),
-	(6, 'Prova intercorso di Algebra', 20, 6),
-	(7, 'Prova intercorso di Geometria 2020-2021', 4, 7),
-	(8, 'Prova intercorso di Analisi matematica I', 18, 8),
-	(9, 'Prova intercorso di Architettura degli elaboratori', 24, 9),
-	(10, 'Prova intercorso di Laboratorio di Programmazione', 18, 10);
+INSERT INTO TEST(Name, MinScore, CodP) VALUES
+	('Prova intercorso di Basi di dati 2021-2022', 18, 1),
+	('Prova intercorso di Object orientation', 18, 2),
+	('Prova intercorso di Elementi di Informatica teorica', 15, 3),
+	('Prova intercorso di Algoritmi e Strutture dati', 30, 4),
+	('Prova intercorso di Scientific Computing', 18, 5),
+	('Prova intercorso di Algebra', 20, 6),
+	('Prova intercorso di Geometria 2020-2021', 4, 7),
+	('Prova intercorso di Analisi matematica I', 18, 8),
+	('Prova intercorso di Architettura degli elaboratori', 4, 9),
+	('Prova intercorso di Laboratorio di Programmazione', 18, 10);
+
+INSERT INTO TEST(Name, CodP) VALUES
+	('Seconda prova intercorso di Geometria 2020-2021', 5);
 
 -- //------------------------------ CLASS_T ----------------------------------//
-INSERT INTO CLASS_T VALUES
-	(1, 'Basi di dati', '2021', 9, 1),
-	(2, 'Object orientation', '2021', 6, 2),
-	(3, 'Elementi di informatica teorica', '2021', 6, 3),
-	(4, 'Algoritmi e strutture dati', '2021', 9, 4),
-	(5, 'Scientific computing', '2021', 6, 5),
-	(6, 'Algebra', '2020', 9, 6),
-	(7, 'Geometria', '2021', 6, 7),
-	(8, 'Analisi I', '2021', 9, 8),
-	(9, 'Architettura degli elaboratori', '2021', 9, 9),
-	(10, 'Laboratorio di programmazione', '2021', 9, 10);
+INSERT INTO CLASS_T(Name, Year, CFU, CodP) VALUES
+	('Basi di dati', '2021', 9, 1),
+	('Object orientation', '2021', 6, 2),
+	('Elementi di informatica teorica', '2021', 6, 3),
+	('Algoritmi e strutture dati', '2021', 9, 4),
+	('Scientific computing', '2021', 6, 5),
+	('Algebra', '2020', 9, 6),
+	('Geometria', '2021', 6, 7),
+	('Analisi I', '2021', 9, 8),
+	('Architettura degli elaboratori', '2021', 9, 9),
+	('Laboratorio di programmazione', '2021', 9, 10);
 
  -- //------------------------------ LECTURE ----------------------------------//
 INSERT INTO LECTURE(Title, Link, CodP, CodC) VALUES
@@ -817,9 +841,9 @@ INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, AnswerC, AnswerD, RightAnswe
 	('Come si scrive la funzione che alloca memoria dinamicamente?', 'mulloc', 'free', 'malloc', 'memoryallocapls', 'c', 1, 0, 10),
 	('Come si scrive la funzione che dealloca la memoria allocata dinamicamente?', 'IWantToBreakFree', 'free', 'malloc', 'freehugs', 'a', 1, 0, 10);
 
-INSERT INTO CLOSED_QUIZ(CodCQ, Question, AnswerA, AnswerB, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
-	(21, 'Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 7),
-	(42, 'Di che colore era il cavallo bianco di napoleone?', 'Vero', 'Falso', 'b', 1, 0, 7);
+INSERT INTO CLOSED_QUIZ(Question, AnswerA, AnswerB, RightAnswer, ScoreIfRight, ScoreIfWrong, CodTest) VALUES
+	('Un cerchio è uno spazio vettoriale?', 'Si', 'No', 'b', 1, 0, 7),
+	('Di che colore era il cavallo bianco di napoleone?', 'Vero', 'Falso', 'b', 1, 0, 7);
 
 -- //------------------------------ TAKE -------------------------------------//
 INSERT INTO TAKE VALUES
@@ -837,18 +861,20 @@ INSERT INTO TAKE VALUES
 	(5, 2);
 
  -- //------------------------------ TESTTAKEN --------------------------------//
-INSERT INTO TEST_TAKEN(CodTestTaken, CodTest, StudentID) VALUES
-	(1, 1, 3),
-	(2, 2, 3),
-	(3, 3, 3),
-	(4, 4, 3),
-	(5, 5, 3),
-	(6, 6, 3),
-	(7, 7, 3),
-	(8, 8, 3),
-	(9, 9, 3),
-	(10, 10, 3),
-	(11, 1, 1);
+INSERT INTO TEST_TAKEN(CodTest, StudentID) VALUES
+	(1, 3),
+	(2, 3),
+	(3, 3),
+	(4, 3),
+	(5, 3),
+	(6, 3),
+	(7, 3),
+	(8, 3),
+	(9, 3),
+	(10, 3),
+	(1, 1),
+	(11, 3),
+	(10, 1);
 
 -- //------------------------------ OPENANSWER -------------------------------//
 INSERT INTO OPEN_ANSWER(GivenAnswer, CodOQ, CodTest_Taken) VALUES
@@ -897,15 +923,20 @@ INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
 	('d', 20, 10);
 
 -- Ecco delle insert che violano i vincoli scritti da noi
---INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES ('c', 42, 7); -- Valid_Right_Answer
+-- INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES ('c', 22, 7); -- Valid_Right_Answer
 
---INSERT INTO OPEN_ANSWER(GivenAnswer, CodOQ, CodTest_Taken) -- Valid_GivenAnswer
---VALUES ('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+-- INSERT INTO OPEN_ANSWER(GivenAnswer, CodOQ, CodTest_Taken) -- Valid_GivenAnswer
+-- VALUES ('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 --	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 --	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 --	Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 --	Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 1, 11);
 
---UPDATE OPEN_ANSWER SET Score = 69*420 WHERE CodOA = 17;  -- Valid_Open_Score
+-- UPDATE OPEN_ANSWER SET Score = 69*420 WHERE CodOA = 17;  -- Valid_Open_Score
 
---INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES ('Alpha', 'Beta', 'a@b.c', 'FrancescaCioffi', 'MyPw!123');
+-- INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES ('Alpha', 'Beta', 'a@b.c', 'FrancescaCioffi', 'MyPw!123');
+
+-- UPDATE OPEN_ANSWER SET SCORE = 2 WHERE CODOA = 17 OR CODOA = 18; -- TRIGGER TIP
+-- INSERT CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
+	--('a', 19, 13),
+	--('a', 20, 13);
