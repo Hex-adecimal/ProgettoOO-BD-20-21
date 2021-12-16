@@ -456,7 +456,6 @@ BEGIN
 	SET TotalScore = TotalScore + NEW.Score - OLD.Score
 	WHERE NEW.CodTest_Taken = CodTestTaken;
 	RETURN NEW;
-	CALL TIP_function();
 END; $Evaluate_Total_Score$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE TRIGGER Evaluate_Total_Score_Open
@@ -469,6 +468,38 @@ CREATE OR REPLACE TRIGGER Evaluate_Total_Score_Closed
 AFTER UPDATE OF Score ON CLOSED_ANSWER
 FOR EACH ROW
 EXECUTE PROCEDURE ETS_function();
+
+-- //-------------------------------------------------------------------------//
+-- Test_Is_Passed : Quando il total score supera il min score,
+-- allora lo studente ha passato il test
+-- Ogni volta che viene cambiato il total score, controllo se il test è stato passato
+-- Uno studente può aver passato un test, anche se non è stato ancora corretto dal prof
+-- Potrebbe bastare rispondere alle domande a risposta chiusa
+CREATE OR REPLACE FUNCTION TIP_function() RETURNS TRIGGER AS $Test_Is_Passed$
+DECLARE
+    tts CURSOR IS
+        SELECT *
+        FROM TEST_TAKEN
+        WHERE TotalScore IS NOT NULL;
+    hatepostgre TEST.MinScore%TYPE;
+BEGIN
+    -- Scorro tutti i test_taken, e vedo quali hanno totalscore superiore al minscore
+    FOR i IN tts LOOP
+        SELECT MinScore INTO hatepostgre FROM TEST WHERE CodTest = i.CodTest; -- Prendo il rispettivo MinScore
+
+        -- Se il punteggio totale è maggiore del minimo, o Se non c'è, il test è banalmente passato
+        IF i.TotalScore >= hatepostgre OR hatepostgre IS NULL THEN
+            UPDATE TEST_TAKEN SET Passed = true WHERE CodTestTaken = i.CodTestTaken;
+        ELSE --i.TotalScore < hatepostgre
+            UPDATE TEST_TAKEN SET Passed = false WHERE CodTestTaken = i.CodTestTaken;
+        END IF;
+    END LOOP;
+
+	RETURN NULL;
+END; $Test_Is_Passed$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER Test_Is_Passed AFTER UPDATE OF TotalScore ON TEST_TAKEN
+EXECUTE PROCEDURE TIP_function();
 
 -- //-------------------------------------------------------------------------//
 -- Valid_Open_Score : Il punteggio dato alla risposta aperta,
@@ -625,76 +656,12 @@ FOR EACH ROW
 EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
 
 -- //-------------------------------------------------------------------------//
--- Test_Is_Passed : Quando il total score supera il min score,
--- allora lo studente ha passato il test
--- Ogni volta che viene cambiato il total score, controllo se il test è stato passato
--- Uno studente può aver passato un test, anche se non è stato ancora corretto dal prof
--- Potrebbe bastare rispondere alle domande a risposta chiusa
-CREATE OR REPLACE FUNCTION TIP_function() RETURNS TRIGGER AS $Test_Is_Passed$
-DECLARE
-    minScore TEST.MinScore%TYPE;
-    info INT := 0;
-BEGIN
-    -- Controllo che l'output sia di una sola tupla
-	RAISE NOTICE '% - % - % - % - % - %', NEW.CodTestTaken, NEW.CodTest, NEW.StudentID, NEW.Revised, NEW.Passed,NEW.TotalScore;
-	-- MI DICE CHE ENTRAMBI SONO NULL, ANCHE SE METTO OLD
-
-	SELECT COUNT(*) INTO info
-    FROM TEST
-    WHERE CodTest = NEW.CodTest;
-
-	RAISE NOTICE '%', info;
-
-    IF info = 1 THEN
-
-        SELECT minScore INTO minScore
-        FROM TEST
-        WHERE CodTest = NEW.CodTest;
-
-		raise notice '%', info; --
-
-        IF minScore <= TotalScore THEN -- Passato
-            UPDATE TEST_TAKEN
-            SET Passed = true
-            WHERE CodTestTaken = NEW.CodTestTaken;
-			raise notice 'Fratm';
-        ELSE -- Non passato
-            UPDATE TEST_TAKEN
-            SET Passed = false
-            WHERE CodTestTaken = NEW.CodTestTaken;
-        END IF;
-	END IF;
-
-    -- Se non ho alcuna tupla, il minScore è null, quindi il test è banalmente passato
-    IF info = 0 THEN
-        UPDATE TEST_TAKEN
-        SET Passed = true
-        WHERE CodTestTaken = NEW.CodTestTaken;
-    END IF;
-
-	IF info <> 1 AND info <> 0 THEN
-        RAISE EXCEPTION USING ERRCODE='SF001';
-	END IF;
-    RETURN NEW;
-
-EXCEPTION
-    WHEN SQLSTATE 'SF001' THEN
-        RAISE NOTICE 'Errore nel numero di tuple nella select';
-        RETURN NULL;
-
-    WHEN OTHERS THEN
-		RAISE NOTICE 'SQLSTATE : %', SQLSTATE;
-        RETURN NULL;
-END; $Test_Is_Passed$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE TRIGGER Test_Is_Passed AFTER UPDATE OF TotalScore ON TEST_TAKEN
-EXECUTE PROCEDURE TIP_function();
-
--- //-------------------------------------------------------------------------//
 -- Has_Been_Revised : Quando il professore ha corretto tutte le domande a
 -- risposta aperta di un test, allora viene aggiornato l'attributo Revised in test taken
 -- Se in partenza il cursore è null, non c'è nessuna domanda a risposta aperta
-CREATE OR REPLACE FUNCTION HBR_function() RETURNS TRIGGER AS $Has_Been_Revised$
+-- LOGICA SBAGLIATA, NON CI SONO RISPOSTE MESSE A NULL, E NON SI POSSONO METTERE SE NO
+-- L ALTRO TRIGGER SI INCAZZA
+/*CREATE OR REPLACE FUNCTION HBR_function() RETURNS TRIGGER AS $Has_Been_Revised$
 DECLARE
     cur_score CURSOR FOR
         SELECT *
@@ -728,7 +695,19 @@ EXECUTE PROCEDURE HBR_function(); -- Se il professore corregge
 
 CREATE OR REPLACE TRIGGER Has_Been_Revised AFTER INSERT ON CLOSED_ANSWER
 EXECUTE PROCEDURE HBR_function(); -- Se ci sono solo domande a risposta chiusa
+*/
 
+CREATE OR REPLACE PROCEDURE
+revise_function(ctest TEST.CodTest%TYPE, cprof PROFESSOR.CodP%TYPE) AS $$
+DECLARE rowtest TEST%ROWTYPE;
+BEGIN
+	SELECT * INTO rowtest FROM TEST WHERE CodTest = ctest;
+	IF rowtest.CodP = cprof THEN
+		UPDATE TEST_TAKEN SET Passed = true WHERE CodTest = ctest;
+	ELSE
+		RAISE NOTICE 'Hai inserito un test non tuo';
+	END IF;
+END; $$ LANGUAGE PLPGSQL;
 -- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
@@ -936,7 +915,8 @@ INSERT INTO CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
 
 -- INSERT INTO STUDENT(FirstName, LastName, Email, Username, Pw) VALUES ('Alpha', 'Beta', 'a@b.c', 'FrancescaCioffi', 'MyPw!123');
 
--- UPDATE OPEN_ANSWER SET SCORE = 2 WHERE CODOA = 17 OR CODOA = 18; -- TRIGGER TIP
+-- Queste permettono di vedere alcuni trigger
+-- UPDATE OPEN_ANSWER SET SCORE = 2 WHERE CODOA = 17 OR CODOA = 18;
 -- INSERT CLOSED_ANSWER(GivenAnswer, CodCQ, CodTest_Taken) VALUES
 	--('a', 19, 13),
 	--('a', 20, 13);
