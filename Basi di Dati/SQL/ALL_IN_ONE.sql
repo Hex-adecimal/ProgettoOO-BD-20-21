@@ -656,46 +656,9 @@ FOR EACH ROW
 EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
 
 -- //-------------------------------------------------------------------------//
--- Has_Been_Revised : Quando il professore ha corretto tutte le domande a
--- risposta aperta di un test, allora viene aggiornato l'attributo Revised in test taken
--- Se in partenza il cursore è null, non c'è nessuna domanda a risposta aperta
--- LOGICA SBAGLIATA, NON CI SONO RISPOSTE MESSE A NULL, E NON SI POSSONO METTERE SE NO
--- L ALTRO TRIGGER SI INCAZZA
-/*CREATE OR REPLACE FUNCTION HBR_function() RETURNS TRIGGER AS $Has_Been_Revised$
-DECLARE
-    cur_score CURSOR FOR
-        SELECT *
-        FROM OPEN_ANSWER
-        WHERE CodTest_Taken = NEW.CodTest_Taken;
-    info INT := 0;
-BEGIN
-
-    -- Scorro tutte le risposte
-    FOR i IN cur_score LOOP
-		RAISE NOTICE 'score = %', i.score;
-        -- Se uno degli score è null, allora non è stata corretta quella risposta
-        IF i.Score IS NULL THEN
-            info := 1;
-            EXIT;
-        END IF;
-    END LOOP;
-
-    -- Se tutte le risposte sono state corrette, allora il test è stato corretto
-    IF info = 0 THEN
-        UPDATE TEST_TAKEN
-        SET Revised = true
-        WHERE CodTestTaken = NEW.CodTest_Taken;
-    END IF;
-
-	RETURN NEW;
-END; $Has_Been_Revised$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE TRIGGER Has_Been_Revised AFTER UPDATE OF Score ON OPEN_ANSWER
-EXECUTE PROCEDURE HBR_function(); -- Se il professore corregge
-
-CREATE OR REPLACE TRIGGER Has_Been_Revised AFTER INSERT ON CLOSED_ANSWER
-EXECUTE PROCEDURE HBR_function(); -- Se ci sono solo domande a risposta chiusa
-*/
+-- revise_function : procedura che inserito un test, ed un professore, 
+-- "committa" tutti i test_taken, di un determinato test.
+-- Verrà usata nell'applicativo
 
 CREATE OR REPLACE PROCEDURE
 revise_function(ctest TEST.CodTest%TYPE, cprof PROFESSOR.CodP%TYPE) AS $$
@@ -708,6 +671,7 @@ BEGIN
 		RAISE NOTICE 'Hai inserito un test non tuo';
 	END IF;
 END; $$ LANGUAGE PLPGSQL;
+
 -- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
