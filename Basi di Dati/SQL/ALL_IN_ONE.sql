@@ -345,40 +345,23 @@ DECLARE
 	-- (se la risposta è opzionale resteranno NULL)
 	flagC CLOSED_QUIZ.AnswerC%TYPE := NULL;
 	flagD CLOSED_QUIZ.AnswerD%TYPE := NULL;
-	info int := 0; -- Flag che mi dice se posso eseguire le query
 BEGIN
-
-	-- Controllo che la query restituisca una sola tupla
-	SELECT COUNT(*) INTO info -- Conto * perchè null non viene contato
+	-- Prendo il valore della risposta C
+	SELECT AnswerC INTO flagC
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
-
-	IF info = 1 THEN
-		-- Prendo il valore della risposta C
-		SELECT AnswerC INTO flagC
-		FROM CLOSED_QUIZ
-		WHERE CodCQ = NEW.CodCQ;
-
-		-- Se è stata inserita la risposta C ma non era una risposta possibile
-		IF NEW.GivenAnswer = 'c' AND flagC IS NULL THEN
-			RAISE EXCEPTION USING ERRCODE='E000C';
-		END IF;
+	-- Se è stata inserita la risposta C ma non era una risposta possibile
+	IF NEW.GivenAnswer = 'c' AND flagC IS NULL THEN
+		RAISE EXCEPTION USING ERRCODE='E000C';
 	END IF;
 
-	-- Controllo di sicurezza sul numero di tuple
-	SELECT COUNT(*) INTO info -- Conto * perchè null non viene contato
+	-- Prendo il valore della risposta D
+	SELECT AnswerD INTO flagD
 	FROM CLOSED_QUIZ
 	WHERE CodCQ = NEW.CodCQ;
-	IF info = 1 THEN
-		-- Prendo il valore della risposta D
-		SELECT AnswerD INTO flagD
-		FROM CLOSED_QUIZ
-		WHERE CodCQ = NEW.CodCQ;
-
-		-- Se è stata inserita la risposta D ma non era una risposta possibile
-		IF NEW.GivenAnswer = 'd' AND flagD IS NULL THEN
-			RAISE EXCEPTION USING ERRCODE='E000D';
-		END IF;
+	-- Se è stata inserita la risposta D ma non era una risposta possibile
+	IF NEW.GivenAnswer = 'd' AND flagD IS NULL THEN
+		RAISE EXCEPTION USING ERRCODE='E000D';
 	END IF;
 
 	RETURN NEW;
@@ -409,24 +392,15 @@ EXECUTE PROCEDURE VRA_Function();
 -- MaxLength dell'OpenQuiz associato
 CREATE OR REPLACE FUNCTION VGA_function() RETURNS TRIGGER AS $$
 DECLARE
-	info INT := 0;
 	len INT;
 BEGIN
-	-- Controllo sul numero di tuple
-	SELECT COUNT(MaxLength) INTO info
+	-- Cerco la massima lunghezza della risposta
+	SELECT MaxLength INTO len
 	FROM OPEN_ANSWER AS OA, OPEN_QUIZ AS OQ
 	WHERE OA.CodOQ = OQ.CodOQ AND OA.CodOA = NEW.CodOA;
-	IF info = 1 THEN
-		-- Cerco la massima lunghezza della risposta
-		SELECT MaxLength INTO len
-		FROM OPEN_ANSWER AS OA, OPEN_QUIZ AS OQ
-		WHERE OA.CodOQ = OQ.CodOQ AND OA.CodOA = NEW.CodOA;
 
-		IF LENGTH(NEW.GivenAnswer) > len THEN
-			RAISE EXCEPTION USING ERRCODE='T00LG';
-		END IF;
-	ELSE
-		RAISE EXCEPTION USING ERRCODE='SF001';
+	IF LENGTH(NEW.GivenAnswer) > len THEN
+		RAISE EXCEPTION USING ERRCODE='T00LG';
 	END IF;
 
 	RETURN NEW;
@@ -435,10 +409,6 @@ EXCEPTION
 	WHEN SQLSTATE 'T00LG' THEN
 		DELETE FROM OPEN_ANSWER WHERE CodOA = NEW.CodOA;
 		RAISE NOTICE 'ERRORE! Risposta troppo lunga!';
-		RETURN NULL;
-
-	WHEN SQLSTATE 'SF001' THEN
-		RAISE NOTICE 'Errore nel numero di tuple nella select';
 		RETURN NULL;
 END; $$ LANGUAGE PLPGSQL;
 
@@ -508,37 +478,23 @@ CREATE OR REPLACE FUNCTION VOS_function() RETURNS TRIGGER AS $Valid_Open_Score$
 DECLARE
 	min OPEN_QUIZ.MinScore%TYPE;
 	max OPEN_QUIZ.MaxScore%TYPE;
-	info INT := 0;
 BEGIN
-	-- Controllo sul numero di tuple
-	SELECT COUNT(*) INTO info
+
+	-- Prendo il minimo ed il massimo
+	SELECT MinScore, MaxScore INTO min, max
 	FROM OPEN_QUIZ
 	WHERE CodOQ = NEW.CodOQ;
-	IF info = 1 THEN
-		-- Prendo il minimo ed il massimo
-		SELECT MinScore, MaxScore INTO min, max
-		FROM OPEN_QUIZ
-		WHERE CodOQ = NEW.CodOQ;
 
-		--RAISE NOTICE 'Value: % %', min, max;
-
-		IF NEW.Score NOT BETWEEN min AND max THEN
-			RAISE EXCEPTION USING ERRCODE='SNIMM';
-		END IF;
-	ELSE
-		RAISE EXCEPTION USING ERRCODE='SF001';
+	IF NEW.Score NOT BETWEEN min AND max THEN
+		RAISE EXCEPTION USING ERRCODE='SNIMM';
 	END IF;
 
 	RETURN NEW;
+
 EXCEPTION
 	WHEN SQLSTATE 'SNIMM' THEN
 		UPDATE OPEN_ANSWER SET Score = 0 WHERE CodOA = NEW.CodOA;
 		RAISE NOTICE 'Il punteggio deve essere compreso tra i valori fissati!';
-		RETURN NULL;
-
-	WHEN SQLSTATE 'SF001' THEN
-		ROLLBACK;
-		RAISE NOTICE 'Errore nel numero di tuple nella select';
 		RETURN NULL;
 END; $Valid_Open_Score$ LANGUAGE PLPGSQL;
 
@@ -559,73 +515,51 @@ DECLARE
 	tempEmail VARCHAR(1000);
 	stmt VARCHAR(1000);
 	x VARCHAR(1000);
-	tab VARCHAR(1000);
-	tab2 VARCHAR(1000);
 BEGIN
-	tab := TG_ARGV[0];
 	x := TG_ARGV[1];
 
-	IF tab = 'PROFESSOR' THEN
-
-		tab2 := 'STUDENT';
-
-		IF X = 'Username' THEN
-
-			SELECT P.Username
-			INTO tempUsername
+	IF TG_TABLE_NAME = 'PROFESSOR' THEN -- Se ho inserito qualcosa in PROFESSOR
+		IF x = 'Username' THEN -- Se ho modificato un username
+			SELECT P.Username INTO tempUsername -- Vedo se già esiste quell'username
 			FROM PROFESSOR AS P
 			WHERE P.CodP = NEW.CodP;
 
-			stmt := concat(stmt, 'SELECT Username FROM ', tab2, ' WHERE Username = ''', tempUsername, '''');
+			stmt := 'SELECT Username FROM STUDENT WHERE Username = ' || tempUsername ;
 
-		ELSIF x = 'Email' THEN
-
-			SELECT P.Email
-			INTO tempEmail
+		ELSEIF x = 'Email' THEN -- Se ho modificato un email
+			SELECT P.Email INTO tempEmail -- Vedo se già esiste quell'email
 			FROM PROFESSOR AS P
 			WHERE P.CodP = NEW.CodP;
 
-			stmt := concat(stmt, 'SELECT Email FROM ', tab2, ' WHERE Email = ''', tempEmail, '''');
-
+			stmt := 'SELECT Email FROM STUDENT WHERE Email = ' || tempEmail ;
 		END IF;
 
-	ELSIF tab = 'STUDENT' THEN
-
-		tab2 := 'PROFESSOR';
-
-		IF x = 'Username' THEN
-
-			SELECT S.Username
-			INTO tempUsername
+	ELSIF TG_TABLE_NAME = 'STUDENT' THEN -- Se ho inserito qualcosa in STUDENT
+		IF x = 'Username' THEN -- Se ho modificato un username
+			SELECT S.Username INTO tempUsername
 			FROM STUDENT AS S
 			WHERE S.StudentID = NEW.StudentID;
 
-			stmt := concat(stmt, 'SELECT Username FROM ', tab2, ' WHERE Username = ''', tempUsername, '''');
+			stmt := stmt || 'SELECT Username FROM PROFESSOR WHERE Username = ' || tempUsername;
 
-		ELSIF x = 'Email' THEN
-
-			SELECT S.Email
-			INTO tempEmail
+		ELSEIF x = 'Email' THEN -- Se ho modificato un email
+			SELECT S.Email INTO tempEmail
 			FROM STUDENT AS S
 			WHERE S.StudentID = NEW.StudentID;
 
-			stmt := concat(stmt, 'SELECT Email FROM ', tab2, ' WHERE Email = ''', tempEmail, '''');
-
+			stmt := stmt || 'SELECT Email FROM PROFESSOR WHERE Email = ' || tempEmail;
 		END IF;
-
 	END IF;
 
 	EXECUTE stmt INTO ris;
 
 	IF ris = tempUsername THEN
-
-		stmt := concat('DELETE FROM ', tab, ' AS T WHERE T.Username = ''', tempUsername, '''');
+		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Username = ' || tempUsername;
 		EXECUTE stmt;
 		RAISE NOTICE 'Username già esistente!';
 
-	ELSIF ris = tempEmail THEN
-
-		stmt := concat('DELETE FROM ', tab, ' AS T WHERE T.Email = ''', tempEmail, '''');
+	ELSEIF ris = tempEmail THEN
+		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Email = ' || tempEmail;
 		EXECUTE stmt;
 		RAISE NOTICE 'Email già utilizzata da un altro utente!';
 
@@ -635,28 +569,106 @@ BEGIN
 
 END; $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE TRIGGER unique_student_username
-AFTER INSERT OR UPDATE OF Username ON STUDENT
+CREATE OR REPLACE TRIGGER unique_student_username AFTER INSERT ON STUDENT
 FOR EACH ROW
-EXECUTE PROCEDURE UU_function('STUDENT', 'Username');
+EXECUTE PROCEDURE UU_function();
 
-CREATE OR REPLACE TRIGGER unique_student_email
-AFTER INSERT OR UPDATE OF Email ON STUDENT
+CREATE OR REPLACE TRIGGER unique_professor_username AFTER INSERT ON PROFESSOR
 FOR EACH ROW
-EXECUTE PROCEDURE UU_function('STUDENT', 'Email');
+EXECUTE PROCEDURE UU_function();
 
-CREATE OR REPLACE TRIGGER unique_professor_username
-AFTER INSERT OR UPDATE OF Username ON PROFESSOR
-FOR EACH ROW
-EXECUTE PROCEDURE UU_function('PROFESSOR', 'Username');
-
-CREATE OR REPLACE TRIGGER unique_professor_email
-AFTER INSERT OR UPDATE OF Email ON PROFESSOR
-FOR EACH ROW
-EXECUTE PROCEDURE UU_function('PROFESSOR', 'Email');
 
 -- //-------------------------------------------------------------------------//
--- revise_function : procedura che inserito un test, ed un professore, 
+-- Procedura per il cambio di username di uno studente
+CREATE OR REPLACE PROCEDURE username_for_student(s_user STUDENT.Username%TYPE, s_id STUDENT.StudentID%TYPE) AS $$
+DECLARE
+	info INT;
+BEGIN
+	START TRANSACTION;
+		SELECT COUNT(*) INTO info FROM PROFESSOR WHERE username = s_user;
+
+		IF info = 1 THEN
+			RAISE EXCEPTION USING ERRCODE='UNALP';  -- Username already exists in professor
+		END IF;
+
+		UPDATE STUDENT SET username = s_user WHERE StudentID = s_id;
+	COMMIT;
+EXCEPTION
+	WHEN SQLSTATE 'UNALP' THEN
+		RAISE NOTICE 'Esiste già un altro utente con quell username';
+		ROLLBACK;
+	WHEN OTHERS THEN
+		ROLLBACK;
+END; $$ LANGUAGE PLPGSQL;
+
+-- Procedura per il cambio di email di uno studente
+CREATE OR REPLACE PROCEDURE username_for_student(s_email STUDENT.Username%TYPE, s_id STUDENT.StudentID%TYPE) AS $$
+DECLARE
+	info INT;
+BEGIN
+	START TRANSACTION;
+		SELECT COUNT(*) INTO info FROM PROFESSOR WHERE email = s_email;
+
+		IF info = 1 THEN
+			RAISE EXCEPTION USING ERRCODE='EMALP';  -- email already exists in professor
+		END IF;
+
+		UPDATE STUDENT SET email = s_email WHERE StudentID = s_id;
+	COMMIT;
+EXCEPTION
+	WHEN SQLSTATE 'EMALP' THEN
+		RAISE NOTICE 'Esiste già un altro utente con quell email';
+		ROLLBACK;
+	WHEN OTHERS THEN
+		ROLLBACK;
+END; $$ LANGUAGE PLPGSQL;
+
+-- Procedura per il cambio di username di un professore
+CREATE OR REPLACE PROCEDURE username_for_student(p_user STUDENT.Username%TYPE, p_id STUDENT.StudentID%TYPE) AS $$
+DECLARE
+	info INT;
+BEGIN
+	START TRANSACTION;
+		SELECT COUNT(*) INTO info FROM STUDENT WHERE username = p_user;
+
+		IF info = 1 THEN
+			RAISE EXCEPTION USING ERRCODE='UNALS';  -- Username already exists in student
+		END IF;
+
+		UPDATE PROFESSOR SET username = p_user WHERE CodP = p_id;
+	COMMIT;
+EXCEPTION
+	WHEN SQLSTATE 'UNALS' THEN
+		RAISE NOTICE 'Esiste già un altro utente con quell username';
+		ROLLBACK;
+	WHEN OTHERS THEN
+		ROLLBACK;
+END; $$ LANGUAGE PLPGSQL;
+
+-- Procedura per il cambio di email di un professore
+CREATE OR REPLACE PROCEDURE username_for_student(p_email STUDENT.Username%TYPE, p_id STUDENT.StudentID%TYPE) AS $$
+DECLARE
+	info INT;
+BEGIN
+	START TRANSACTION;
+		SELECT COUNT(*) INTO info FROM STUDENT WHERE email = p_email;
+
+		IF info = 1 THEN
+			RAISE EXCEPTION USING ERRCODE='EMALS';  -- email already exists in student
+		END IF;
+
+		UPDATE PROFESSOR SET email = s_email WHERE CodP = p_id;
+	COMMIT;
+EXCEPTION
+	WHEN SQLSTATE 'EMALS' THEN
+		RAISE NOTICE 'Esiste già un altro utente con quell email';
+		ROLLBACK;
+	WHEN OTHERS THEN
+		ROLLBACK;
+END; $$ LANGUAGE PLPGSQL;
+
+-- //-------------------------------------------------------------------------//
+-- revise_function : procedura che inserito un test, ed un professore,
 -- "committa" tutti i test_taken, di un determinato test.
 -- Verrà usata nell'applicativo
 
