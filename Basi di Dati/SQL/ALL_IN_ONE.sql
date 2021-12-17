@@ -510,58 +510,34 @@ EXECUTE PROCEDURE VOS_function();
 -- Data type name; the name of the table that caused the trigger invocation.
 CREATE OR REPLACE FUNCTION UU_function() RETURNS TRIGGER AS $$
 DECLARE
-	ris VARCHAR(1000);
-	tempUsername VARCHAR(1000);
-	tempEmail VARCHAR(1000);
-	stmt VARCHAR(1000);
-	x VARCHAR(1000);
+	stmt VARCHAR(100);
+	stmtE VARCHAR(100);
+	stmtU VARCHAR(100);
+	isEmail INT := 0;
+	isUsername INT := 0;
+	tab VARCHAR(20);
 BEGIN
-	x := TG_ARGV[1];
+	-- A seconda della tabella in cui ho inserito, prendo la duale
+	IF TG_TABLE_NAME = 'PROFESSOR' THEN tab := 'STUDENT'; END IF;
+	IF TG_TABLE_NAME = 'STUDENT' THEN tab := 'PROFESSOR'; END IF;
 
-	IF TG_TABLE_NAME = 'PROFESSOR' THEN -- Se ho inserito qualcosa in PROFESSOR
-		IF x = 'Username' THEN -- Se ho modificato un username
-			SELECT P.Username INTO tempUsername -- Vedo se già esiste quell'username
-			FROM PROFESSOR AS P
-			WHERE P.CodP = NEW.CodP;
+	-- Cerco se esiste una riga nella duale
+	stmtE := 'SELECT COUNT(*) FROM ' || tab || ' WHERE Email = NEW.Email';
+	stmtU := 'SELECT COUNT(*) FROM ' || tab || ' WHERE Username = NEW.Username';
 
-			stmt := 'SELECT Username FROM STUDENT WHERE Username = ' || tempUsername ;
+	EXECUTE stmtE INTO isEMail;
+	EXECUTE stmtU INTO isUsername;
 
-		ELSEIF x = 'Email' THEN -- Se ho modificato un email
-			SELECT P.Email INTO tempEmail -- Vedo se già esiste quell'email
-			FROM PROFESSOR AS P
-			WHERE P.CodP = NEW.CodP;
-
-			stmt := 'SELECT Email FROM STUDENT WHERE Email = ' || tempEmail ;
-		END IF;
-
-	ELSIF TG_TABLE_NAME = 'STUDENT' THEN -- Se ho inserito qualcosa in STUDENT
-		IF x = 'Username' THEN -- Se ho modificato un username
-			SELECT S.Username INTO tempUsername
-			FROM STUDENT AS S
-			WHERE S.StudentID = NEW.StudentID;
-
-			stmt := stmt || 'SELECT Username FROM PROFESSOR WHERE Username = ' || tempUsername;
-
-		ELSEIF x = 'Email' THEN -- Se ho modificato un email
-			SELECT S.Email INTO tempEmail
-			FROM STUDENT AS S
-			WHERE S.StudentID = NEW.StudentID;
-
-			stmt := stmt || 'SELECT Email FROM PROFESSOR WHERE Email = ' || tempEmail;
-		END IF;
-	END IF;
-
-	EXECUTE stmt INTO ris;
-
-	IF ris = tempUsername THEN
-		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Username = ' || tempUsername;
-		EXECUTE stmt;
-		RAISE NOTICE 'Username già esistente!';
-
-	ELSEIF ris = tempEmail THEN
-		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Email = ' || tempEmail;
+	-- Elimino dalla tabella chiamante
+	IF isEmail = 1 THEN
+		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Email = ' || NEW.Email;
 		EXECUTE stmt;
 		RAISE NOTICE 'Email già utilizzata da un altro utente!';
+
+	ELSEIF isUsername = 1 THEN
+		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Username = ' || NEW.Username;
+		EXECUTE stmt;
+		RAISE NOTICE 'Username già esistente!';
 
 	END IF;
 
@@ -579,6 +555,8 @@ EXECUTE PROCEDURE UU_function();
 
 
 -- //-------------------------------------------------------------------------//
+-- Ecco alcune procedure che gestiscono la modifica dell'username o della password di un utente tramite transazioni
+
 -- Procedura per il cambio di username di uno studente
 CREATE OR REPLACE PROCEDURE username_for_student(s_user STUDENT.Username%TYPE, s_id STUDENT.StudentID%TYPE) AS $$
 DECLARE
