@@ -506,8 +506,7 @@ EXECUTE PROCEDURE VOS_function();
 -- Unique_Username : Non devono esistere più utenti con lo stesso username
 -- Unique_Email : Non devono esistere più utenti con la stessa email
 -- //-------------------------------------------------------------------------//
--- si può usare anche TG_TABLE_NAME
--- Data type name; the name of the table that caused the trigger invocation.
+-- TG_TABLE_NAME Data type name; the name of the table that caused the trigger invocation.
 CREATE OR REPLACE FUNCTION UU_function() RETURNS TRIGGER AS $$
 DECLARE
 	stmt VARCHAR(100);
@@ -525,8 +524,8 @@ BEGIN
 	stmtE := 'SELECT COUNT(*) FROM ' || tab || ' WHERE Email = NEW.Email';
 	stmtU := 'SELECT COUNT(*) FROM ' || tab || ' WHERE Username = NEW.Username';
 
-	EXECUTE stmtE INTO isEMail;
-	EXECUTE stmtU INTO isUsername;
+	IF stmtE IS NOT NULL THEN EXECUTE stmtE INTO isEMail; END IF;
+	IF stmtU IS NOT NULL THEN EXECUTE stmtU INTO isUsername; END IF;
 
 	-- Elimino dalla tabella chiamante
 	IF isEmail = 1 THEN
@@ -545,6 +544,7 @@ BEGIN
 
 END; $$ LANGUAGE PLPGSQL;
 
+
 CREATE OR REPLACE TRIGGER unique_student_username AFTER INSERT ON STUDENT
 FOR EACH ROW
 EXECUTE PROCEDURE UU_function();
@@ -562,7 +562,8 @@ CREATE OR REPLACE PROCEDURE username_for_student(s_user STUDENT.Username%TYPE, s
 DECLARE
 	info INT;
 BEGIN
-	START TRANSACTION;
+	--START TRANSACTION;
+		RAISE NOTICE 'Transazione iniziata';
 		SELECT COUNT(*) INTO info FROM PROFESSOR WHERE username = s_user;
 
 		IF info = 1 THEN
@@ -571,20 +572,24 @@ BEGIN
 
 		UPDATE STUDENT SET username = s_user WHERE StudentID = s_id;
 	COMMIT;
+	RAISE NOTICE 'Transazione finita';
 EXCEPTION
 	WHEN SQLSTATE 'UNALP' THEN
-		RAISE NOTICE 'Esiste già un altro utente con quell username';
+		RAISE NOTICE 'Esiste già un altro utente con quell username, eseguito un rollback';
 		ROLLBACK;
 	WHEN OTHERS THEN
+		RAISE NOTICE 'Errore durante la transazione, eseguito un rollback';
+		RAISE NOTICE 'SQLSTATE = %', SQLSTATE;
 		ROLLBACK;
 END; $$ LANGUAGE PLPGSQL;
 
 -- Procedura per il cambio di email di uno studente
-CREATE OR REPLACE PROCEDURE username_for_student(s_email STUDENT.Username%TYPE, s_id STUDENT.StudentID%TYPE) AS $$
+CREATE OR REPLACE PROCEDURE email_for_student(s_email STUDENT.Username%TYPE, s_id STUDENT.StudentID%TYPE) AS $$
 DECLARE
 	info INT;
 BEGIN
-	START TRANSACTION;
+	--START TRANSACTION;
+		RAISE NOTICE 'Transazione iniziata';
 		SELECT COUNT(*) INTO info FROM PROFESSOR WHERE email = s_email;
 
 		IF info = 1 THEN
@@ -593,20 +598,24 @@ BEGIN
 
 		UPDATE STUDENT SET email = s_email WHERE StudentID = s_id;
 	COMMIT;
+	RAISE NOTICE 'Transazione finita';
 EXCEPTION
 	WHEN SQLSTATE 'EMALP' THEN
 		RAISE NOTICE 'Esiste già un altro utente con quell email';
 		ROLLBACK;
 	WHEN OTHERS THEN
+		RAISE NOTICE 'Errore durante la transazione, eseguito un rollback';
+		RAISE NOTICE 'SQLSTATE = %', SQLSTATE;
 		ROLLBACK;
 END; $$ LANGUAGE PLPGSQL;
 
 -- Procedura per il cambio di username di un professore
-CREATE OR REPLACE PROCEDURE username_for_student(p_user STUDENT.Username%TYPE, p_id STUDENT.StudentID%TYPE) AS $$
+CREATE OR REPLACE PROCEDURE username_for_professor(p_user PROFESSOR.Username%TYPE, p_id PROFESSOR.CodP%TYPE) AS $$
 DECLARE
 	info INT;
 BEGIN
-	START TRANSACTION;
+	--START TRANSACTION;
+		RAISE NOTICE 'Transazione iniziata';
 		SELECT COUNT(*) INTO info FROM STUDENT WHERE username = p_user;
 
 		IF info = 1 THEN
@@ -615,20 +624,24 @@ BEGIN
 
 		UPDATE PROFESSOR SET username = p_user WHERE CodP = p_id;
 	COMMIT;
+	RAISE NOTICE 'Transazione finita';
 EXCEPTION
 	WHEN SQLSTATE 'UNALS' THEN
 		RAISE NOTICE 'Esiste già un altro utente con quell username';
 		ROLLBACK;
 	WHEN OTHERS THEN
+		RAISE NOTICE 'Errore durante la transazione, eseguito un rollback';
+		RAISE NOTICE 'SQLSTATE = %', SQLSTATE;
 		ROLLBACK;
 END; $$ LANGUAGE PLPGSQL;
 
 -- Procedura per il cambio di email di un professore
-CREATE OR REPLACE PROCEDURE username_for_student(p_email STUDENT.Username%TYPE, p_id STUDENT.StudentID%TYPE) AS $$
+CREATE OR REPLACE PROCEDURE email_for_professor(p_email PROFESSOR.Username%TYPE, p_id PROFESSOR.CodP%TYPE) AS $$
 DECLARE
 	info INT;
 BEGIN
-	START TRANSACTION;
+	--START TRANSACTION;
+		RAISE NOTICE 'Transazione iniziata';
 		SELECT COUNT(*) INTO info FROM STUDENT WHERE email = p_email;
 
 		IF info = 1 THEN
@@ -637,11 +650,14 @@ BEGIN
 
 		UPDATE PROFESSOR SET email = s_email WHERE CodP = p_id;
 	COMMIT;
+	RAISE NOTICE 'Transazione finita';
 EXCEPTION
 	WHEN SQLSTATE 'EMALS' THEN
 		RAISE NOTICE 'Esiste già un altro utente con quell email';
 		ROLLBACK;
 	WHEN OTHERS THEN
+		RAISE NOTICE 'Errore durante la transazione, eseguito un rollback';
+		RAISE NOTICE 'SQLSTATE = %', SQLSTATE;
 		ROLLBACK;
 END; $$ LANGUAGE PLPGSQL;
 
