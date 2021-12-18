@@ -679,6 +679,59 @@ BEGIN
 END; $$ LANGUAGE PLPGSQL;
 
 -- //-------------------------------------------------------------------------//
+-- getStudent: dato in input lo Username di uno studente,
+-- restituisce l'intero record di quello studente (tranne la password, ovviamente)
+
+CREATE OR REPLACE PROCEDURE
+getStudent(Username STUDENT.Username%TYPE) AS $$
+BEGIN
+	RETURN (SELECT StudentID, FirstName, LastName, Email, Username
+			FROM STUDENT
+			WHERE Username = STUDENT.Username);
+END; $$ LANGUAGE PLPGSQL;
+
+-- getProfessor: dato in input lo Username di un professore,
+-- restituisce l'intero record di quel professore (tranne la password, ovviamente)
+
+CREATE OR REPLACE PROCEDURE
+getProfessor(Username PROFESSOR.Username%TYPE) AS $$
+BEGIN
+	RETURN (SELECT CodP, FirstName, LastName, Email, Username
+			FROM PROFESSOR
+			WHERE Username = PROFESSOR.Username);
+END; $$ LANGUAGE PLPGSQL;
+
+-- getTest: dato in input il nome di un test,
+-- restituisce l'intero record di quel test
+CREATE OR REPLACE PROCEDURE
+getTest(Name TEST.Name%TYPE) AS $$
+BEGIN
+	RETURN (SELECT *
+			FROM TEST
+			WHERE Name = TEST.Name);
+END; $$ LANGUAGE PLPGSQL;
+
+-- getClass: dato in input il nome di un corso,
+-- restituisce l'intero record di quel corso
+CREATE OR REPLACE PROCEDURE
+getClass(Name CLASS_T.Name%TYPE) AS $$
+BEGIN
+	RETURN (SELECT *
+			FROM CLASS_T
+			WHERE Name = CLASS_T.Name);
+END; $$ LANGUAGE PLPGSQL;
+
+-- getTest: dato in input il titolo di una lezione,
+-- restituisce l'intero record di quella lezione
+CREATE OR REPLACE PROCEDURE
+getLecture(Title LECTURE.Title%TYPE) AS $$
+BEGIN
+	RETURN (SELECT *
+			FROM LECTURE
+			WHERE Title = LECTURE.Title);
+END; $$ LANGUAGE PLPGSQL;
+
+-- //-------------------------------------------------------------------------//
 -- POPOLAZIONE
 -- //-------------------------------------------------------------------------//
 
