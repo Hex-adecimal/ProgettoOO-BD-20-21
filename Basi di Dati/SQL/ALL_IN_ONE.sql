@@ -517,31 +517,30 @@ DECLARE
 	tab VARCHAR(20);
 BEGIN
 	-- A seconda della tabella in cui ho inserito, prendo la duale
-	IF TG_TABLE_NAME = 'PROFESSOR' THEN tab := 'STUDENT'; END IF;
-	IF TG_TABLE_NAME = 'STUDENT' THEN tab := 'PROFESSOR'; END IF;
+	IF TG_TABLE_NAME = 'professor' THEN tab := 'STUDENT'; END IF;
+	IF TG_TABLE_NAME = 'student' THEN tab := 'PROFESSOR'; END IF;
 
 	-- Cerco se esiste una riga nella duale
-	stmtE := 'SELECT COUNT(*) FROM ' || tab || ' WHERE Email = NEW.Email';
-	stmtU := 'SELECT COUNT(*) FROM ' || tab || ' WHERE Username = NEW.Username';
+	stmtE := concat('SELECT COUNT(*) FROM ',tab,' WHERE Email = $1;');
+	stmtU := concat('SELECT COUNT(*) FROM ',tab,' WHERE Username = $1;');
 
-	IF stmtE IS NOT NULL THEN EXECUTE stmtE INTO isEMail; END IF;
-	IF stmtU IS NOT NULL THEN EXECUTE stmtU INTO isUsername; END IF;
+	IF stmtE IS NOT NULL THEN EXECUTE stmtE INTO isEMail USING NEW.Email; END IF;
+	IF stmtU IS NOT NULL THEN EXECUTE stmtU INTO isUsername USING New.Username; END IF;
 
 	-- Elimino dalla tabella chiamante
 	IF isEmail = 1 THEN
-		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Email = ' || NEW.Email;
-		EXECUTE stmt;
+		stmt := concat('DELETE FROM ',TG_TABLE_NAME,' AS T WHERE T.Email = $1 ;');
+		EXECUTE stmt USING NEW.Email;
 		RAISE NOTICE 'Email già utilizzata da un altro utente!';
 
 	ELSEIF isUsername = 1 THEN
-		stmt := 'DELETE FROM ' || TG_TABLE_NAME || ' AS T WHERE T.Username = ' || NEW.Username;
-		EXECUTE stmt;
+		stmt := concat('DELETE FROM ',TG_TABLE_NAME,' AS T WHERE T.Username = $1 ;');
+		EXECUTE stmt USING NEW.Username;
 		RAISE NOTICE 'Username già esistente!';
 
 	END IF;
 
 	RETURN NULL;
-
 END; $$ LANGUAGE PLPGSQL;
 
 
