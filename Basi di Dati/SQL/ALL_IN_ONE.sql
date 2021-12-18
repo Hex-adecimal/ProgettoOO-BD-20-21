@@ -681,53 +681,63 @@ END; $$ LANGUAGE PLPGSQL;
 -- getStudent: dato in input lo Username di uno studente,
 -- restituisce l'intero record di quello studente (tranne la password, ovviamente)
 
-CREATE OR REPLACE PROCEDURE
-getStudent(Username STUDENT.Username%TYPE) AS $$
+CREATE OR REPLACE FUNCTION
+getStudent(studUsername STUDENT.Username%TYPE)
+RETURNS STUDENT.StudentID%TYPE
+AS $$
 BEGIN
-	RETURN (SELECT StudentID, FirstName, LastName, Email, Username
+	RETURN (SELECT StudentID
 			FROM STUDENT
-			WHERE Username = STUDENT.Username);
+			WHERE studUsername = STUDENT.Username);
 END; $$ LANGUAGE PLPGSQL;
 
 -- getProfessor: dato in input lo Username di un professore,
 -- restituisce l'intero record di quel professore (tranne la password, ovviamente)
 
-CREATE OR REPLACE PROCEDURE
-getProfessor(Username PROFESSOR.Username%TYPE) AS $$
+CREATE OR REPLACE FUNCTION
+getProfessor(profUsername PROFESSOR.Username%TYPE)
+RETURNS PROFESSOR.CodP%TYPE
+AS $$
 BEGIN
-	RETURN (SELECT CodP, FirstName, LastName, Email, Username
+	RETURN (SELECT CodP
 			FROM PROFESSOR
-			WHERE Username = PROFESSOR.Username);
+			WHERE profUsername = PROFESSOR.Username);
 END; $$ LANGUAGE PLPGSQL;
 
 -- getTest: dato in input il nome di un test,
 -- restituisce l'intero record di quel test
-CREATE OR REPLACE PROCEDURE
-getTest(Name TEST.Name%TYPE) AS $$
+CREATE OR REPLACE FUNCTION
+getTest(testName TEST.Name%TYPE)
+RETURNS TEST.CodTest%TYPE
+AS $$
 BEGIN
-	RETURN (SELECT *
+	RETURN (SELECT CodTest
 			FROM TEST
-			WHERE Name = TEST.Name);
+			WHERE testName = TEST.Name);
 END; $$ LANGUAGE PLPGSQL;
 
 -- getClass: dato in input il nome di un corso,
 -- restituisce l'intero record di quel corso
-CREATE OR REPLACE PROCEDURE
-getClass(Name CLASS_T.Name%TYPE) AS $$
+CREATE OR REPLACE FUNCTION
+getClass(className CLASS_T.Name%TYPE)
+RETURNS CLASS_T.CodC%TYPE
+AS $$
 BEGIN
-	RETURN (SELECT *
+	RETURN (SELECT CodC
 			FROM CLASS_T
-			WHERE Name = CLASS_T.Name);
+			WHERE className = CLASS_T.Name);
 END; $$ LANGUAGE PLPGSQL;
 
 -- getTest: dato in input il titolo di una lezione,
 -- restituisce l'intero record di quella lezione
-CREATE OR REPLACE PROCEDURE
-getLecture(Title LECTURE.Title%TYPE) AS $$
+CREATE OR REPLACE FUNCTION
+getLecture(lecTitle LECTURE.Title%TYPE)
+RETURNS LECTURE.CodL%TYPE
+AS $$
 BEGIN
-	RETURN (SELECT *
+	RETURN (SELECT CodL
 			FROM LECTURE
-			WHERE Title = LECTURE.Title);
+			WHERE lecTitle = LECTURE.Title);
 END; $$ LANGUAGE PLPGSQL;
 
 -- //-------------------------------------------------------------------------//
