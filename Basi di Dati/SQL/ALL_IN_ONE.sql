@@ -679,7 +679,7 @@ END; $$ LANGUAGE PLPGSQL;
 
 -- //-------------------------------------------------------------------------//
 -- getStudent: dato in input lo Username di uno studente,
--- restituisce l'intero record di quello studente (tranne la password, ovviamente)
+-- restituisce lo StudentID di quello studente (tranne la password, ovviamente)
 
 CREATE OR REPLACE FUNCTION
 getStudent(studUsername STUDENT.Username%TYPE)
@@ -692,7 +692,7 @@ BEGIN
 END; $$ LANGUAGE PLPGSQL;
 
 -- getProfessor: dato in input lo Username di un professore,
--- restituisce l'intero record di quel professore (tranne la password, ovviamente)
+-- restituisce il CodP di quel professore (tranne la password, ovviamente)
 
 CREATE OR REPLACE FUNCTION
 getProfessor(profUsername PROFESSOR.Username%TYPE)
@@ -717,7 +717,7 @@ BEGIN
 END; $$ LANGUAGE PLPGSQL;
 
 -- getClass: dato in input il nome di un corso,
--- restituisce l'intero record di quel corso
+-- restituisce il CodC di quel corso
 CREATE OR REPLACE FUNCTION
 getClass(className CLASS_T.Name%TYPE)
 RETURNS CLASS_T.CodC%TYPE
@@ -729,7 +729,7 @@ BEGIN
 END; $$ LANGUAGE PLPGSQL;
 
 -- getTest: dato in input il titolo di una lezione,
--- restituisce l'intero record di quella lezione
+-- restituisce il CodL di quella lezione
 CREATE OR REPLACE FUNCTION
 getLecture(lecTitle LECTURE.Title%TYPE)
 RETURNS LECTURE.CodL%TYPE
