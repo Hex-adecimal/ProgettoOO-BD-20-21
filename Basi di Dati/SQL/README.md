@@ -1,8 +1,8 @@
 ### Istruzioni per leggere ALL-IN-ONE
-- [Dalla riga 1 alla riga 40 viene mostrata la creazione dei **domini**;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/cc936872ba0799da14243d160b088b82b70e3a3f/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L2)
-- [Dalla riga 40 alla riga 290 viene mostrata le creazione delle **tabelle**;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/cc936872ba0799da14243d160b088b82b70e3a3f/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L41)
-- [Dalla riga 290 alla riga 523 vengono mostrati i **trigger** e le **procedure** implementate;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/cc936872ba0799da14243d160b088b82b70e3a3f/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L290)
-- [Dalla riga 675 alla riga 885 viene mostrala la **popolazione** del database.](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/cc936872ba0799da14243d160b088b82b70e3a3f/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L676)
+- [Dalla riga 1 alla riga 40 viene mostrata la creazione dei **domini**;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/707d655233e6059dbd0195f489efd60f9d80267c/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L2)
+- [Dalla riga 40 alla riga 290 viene mostrata le creazione delle **tabelle**;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/707d655233e6059dbd0195f489efd60f9d80267c/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L41)
+- [Dalla riga 290 alla riga 523 vengono mostrati i **trigger** e le **procedure** implementate;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/707d655233e6059dbd0195f489efd60f9d80267c/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L290)
+- [Dalla riga 675 alla riga 885 viene mostrala la **popolazione** del database.](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/707d655233e6059dbd0195f489efd60f9d80267c/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L744)
 
 ### Istruzioni per la creazione di un utente, e per la gestione dei privilegi
 ```SQL
