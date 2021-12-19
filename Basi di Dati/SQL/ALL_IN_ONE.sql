@@ -728,7 +728,7 @@ BEGIN
 			WHERE className = CLASS_T.Name);
 END; $$ LANGUAGE PLPGSQL;
 
--- getTest: dato in input il titolo di una lezione,
+-- getLecture: dato in input il titolo di una lezione,
 -- restituisce il CodL di quella lezione
 CREATE OR REPLACE FUNCTION
 getLecture(lecTitle LECTURE.Title%TYPE)
