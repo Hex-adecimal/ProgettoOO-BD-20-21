@@ -1,3 +1,11 @@
+### Istruzioni per la connessione al database
+```
+host name / address : erquizzone.cyf55wdxftdz.eu-west-3.rds.amazonaws.com
+port : 5432
+username : professore
+password : LeUltimeCinqueCifreDelPiGreco
+```
+
 ### Istruzioni per leggere ALL-IN-ONE
 - [Dalla riga 1 alla riga 40 viene mostrata la creazione dei **domini**;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/707d655233e6059dbd0195f489efd60f9d80267c/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L2)
 - [Dalla riga 40 alla riga 290 viene mostrata le creazione delle **tabelle**;](https://github.com/Hex-adecimal/ProgettoOO-BD-20-21/blob/707d655233e6059dbd0195f489efd60f9d80267c/Basi%20di%20Dati/SQL/ALL_IN_ONE.sql#L41)
