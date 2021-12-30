@@ -5,7 +5,7 @@
 - Stoycho Mutafchiev | N86003822 | s.mutafchiev@studenti.unina.it
 
 ### Informazioni generiche
-Link per la visione del latex https://www.overleaf.com/read/hkwqnmwcrhfk
+Link per la visione del latex di basi di dati https://www.overleaf.com/read/hkwqnmwcrhfk
 
 ---
 
