@@ -20,11 +20,64 @@ Infine è stato reso il modello più simile alla realtà aggiungento le composiz
 
 
 # Diagramma di dettaglio delle classi nel dominio della soluzione
+## Model
 A partire dal diagramma del dominio del problema, sono stati specificati i tipi ad ogni attributo, e sono state creati i prototipi delle funzioni, che hanno sostituito le responsabilità. 
 
-Aggiungere il diagramma qui.
+<img width="1168" alt="Schermata 2022-01-30 alle 12 44 40" src="https://user-images.githubusercontent.com/91316353/151698276-4b208fe7-bae7-49dd-a9c8-dea9e7bc81ae.png">
 
-## Dizionario
-- 
+
+### Dizionario degli attributi
+ Nome Classe | Attributi | Visibilità | Tipo   | Descrizione 
+ ----------- | --------- | ---------- | -------| ----------- 
+ Test        | Name      | Private | String | Il nome del test 
+ Test        | CreationDate | Private | Date | 
+ Test        | StartingDateTime | Private | DateTime |
+ Test        | ClosingDateTime | Private | DateTime | 
+ Test        | MinScore | Private | float | 
+ // | // | // | // | // 
+ Quiz        | Question  | Protected | String | La domanda del quiz
+ // | // | // | // | //
+ ClosedQuiz | AnswerA | Private | String | 
+ ClosedQuiz | AnswerB | Private | String |
+ ClosedQuiz | AnswerC | Private | String | 
+ ClosedQuiz | AnswerD | Private | String | 
+ ClosedQuiz | RightAnswer | Private | char | 
+ ClosedQuiz | ScoreIfRight | Private | float | 
+ ClosedQuiz | ScoreIfWrong | Private | float | 
+ // | // | // | // | //
+ OpenQuiz | MaxScore | Private | float | 
+ OpenQuiz | MinScore | Private | float | 
+ OpenQuiz | MaxLength | Private | int | 
+ // | // | // | // | //
+ ClosedAnswer | GivenAnswer | Private | char | 
+ ClosedAnswer | Score | Private | float | 
+ // | // | // | // | //
+ OpenAnswer | GivenAnswer | Private | String | 
+ OpenAnswer | Score | Private | char | 
+ // | // | // | // | //
+ TestTaken | Revised | Private | boolean | 
+ TestTaken | Passed | Private | boolean |
+ TestTaken | TotalScore | Private | float |
+ // | // | // | // | //
+ User | FirstName | Protected | String |
+ User | LastName | Protected | String |
+ User | Email | Protected | String |
+ User | Username | Protected | String |
+ User | Password | Protected | String |
+ // | // | // | // | //
+ Student | StudentID | Protected | String |
+ // | // | // | // | //
+ Class | Name | Private | String |
+ Class | CFU | Private | int |
+ Class | Year | Private | int |
+ // | // | // | // | //
+ Lecture | Title | Private | String |
+ Lecture | Link | Private | String |
+ 
+### Dizionario dei metodi 
+ 
+## Controller
+
+## GUI
 
 # Sequence diagram (di due funzionalità scelte)
