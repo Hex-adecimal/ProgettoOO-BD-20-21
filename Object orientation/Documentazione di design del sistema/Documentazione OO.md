@@ -16,27 +16,26 @@ A partire dal diagramma delle classi, per ottenere il class diagram del dominio 
 Inoltre la visibilità della maggior parte degli attributi è stata messa privata, tranne per gli attributi di **User** e **Quiz**, essendo due generalizzazioni. Verrano creati degli appositi "getter & setter" per l'accesso degli attributi.
 Infine è stato reso il modello più simile alla realtà aggiungento le composizioni tra **OpenAnswer, ClosedAnswer** e **TestTaken**.
 
-<img width="1230" alt="Schermata 2022-01-30 alle 12 28 05" src="https://user-images.githubusercontent.com/91316353/151697758-f4b0031b-8607-4fb4-a1f9-1cb4cecc521b.png">
+<img width="1349" alt="Schermata 2022-02-05 alle 17 32 26" src="https://user-images.githubusercontent.com/91316353/152650437-59f9b909-1e32-4075-930c-aa1010bbf4e5.png">
 
 
 # Diagramma di dettaglio delle classi nel dominio della soluzione
-## Model
+## Model *
 A partire dal diagramma del dominio del problema, sono stati specificati i tipi ad ogni attributo, e sono state creati i prototipi delle funzioni, che hanno sostituito le responsabilità. 
 
-<img width="1168" alt="Schermata 2022-01-30 alle 12 44 40" src="https://user-images.githubusercontent.com/91316353/151698276-4b208fe7-bae7-49dd-a9c8-dea9e7bc81ae.png">
-
+<img width="1194" alt="Schermata 2022-02-05 alle 17 42 56" src="https://user-images.githubusercontent.com/91316353/152650557-4b0d0bd8-9625-4a27-b271-f25ceb8b4a2e.png">
 
 ### Dizionario degli attributi
- Nome Classe | Attributi | Visibilità | Tipo   | Descrizione 
+ Nome Classe | Attributo | Visibilità | Tipo   | Descrizione 
  ----------- | --------- | ---------- | -------| ----------- 
  Test        | Name      | Private | String | Il nome del test 
  Test        | CreationDate | Private | Date | 
- Test        | StartingDateTime | Private | DateTime |
+ Test        | StartingDateTime | Private | DateTime | 
  Test        | ClosingDateTime | Private | DateTime | 
  Test        | MinScore | Private | float | 
- // | // | // | // | // 
+ --  
  Quiz        | Question  | Protected | String | La domanda del quiz
- // | // | // | // | //
+ -- 
  ClosedQuiz | AnswerA | Private | String | 
  ClosedQuiz | AnswerB | Private | String |
  ClosedQuiz | AnswerC | Private | String | 
@@ -44,38 +43,51 @@ A partire dal diagramma del dominio del problema, sono stati specificati i tipi 
  ClosedQuiz | RightAnswer | Private | char | 
  ClosedQuiz | ScoreIfRight | Private | float | 
  ClosedQuiz | ScoreIfWrong | Private | float | 
- // | // | // | // | //
+ -- 
  OpenQuiz | MaxScore | Private | float | 
  OpenQuiz | MinScore | Private | float | 
  OpenQuiz | MaxLength | Private | int | 
- // | // | // | // | //
+ -- 
  ClosedAnswer | GivenAnswer | Private | char | 
  ClosedAnswer | Score | Private | float | 
- // | // | // | // | //
+ -- 
  OpenAnswer | GivenAnswer | Private | String | 
- OpenAnswer | Score | Private | char | 
- // | // | // | // | //
+ OpenAnswer | Score | Private | float | 
+ -- 
  TestTaken | Revised | Private | boolean | 
  TestTaken | Passed | Private | boolean |
  TestTaken | TotalScore | Private | float |
- // | // | // | // | //
+ -- 
  User | FirstName | Protected | String |
  User | LastName | Protected | String |
  User | Email | Protected | String |
  User | Username | Protected | String |
  User | Password | Protected | String |
- // | // | // | // | //
- Student | StudentID | Protected | String |
- // | // | // | // | //
+ -- 
+ Student | StudentID | private | String |
+ -- 
  Class | Name | Private | String |
  Class | CFU | Private | int |
  Class | Year | Private | int |
- // | // | // | // | //
+ -- 
  Lecture | Title | Private | String |
  Lecture | Link | Private | String |
  
-### Dizionario dei metodi 
- 
+
+### Dizionario dei metodi *
+ Nome Classe | Metodo | Visibilità | Tipo | Parametri
+ ----------- | --------- | ---------- | -------| ----------- 
+ User | registerUser | Public | int | String firstName, String lastName, String email, String username, String Password
+ Professor | createTest | Public | int | String name, DateTime startingDateTime, DateTime closingDateTime, float minScore
+ Professor | reviseOpenAnswer | Public | Void | OpenAnswer answer
+ Professor | createClass | Public | int | String name, int CFU
+ Professor | createLecture | Public | int | String title, String link
+ Student | turnInTest | 
+ Student | viewTestResult | Public | Void | TestTaken test
+ ClosedAnswer | reviseClosedAnswer | Void | ClosedQuiz quiz
+
+I tipi dei metodi "create" sono stati scelti interi, per poter riportare eventuali errori.
+
 ## Controller
 
 ## GUI
