@@ -20,7 +20,7 @@ Infine è stato reso il modello più simile alla realtà aggiungento le composiz
 
 
 # Diagramma di dettaglio delle classi nel dominio della soluzione
-## Model *
+## Model
 A partire dal diagramma del dominio del problema, sono stati specificati i tipi ad ogni attributo, e sono state creati i prototipi delle funzioni, che hanno sostituito le responsabilità. 
 
 <img width="1194" alt="Schermata 2022-02-05 alle 17 42 56" src="https://user-images.githubusercontent.com/91316353/152650557-4b0d0bd8-9625-4a27-b271-f25ceb8b4a2e.png">
@@ -72,9 +72,16 @@ A partire dal diagramma del dominio del problema, sono stati specificati i tipi 
  -- 
  Lecture | Title | Private | String |
  Lecture | Link | Private | String |
- 
 
-### Dizionario dei metodi *
+I tipi dei metodi "create" sono stati scelti interi, per poter riportare eventuali errori.
+
+## DAO *
+Per le interfacce DAO sarà presente un interfaccia per ogni classe del model, anche se nell'implementazione delle DAO tramite PostgreSQL le classi User e Quiz non verranno implementate, dato che il database PostgreSQL che viene utilizzato non sfrutta la funzionalità NoSql, ma solo Sql. 
+
+Tutte le interfacce conterranno dei metodi per la lettura e modifica di ogni colonna nel database, che rappresenterà un rispettivo attributo della rispettiva classe nel model. 
+
+Inoltre appunto verranno implementate le responsabilità, presenti nel class diagram della soluzione, che riguardano la comunicazione con il database:
+### Dizionario dei metodi DAO
  Nome Classe | Metodo | Visibilità | Tipo | Parametri
  ----------- | --------- | ---------- | -------| ----------- 
  User | registerUser | Public | int | String firstName, String lastName, String email, String username, String Password
@@ -82,11 +89,11 @@ A partire dal diagramma del dominio del problema, sono stati specificati i tipi 
  Professor | reviseOpenAnswer | Public | Void | OpenAnswer answer
  Professor | createClass | Public | int | String name, int CFU
  Professor | createLecture | Public | int | String title, String link
- Student | turnInTest | 
+ Student | turnInTest | Public | int | TestTaken test
  Student | viewTestResult | Public | Void | TestTaken test
  ClosedAnswer | reviseClosedAnswer | Void | ClosedQuiz quiz
 
-I tipi dei metodi "create" sono stati scelti interi, per poter riportare eventuali errori.
+<img width="1001" alt="Schermata 2022-02-08 alle 20 01 28" src="https://user-images.githubusercontent.com/91316353/153057508-f165bd4b-abc7-4ac2-88ea-438c456f6a11.png">
 
 ## Controller
 
