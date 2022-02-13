@@ -1,5 +1,8 @@
 package Model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Student extends User{
 	// Attributes
 	private String studentID;
@@ -9,6 +12,11 @@ public class Student extends User{
 	{
 		super(firstName, lastName, email, username, password);
 		this.studentID = studentID;
+	}
+	
+	public Student(ResultSet rs) throws SQLException {
+		super(rs);
+		this.studentID = rs.getString("studentID");
 	}
 	
 	public String getStudentID() { return studentID; }

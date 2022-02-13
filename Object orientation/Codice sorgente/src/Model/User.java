@@ -1,5 +1,8 @@
 package Model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class User {
 	// Attributes
 	protected String firstName;
@@ -15,6 +18,16 @@ public class User {
 		this.email = email;
 		this.username = username;
 		this.password = password;
+	}
+	
+	public User(ResultSet rs) {
+		try {
+			this.firstName = rs.getString("firstname");
+			this.lastName = rs.getString("lastname");
+			this.email = rs.getString("email");
+			this.username = rs.getString("username");
+			this.password = rs.getString("password");
+		} catch (SQLException e) { e.printStackTrace(); }
 	}
 	
 	// Methods
@@ -40,5 +53,5 @@ public class User {
 		System.out.println(className);
 		
 		return className;
-	}
+	}x
 }
