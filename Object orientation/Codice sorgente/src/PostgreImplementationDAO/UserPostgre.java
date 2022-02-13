@@ -16,10 +16,7 @@ public class UserPostgre implements UserDAO{
 	{
 		try {
 			conn = QuizDBConnection.getInstance().getConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (SQLException e) { e.printStackTrace(); }
 	}
 	
 	@Override
@@ -123,9 +120,9 @@ public class UserPostgre implements UserDAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public Void getLastName(int codUser, String lastName) {
+	public Void setLastName(int codUser, String lastName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -147,6 +144,4 @@ public class UserPostgre implements UserDAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 }
