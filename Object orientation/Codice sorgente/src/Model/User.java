@@ -53,5 +53,5 @@ public class User {
 		System.out.println(className);
 		
 		return className;
-	}x
+	}
 }
