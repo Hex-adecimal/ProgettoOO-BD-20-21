@@ -181,15 +181,23 @@ public class MainLogin {
 		}
 		else
 		{
-			//if(mainUser.getClassName().equals("Student"))
-			//		passare il controllo a HomeStudent
-			//else
+			if(mainUser.getClassName().equals("Student"))
+			{
+				HomeStudent frmHomeS = new HomeStudent();
+				
+				frmHomeS.setVisible(true);
+				frmQuizzoneLogin.setVisible(false);
+			}
+			else
+			{
+				HomeProfessor frmHomeP = new HomeProfessor();
+				
+				frmHomeP.setVisible(true);
+				frmQuizzoneLogin.setVisible(false);
+			}
 			//		passare il controllo a HomeProfessor
 			
-			HomeStudent frmHomeS = new HomeStudent();
 			
-			frmHomeS.setVisible(true);
-			frmQuizzoneLogin.setVisible(false);
 			
 			// TODO: instantiate Controller somewhere
 			
