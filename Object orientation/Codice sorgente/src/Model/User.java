@@ -35,6 +35,10 @@ public class User {
 	
 	public String getClassName()
 	{
-		return this.getClass().getName().substring(0, getClass().getName().indexOf("$"));
+		String className = this.getClass().getName()/*.substring(0, getClass().getName().indexOf("$"))*/; 
+		
+		System.out.println(className);
+		
+		return className;
 	}
 }
