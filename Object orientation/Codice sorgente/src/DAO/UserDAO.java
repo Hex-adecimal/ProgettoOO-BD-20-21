@@ -13,7 +13,7 @@ public interface UserDAO {
 	public String getPassword(int codUser);
 	
 	public Void setFirstName(int codUser, String firstName);
-	public Void getLastName(int codUser, String lastName);
+	public Void setLastName(int codUser, String lastName);
 	public Void setEmail(int codUser, String email);
 	public Void setUsername(int codUser, String username);
 	public Void setPassword(int codUser, String password);

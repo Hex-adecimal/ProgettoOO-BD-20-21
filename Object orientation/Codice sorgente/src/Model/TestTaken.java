@@ -7,6 +7,8 @@ public class TestTaken {
 	private float totalScore;
 	
 	// Methods
+	public TestTaken(Boolean bool) { this.setRevised(bool);	}
+	
 	public boolean isRevised() { return revised; }
 	public void setRevised(boolean revised) { this.revised = revised; }
 	
