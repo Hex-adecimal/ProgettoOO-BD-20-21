@@ -43,12 +43,9 @@ public class UserPostgre implements UserDAO{
 			
 			if(rs.next())
 			{
-				Student userStudent = new Student(rs.getString("StudentID"), 
-												rs.getString("FirstName"), 
-												rs.getString("LastName"),
-												rs.getString("Email"),
-												rs.getString("Username"),
-												rs.getString("Pw"));
+				Student userStudent = new Student(rs);
+				
+				stmt.close();
 				
 				return userStudent;
 			}
@@ -60,16 +57,17 @@ public class UserPostgre implements UserDAO{
 				
 				if(rs.next())
 				{
-					Professor userProfessor = new Professor(rs.getString("FirstName"), 
-													rs.getString("LastName"),
-													rs.getString("Email"),
-													rs.getString("Username"),
-													rs.getString("Pw"));
+					Professor userProfessor = new Professor(rs);
+					
+					stmt.close();
 					
 					return userProfessor;
 				}
 				else
+				{
+					stmt.close();
 					return null;
+				}
 			}
 		}
 		catch(SQLException e)
@@ -80,7 +78,7 @@ public class UserPostgre implements UserDAO{
 	}
 
 	@Override
-	public User registerUser(String firstName, String lastName, String username, String email, String password) {
+	public String registerUser(String firstName, String lastName, String username, String email, String password) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -144,4 +142,16 @@ public class UserPostgre implements UserDAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void closeConnection()
+	{
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

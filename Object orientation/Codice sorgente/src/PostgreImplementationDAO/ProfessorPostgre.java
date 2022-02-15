@@ -1,11 +1,14 @@
 package PostgreImplementationDAO;
 
 import java.sql.Connection;
+
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 
 import DAO.ProfessorDAO;
+import Database.QuizDBConnection;
 import Model.Class;
 import Model.Lecture;
 import Model.OpenAnswer;
@@ -15,15 +18,50 @@ import Model.Test;
 public class ProfessorPostgre implements ProfessorDAO {
 	private Connection conn = null;
 	
+	public ProfessorPostgre() {
+		try {
+			conn = QuizDBConnection.getInstance().getConnection();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override 
-	public Professor registerUser(String firstName, String lastName, String username, String email, String password) {
+	public String registerUser(String firstName, String lastName, String username, String email, String password) {
+		String error = null;
+		
 		try { 
-			Statement stmt = conn.createStatement();
-			String query = "INSERT INTO PROFESSOR(firstname, lastname, username, email, password) VALUES (" 
-			+ firstName + ", " + lastName + ", " + username + ", " + email + "," + password + ");";			
-			stmt.executeQuery(query);
+			Statement stmt1 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rsUsername;
+			ResultSet rsEmail;
+			
+			String checkUsername = "SELECT Username FROM PROFESSOR WHERE Username = '" + username + "';";
+			rsUsername = stmt1.executeQuery(checkUsername);
+			
+			String checkEmail = "SELECT Email FROM PROFESSOR WHERE Email = '" + email + "';";
+			rsEmail = stmt2.executeQuery(checkEmail);
+			
+			if(!rsUsername.next() && !rsEmail.next())
+			{
+				String query = "INSERT INTO PROFESSOR(FirstName, LastName, Username, Email, Pw) VALUES ('"
+						+ firstName + "', '" + lastName + "', '" + username + "', '" + email + "', '" + password + "');";			
+				stmt1.executeUpdate(query);
+			}
+			else
+			{
+				error = "Registration failed! User with the following credentials already exists:";
+				
+				if(rsUsername.first())	error += "\n\t- Username";
+				if(rsEmail.first())		error += "\n\t- Email";
+			}
+			
+			stmt1.close();
+			stmt2.close();
 		} catch (Exception e) { e.printStackTrace(); }
-		return null;
+		
+		return error;
 	}
 
 	@Override
@@ -178,5 +216,16 @@ public class ProfessorPostgre implements ProfessorDAO {
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return null;
+	}
+	
+	@Override
+	public void closeConnection()
+	{
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
