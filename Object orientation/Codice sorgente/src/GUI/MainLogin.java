@@ -12,7 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
-
 import DAO.UserDAO;
 import Model.User;
 import PostgreImplementationDAO.UserPostgre;
@@ -29,11 +28,13 @@ import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class MainLogin {
+public class MainLogin extends JFrame{
 
-	private JFrame frmQuizzoneLogin;
+	public JFrame frmQuizzoneLogin;
 	private JTextField userEmailField;
 	private JPasswordField passwordField;
+	
+	private String registerLabelText = "You don't have an account? Sign up!";
 
 	/**
 	 * Launch the application.
@@ -62,7 +63,7 @@ public class MainLogin {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmQuizzoneLogin = new JFrame();
+		frmQuizzoneLogin = this;
 		frmQuizzoneLogin.setResizable(false);
 		frmQuizzoneLogin.getContentPane().setBackground(SystemColor.activeCaption);
 		frmQuizzoneLogin.setTitle("Quizzone - Login");
@@ -157,7 +158,45 @@ public class MainLogin {
 		gbc_btnLogin.gridy = 7;
 		panel_1.add(btnLogin, gbc_btnLogin);
 		
-		JLabel lblRegistration = new JLabel("Non sei registrato? Registrati!");
+		JLabel lblRegistration = new JLabel(registerLabelText);
+		lblRegistration.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Object[] options = {"Student",
+                "Professor"};
+				int n = JOptionPane.showOptionDialog(frmQuizzoneLogin,
+						"What would you like to sign up as?",
+						null,
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[0]);
+				
+				if(n != JOptionPane.CLOSED_OPTION)
+				{
+					Signup frmSignup;
+					
+					if(n == JOptionPane.YES_OPTION)
+						frmSignup = new Signup("Student");
+					else
+						frmSignup = new Signup("Professor");
+					
+					frmSignup.setVisible(true);
+					frmQuizzoneLogin.dispose();
+				}
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblRegistration.setText("<HTML><U>" + registerLabelText + "</U></HTML>");
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblRegistration.setText(registerLabelText);
+			}
+		});
 		lblRegistration.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		GridBagConstraints gbc_lblRegistration = new GridBagConstraints();
 		gbc_lblRegistration.anchor = GridBagConstraints.NORTH;
@@ -176,33 +215,30 @@ public class MainLogin {
 		
 		if(mainUser == null)
 		{
-			String msg = "Error! This account does not exist or the inputted credentials are wrong!";
+			String msg = "Error! This account does not exist\n or the inputted credentials are wrong!";
 			JOptionPane.showMessageDialog(null, msg, "Failed Login", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else
 		{
-			if(mainUser.getClassName().equals("Student"))
+			if(mainUser.getClassName().equals("Model.Student"))
 			{
 				HomeStudent frmHomeS = new HomeStudent();
 				
 				frmHomeS.setVisible(true);
-				frmQuizzoneLogin.setVisible(false);
+				frmQuizzoneLogin.dispose();
 			}
 			else
 			{
 				HomeProfessor frmHomeP = new HomeProfessor();
 				
 				frmHomeP.setVisible(true);
-				frmQuizzoneLogin.setVisible(false);
+				frmQuizzoneLogin.dispose();
 			}
-			//		passare il controllo a HomeProfessor
-			
-			
 			
 			// TODO: instantiate Controller somewhere
-			
-			
 		}
+		
+		mainUserDAO.closeConnection();
 	}
 
 }
