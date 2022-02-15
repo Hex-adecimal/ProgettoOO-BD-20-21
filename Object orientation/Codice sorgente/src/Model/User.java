@@ -20,14 +20,12 @@ public class User {
 		this.password = password;
 	}
 	
-	public User(ResultSet rs) {
-		try {
-			this.firstName = rs.getString("firstname");
-			this.lastName = rs.getString("lastname");
-			this.email = rs.getString("email");
-			this.username = rs.getString("username");
-			this.password = rs.getString("password");
-		} catch (SQLException e) { e.printStackTrace(); }
+	public User(ResultSet rs) throws SQLException {
+		this.firstName = rs.getString("firstname");
+		this.lastName = rs.getString("lastname");
+		this.email = rs.getString("email");
+		this.username = rs.getString("username");
+		this.password = rs.getString("pw");
 	}
 	
 	// Methods
