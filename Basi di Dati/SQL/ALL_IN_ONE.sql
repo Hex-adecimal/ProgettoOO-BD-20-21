@@ -17,12 +17,9 @@ CREATE DOMAIN TEST_NAME AS VARCHAR(55)
 CREATE DOMAIN EMAIL AS VARCHAR(254)
 	CHECK ( VALUE LIKE '_%@_%._%' );
 
--- Strong_Password : La password deve essere composta da più di 8 caratteri,
--- almeno una lettera, almeno un numero ed almeno carattere speciale
--- (!"£$%&/()=_:;,.-+*#)
+-- Strong_Password : La password deve essere composta da almeno 8 caratteri
 CREATE DOMAIN PASSWORD_D AS VARCHAR(128)
-	CHECK (VALUE ~ '^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).*$'
-		AND VALUE LIKE '________%');
+	CHECK (VALUE LIKE '________%');
 
 -- Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle
 -- possibili (Dominio = {'a', 'b', 'c', 'd'})
