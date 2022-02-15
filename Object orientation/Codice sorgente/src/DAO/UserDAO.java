@@ -3,7 +3,7 @@ package DAO;
 import Model.User;
 
 public interface UserDAO {
-	public User registerUser(String firstName, String lastName, String username, String email, String password);
+	public String registerUser(String firstName, String lastName, String username, String email, String password);
 	public User logUser(String email, String password); // Ritorna User per poi salvarsi chi è che ha acceduto
 	
 	public String getFirstName(int codUser);
@@ -17,4 +17,6 @@ public interface UserDAO {
 	public Void setEmail(int codUser, String email);
 	public Void setUsername(int codUser, String username);
 	public Void setPassword(int codUser, String password);
+	
+	public void closeConnection();
 }
