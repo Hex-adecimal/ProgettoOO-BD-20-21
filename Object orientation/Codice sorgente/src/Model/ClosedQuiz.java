@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class ClosedQuiz extends Quiz{
 	// Attributes
 	private String answerA;
@@ -9,6 +11,8 @@ public class ClosedQuiz extends Quiz{
 	private char rightAnswer;
 	private float scoreIfRight;
 	private float scoreIfWrong;
+	
+	private ArrayList<ClosedAnswer> answers;
 	
 	// Methods
 	public String getAnswerA() { return answerA; }
@@ -31,5 +35,8 @@ public class ClosedQuiz extends Quiz{
 	
 	public float getScoreIfWrong() { return scoreIfWrong; }
 	public void setScoreIfWrong(float scoreIfWrong) { this.scoreIfWrong = scoreIfWrong; }
-
+	
+	
+	public ArrayList<ClosedAnswer> getAnswers() { return answers; }
+	public void setAnswers(ArrayList<ClosedAnswer> answers) { this.answers = answers; }
 }
