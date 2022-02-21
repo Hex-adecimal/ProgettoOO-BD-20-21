@@ -2,6 +2,7 @@ package Model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
 
 public class Test {
 	// Attributes
@@ -10,6 +11,11 @@ public class Test {
 	private Time startingDateTime;
 	private Time closingDateTime;
 	private float minScore;
+	
+	private Class receivingClass;
+	private Professor creator;
+	private ArrayList<TestTaken> attempts;
+	private ArrayList<Quiz> quizzes;
 	
 	// Methods
 	public String getName() {return name;}
@@ -26,4 +32,19 @@ public class Test {
 	
 	public float getMinScore() { return minScore;}
 	public void setMinScore(float minScore) { this.minScore = minScore;}
+	
+	
+	public Class getReceivingClass() { return receivingClass; }
+	public void setReceivingClass(Class receivingClass) { this.receivingClass = receivingClass;	}
+	
+	public Professor getCreator() {	return creator;	}
+	/*public void setCreator(Professor creator) {
+		this.creator = creator;
+	}*/
+	
+	public ArrayList<TestTaken> getAttempts() {	return attempts; }
+	public void setAttempts(ArrayList<TestTaken> attempts) { this.attempts = attempts; }
+	
+	public ArrayList<Quiz> getQuizzes() { return quizzes; }
+	public void setQuizzes(ArrayList<Quiz> quizzes) { this.quizzes = quizzes; }
 }
