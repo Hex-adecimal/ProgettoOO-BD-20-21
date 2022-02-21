@@ -1,10 +1,16 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class Class {
 	// Attributes
 	private String name;
 	private String cfu;
 	private int year;
+	
+	private Professor professor;
+	private ArrayList<Student> students;
+	private ArrayList<Test> tests;
 	
 	// Methods
 	public String getName() { return name; }
@@ -15,4 +21,14 @@ public class Class {
 	
 	public int getYear() { return year; }
 	public void setYear(int year) {	this.year = year; }
+	
+	
+	public Professor getProfessor() { return professor;	}
+	public void setProfessor(Professor professor) { this.professor = professor;	}
+	
+	public ArrayList<Student> getStudents() { return students; }
+	public void setStudents(ArrayList<Student> students) { this.students = students; }
+	
+	public ArrayList<Test> getTests() {	return tests; }
+	public void setTests(ArrayList<Test> tests) { this.tests = tests; }
 }
