@@ -2,7 +2,6 @@ package GUI;
 
 import java.awt.EventQueue;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -55,17 +54,20 @@ public class Signup extends JFrame {
 	 * Create the frame.
 	 */
 	public Signup(String userType) {
+		setResizable(false);
 		this.userType = userType;
 		
 		setTitle("Quizzone - Signup");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 574);
+		setBounds(100, 100, 417, 576);
+		setLocationRelativeTo(null);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 23, 227, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{0, 47, 227, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
@@ -212,11 +214,13 @@ public class Signup extends JFrame {
 			{
 				StudentDAO mainStudentDAO = new StudentPostgre();
 				error = mainStudentDAO.registerUser(firstName, lastName, username, email, password);
+				mainStudentDAO.closeConnection();
 			}
 			else
 			{
 				ProfessorDAO mainProfessorDAO = new ProfessorPostgre();
 				error = mainProfessorDAO.registerUser(firstName, lastName, username, email, password);
+				mainProfessorDAO.closeConnection();
 			}
 			
 			if(error == null)
