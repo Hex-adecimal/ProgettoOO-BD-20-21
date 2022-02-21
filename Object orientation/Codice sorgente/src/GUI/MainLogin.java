@@ -12,7 +12,11 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
+import Controller.ControllerProfessor;
+import Controller.ControllerStudent;
 import DAO.UserDAO;
+import Model.Professor;
+import Model.Student;
 import Model.User;
 import PostgreImplementationDAO.UserPostgre;
 
@@ -69,6 +73,7 @@ public class MainLogin extends JFrame{
 		frmQuizzoneLogin.setTitle("Quizzone - Login");
 		frmQuizzoneLogin.setBounds(100, 100, 416, 495);
 		frmQuizzoneLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmQuizzoneLogin.setLocationRelativeTo(null);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
@@ -222,20 +227,22 @@ public class MainLogin extends JFrame{
 		{
 			if(mainUser.getClassName().equals("Model.Student"))
 			{
-				HomeStudent frmHomeS = new HomeStudent();
+				ControllerStudent controllerS = new ControllerStudent((Student)mainUser);
+				
+				HomeStudent frmHomeS = new HomeStudent(controllerS);
 				
 				frmHomeS.setVisible(true);
-				frmQuizzoneLogin.dispose();
 			}
 			else
 			{
-				HomeProfessor frmHomeP = new HomeProfessor();
+				ControllerProfessor controllerP = new ControllerProfessor((Professor)mainUser);
+				
+				HomeProfessor frmHomeP = new HomeProfessor(controllerP);
 				
 				frmHomeP.setVisible(true);
-				frmQuizzoneLogin.dispose();
 			}
 			
-			// TODO: instantiate Controller somewhere
+			frmQuizzoneLogin.dispose();
 		}
 		
 		mainUserDAO.closeConnection();
