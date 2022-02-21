@@ -7,9 +7,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Controller.ControllerStudent;
+
 public class HomeStudent extends JFrame {
 
 	private JPanel contentPane;
+	private ControllerStudent controller;
 
 	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -27,7 +30,9 @@ public class HomeStudent extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public HomeStudent() {
+	public HomeStudent(ControllerStudent controller) {
+		this.controller = controller;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
