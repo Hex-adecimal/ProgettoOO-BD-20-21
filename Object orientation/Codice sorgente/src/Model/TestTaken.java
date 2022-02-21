@@ -1,10 +1,17 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class TestTaken {
 	// Attributes
 	private boolean revised;
 	private boolean passed;
 	private float totalScore;
+	
+	private Student student;
+	private Test testTemplate;
+	private ArrayList<OpenAnswer> openAnswers;
+	private ArrayList<ClosedAnswer> closedAnswers;
 	
 	// Methods
 	public TestTaken(Boolean bool) { this.setRevised(bool);	}
@@ -17,4 +24,17 @@ public class TestTaken {
 	
 	public float getTotalScore() { return totalScore; }
 	public void setTotalScore(float totalScore) { this.totalScore = totalScore; }
+
+	
+	public Student getStudent() { return student; }
+	public void setStudent(Student student) { this.student = student; }
+
+	public Test getTestTemplate() {	return testTemplate; }
+	public void setTestTemplate(Test testTemplate) { this.testTemplate = testTemplate; }
+
+	public ArrayList<OpenAnswer> getOpenAnswers() {	return openAnswers; }
+	public void setOpenAnswers(ArrayList<OpenAnswer> openAnswers) {	this.openAnswers = openAnswers;	}
+	
+	public ArrayList<ClosedAnswer> getClosedAnswers() {	return closedAnswers; }
+	public void setClosedAnswers(ArrayList<ClosedAnswer> closedAnswers) { this.closedAnswers = closedAnswers; }
 }
