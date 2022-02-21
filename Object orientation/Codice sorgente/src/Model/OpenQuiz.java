@@ -1,10 +1,14 @@
 package Model;
 
+import java.util.ArrayList;
+
 public class OpenQuiz {
 	// Attributes
 	private float maxScore;
 	private float minScore;
 	private int maxLength;
+	
+	private ArrayList<OpenAnswer> answers;
 	
 	// Methods
 	public float getMaxScore() { return maxScore; }
@@ -15,4 +19,8 @@ public class OpenQuiz {
 	
 	public int getMaxLength() { return maxLength; }
 	public void setMaxLength(int maxLength) { this.maxLength = maxLength; }
+	
+	
+	public ArrayList<OpenAnswer> getAnswers() {	return answers; }
+	public void setAnswers(ArrayList<OpenAnswer> answers) {	this.answers = answers; }
 }
