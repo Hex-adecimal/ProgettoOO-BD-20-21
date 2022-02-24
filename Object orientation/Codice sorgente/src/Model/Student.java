@@ -24,6 +24,14 @@ public class Student extends User{
 		this.studentID = rs.getString("studentID");
 	}
 	
+	public Student(String s) {
+		super(s);
+		s = s.substring(s.indexOf('|')+1); s = s.substring(s.indexOf('|')+1);
+		s = s.substring(s.indexOf('|')+1); s = s.substring(s.indexOf('|')+1);
+		s = s.substring(s.indexOf('|')+1);
+		this.studentID = s;
+	}
+	
 	public String getStudentID() { return studentID; }
 	public void setStudentID(String studentID) { this.studentID = studentID; }
 

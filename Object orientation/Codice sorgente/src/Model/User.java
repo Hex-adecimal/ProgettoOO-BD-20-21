@@ -28,6 +28,23 @@ public class User {
 		this.password = rs.getString("pw");
 	}
 	
+	public User(String s) {
+		this.firstName = s.substring(0, s.indexOf('|'));
+		s = s.substring(s.indexOf('|')+1);
+		
+		this.lastName = s.substring(0, s.indexOf('|'));
+		s = s.substring(s.indexOf('|')+1);
+		
+		this.email = s.substring(0, s.indexOf('|'));
+		s = s.substring(s.indexOf('|')+1);
+		
+		this.username = s.substring(0, s.indexOf('|'));
+		s = s.substring(s.indexOf('|')+1);
+		
+		this.password = s.substring(0, s.indexOf('|'));
+		s = s.substring(s.indexOf('|')+1);
+	}
+	
 	// Methods
 	public String getFirstName() { return firstName; }
 	public void setFirstName(String firstName) { this.firstName = firstName; }
@@ -48,7 +65,7 @@ public class User {
 	{
 		String className = this.getClass().getName()/*.substring(0, getClass().getName().indexOf("$"))*/; 
 		
-		System.out.println(className);
+		//System.out.println(className);
 		
 		return className;
 	}

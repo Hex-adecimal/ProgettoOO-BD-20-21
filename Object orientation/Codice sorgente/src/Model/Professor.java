@@ -15,18 +15,24 @@ public class Professor extends User{
 	// Methods
 	public Professor(String codP, String firstName, String lastName, String email, String username, String password)
 	{
-		super(firstName, lastName, email, username, password);
-		
+		super(firstName, lastName, email, username, password);	
 		this.setCodP(codP);
 	}
 	
 	public Professor(ResultSet rs) throws SQLException
 	{
 		super(rs);
-		
 		this.setCodP(rs.getString("codp"));
 	}
-
+	
+	public Professor(String s) {
+		super(s);
+		s = s.substring(s.indexOf('|')+1); s = s.substring(s.indexOf('|')+1);
+		s = s.substring(s.indexOf('|')+1); s = s.substring(s.indexOf('|')+1);
+		s = s.substring(s.indexOf('|')+1);
+		this.codP = s;
+	}
+	
 	public String getCodP() { return codP; }
 	public void setCodP(String codP) { this.codP = codP; }
 
