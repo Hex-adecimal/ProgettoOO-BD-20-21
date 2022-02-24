@@ -12,19 +12,14 @@ import Database.QuizDBConnection;
 import Model.Class;
 import Model.Lecture;
 import Model.OpenAnswer;
-import Model.Professor;
 import Model.Test;
 
 public class ProfessorPostgre implements ProfessorDAO {
 	private Connection conn = null;
 	
 	public ProfessorPostgre() {
-		try {
-			conn = QuizDBConnection.getInstance().getConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		try { conn = QuizDBConnection.getInstance().getConnection(); } 
+		catch (SQLException e) { e.printStackTrace(); }
 	}
 	
 	@Override 
@@ -48,6 +43,7 @@ public class ProfessorPostgre implements ProfessorDAO {
 				String query = "INSERT INTO PROFESSOR(FirstName, LastName, Username, Email, Pw) VALUES ('"
 						+ firstName + "', '" + lastName + "', '" + username + "', '" + email + "', '" + password + "');";			
 				stmt1.executeUpdate(query);
+				System.out.println("You did it, you son of a bi***!");
 			}
 			else
 			{
@@ -62,12 +58,6 @@ public class ProfessorPostgre implements ProfessorDAO {
 		} catch (Exception e) { e.printStackTrace(); }
 		
 		return error;
-	}
-
-	@Override
-	public Professor logUser(String email, String password) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	@Override
@@ -109,6 +99,12 @@ public class ProfessorPostgre implements ProfessorDAO {
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return 0;
+	}
+	
+	@Override
+	public String logUser(String email, String password, String kindOfUser) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	// Getter & Setter
@@ -218,14 +214,14 @@ public class ProfessorPostgre implements ProfessorDAO {
 		return null;
 	}
 	
-	@Override
-	public void closeConnection()
-	{
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String getCodPbyUsername(String username) {
+		try { 
+			Statement stmt = conn.createStatement();
+			String query = "SELECT CodP FROM PROFESSOR WHERE username = '" + username + "';";			
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			return rs.getString("CodP");
+		} catch (Exception e) { e.printStackTrace(); }
+		return null;
 	}
 }

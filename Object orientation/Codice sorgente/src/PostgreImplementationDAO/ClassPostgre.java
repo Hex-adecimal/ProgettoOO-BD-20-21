@@ -1,9 +1,19 @@
 package PostgreImplementationDAO;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import DAO.ClassDAO;
+import Database.QuizDBConnection;
 
 public class ClassPostgre implements ClassDAO{
-
+	private Connection connection;
+	
+	public ClassPostgre() {
+		try { connection = QuizDBConnection.getInstance().getConnection(); }
+		catch (SQLException e){ e.printStackTrace(); }
+	}
+	
 	@Override
 	public String getName(int codClass) {
 		// TODO Auto-generated method stub

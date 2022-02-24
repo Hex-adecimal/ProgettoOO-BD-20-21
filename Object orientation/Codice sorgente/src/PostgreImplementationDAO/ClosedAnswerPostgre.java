@@ -1,9 +1,19 @@
 package PostgreImplementationDAO;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import DAO.ClosedAnswerDAO;
+import Database.QuizDBConnection;
 
 public class ClosedAnswerPostgre implements ClosedAnswerDAO{
-
+	private Connection connection;
+	
+	public ClosedAnswerPostgre() {
+		try { connection = QuizDBConnection.getInstance().getConnection(); }
+		catch (SQLException e) { e.printStackTrace(); }
+	}
+	
 	@Override
 	public char getGivenAnswer(int codClosedAnswer) {
 		// TODO Auto-generated method stub

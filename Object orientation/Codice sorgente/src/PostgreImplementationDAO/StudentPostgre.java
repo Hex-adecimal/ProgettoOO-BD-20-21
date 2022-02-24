@@ -9,21 +9,15 @@ import java.sql.Statement;
 
 import DAO.StudentDAO;
 import Database.QuizDBConnection;
-import Model.Student;
 import Model.Test;
 import Model.TestTaken;
 
 public class StudentPostgre implements StudentDAO {
 	private Connection conn = null;
 	
-	
 	public StudentPostgre() {
-		try {
-			conn = QuizDBConnection.getInstance().getConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		try { conn = QuizDBConnection.getInstance().getConnection(); }
+		catch (SQLException e) { e.printStackTrace(); }
 	}
 	
 	@Override
@@ -42,14 +36,12 @@ public class StudentPostgre implements StudentDAO {
 			String checkEmail = "SELECT Email FROM STUDENT WHERE Email = '" + email + "';";
 			rsEmail = stmt2.executeQuery(checkEmail);
 			
-			if(!rsUsername.next() && !rsEmail.next())
-			{
+			if(!rsUsername.next() && !rsEmail.next()) {
 				String query = "INSERT INTO STUDENT(FirstName, LastName, Username, Email, Pw) VALUES ('"
 						+ firstName + "', '" + lastName + "', '" + username + "', '" + email + "', '" + password + "');";			
 				stmt1.executeUpdate(query);
-			}
-			else
-			{
+				System.out.println("You did it, you son of a bi***!");
+			} else {
 				error = "Registration failed! User with the following credentials already exists:";
 				
 				if(rsUsername.first())	error += "\n\t- Username";
@@ -62,13 +54,13 @@ public class StudentPostgre implements StudentDAO {
 		
 		return error;
 	}
-
+	
 	@Override
-	public Student logUser(String email, String password) {
-		// TODO Auto-generated method stub
+	public String logUser(String email, String password, String kindOfUser) {
+		
 		return null;
 	}
-
+	
 	@Override
 	public int turnInTest(Test test) {
 		// TODO Auto-generated method stub
@@ -211,14 +203,16 @@ public class StudentPostgre implements StudentDAO {
 		return null;
 	}
 	
-	@Override
-	public void closeConnection()
-	{
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
+	public String getStudentIDbyUsername(String username) {
+		try { 
+			Statement stmt = conn.createStatement();
+			String query = "SELECT StudentID FROM STUDENT WHERE username = '" + username + "';";			
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
+			return rs.getString("StudentID");
+		} catch (Exception e) { e.printStackTrace(); }
+		return null;
 	}
+	
 }

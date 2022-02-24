@@ -1,12 +1,21 @@
 package PostgreImplementationDAO;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 
 import DAO.TestDAO;
+import Database.QuizDBConnection;
 
 public class TestPostgre implements TestDAO {
-
+	private Connection connection;
+	
+	public TestPostgre() {
+		try { connection = QuizDBConnection.getInstance().getConnection(); }
+		catch (SQLException e){ e.printStackTrace(); }
+	}
+	
 	@Override
 	public String getName(int codTest) {
 		// TODO Auto-generated method stub

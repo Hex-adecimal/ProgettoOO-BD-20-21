@@ -9,72 +9,45 @@ import Model.Student;
 import Model.User;
 
 public class UserPostgre implements UserDAO{
-	
 	private Connection conn = null;
 	
 	public UserPostgre()
 	{
-		try {
-			conn = QuizDBConnection.getInstance().getConnection();
-		} catch (SQLException e) { e.printStackTrace(); }
+		try { conn = QuizDBConnection.getInstance().getConnection(); } 
+		catch (SQLException e) { e.printStackTrace(); }
 	}
 	
 	@Override
-	public User logUser(String userInput, String password) {
+	public String logUser(String userInput, String password, String kindOfUser) {
 		try
 		{
 			Statement stmt = conn.createStatement();
+			ResultSet rs;
+			String queryUsername, queryEmail, ris;
 			
-			String queryS1 = "SELECT * FROM STUDENT WHERE ";
-			String queryP1 = "SELECT * FROM PROFESSOR WHERE ";
-			String query2;
-			String query3 = " AND Pw = '" + password + "';";
-			String queryStudent;
-			String queryProfessor;
+			queryUsername = "SELECT * FROM " + kindOfUser + " WHERE Username = '" + userInput + "' AND Pw = '" + password + "' ;";
+			queryEmail = "SELECT * FROM " + kindOfUser + " WHERE Email = '" + userInput + "' AND Pw = '" + password + "' ;";
 			
-			if(userInput.contains("@"))
-				query2 = "Email = '" + userInput + "'";
-			else
-				query2 = "Username = '" + userInput + "'";
+			if (userInput.contains("@"))
+				rs = stmt.executeQuery(queryEmail);
+			else 
+				rs = stmt.executeQuery(queryUsername);
 			
-			queryStudent = queryS1 + query2 + query3;
-			
-			ResultSet rs = stmt.executeQuery(queryStudent);
-			
-			if(rs.next())
-			{
-				Student userStudent = new Student(rs);
-				
-				stmt.close();
-				
-				return userStudent;
+			if (rs.next() == false) {
+				System.out.println("Error, no user has been found. Try again!");
+				return null;
 			}
+			
+			ris = rs.getString("firstname") + "|" + rs.getString("lastname") + "|" + rs.getString("email") + "|" +
+					rs.getString("username") + "|" + rs.getString("pw") + "|";
+			
+			if (kindOfUser == "Student") 
+				ris = ris + rs.getString("StudentID");
 			else
-			{
-				queryProfessor = queryP1 + query2 + query3;
-				
-				rs = stmt.executeQuery(queryProfessor);
-				
-				if(rs.next())
-				{
-					Professor userProfessor = new Professor(rs);
-					
-					stmt.close();
-					
-					return userProfessor;
-				}
-				else
-				{
-					stmt.close();
-					return null;
-				}
-			}
-		}
-		catch(SQLException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+				ris = ris + rs.getString("CodP");
+			
+			return ris;
+		} catch(SQLException e) { e.printStackTrace(); return null; }
 	}
 
 	@Override
@@ -142,16 +115,4 @@ public class UserPostgre implements UserDAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	@Override
-	public void closeConnection()
-	{
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 }
