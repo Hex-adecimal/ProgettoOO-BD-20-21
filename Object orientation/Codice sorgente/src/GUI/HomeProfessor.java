@@ -9,9 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import Controller.ControllerProfessor;
+import Controller.Controller;
 import DAO.ProfessorDAO;
 import Model.Professor;
+import Model.Student;
+import Model.User;
 import PostgreImplementationDAO.ProfessorPostgre;
 
 import javax.swing.JMenuBar;
@@ -38,21 +40,35 @@ import javax.swing.ScrollPaneConstants;
 public class HomeProfessor extends JFrame {
 
 	private JPanel contentPane;
-	private ControllerProfessor controller;
+	private Controller controller;
 	private JTable tableClasses;
 	private String myClassesLabel = "My classes";
 	private String myTestsLabel = "My tests";
 	private String myLecturesLabel = "My lectures";
-
+	private HomeProfessor homeProfessor;
+	Professor mainUser;
+	
 	/**
 	 * Create the frame.
 	 */
-	public HomeProfessor(ControllerProfessor controller) {
+	public HomeProfessor(JFrame login, Controller controller, User user) {
+		
+		login.setVisible(false);
 		this.controller = controller;
-		
+		homeProfessor = this;
+		homeProfessor.setVisible(true);
 		Vector<String> record = new Vector<String>();
+		mainUser = (Professor) user;
 		
-		Professor mainUser = controller.getMainUser();
+		
+		System.out.println("");
+		System.out.println("You are in the professor home, your credential are:");
+		System.out.println("codP: " + this.mainUser.getCodP());
+		System.out.println("first name: " + this.mainUser.getFirstName());
+		System.out.println("last name: " + this.mainUser.getLastName());
+		System.out.println("email: " + this.mainUser.getEmail());
+		System.out.println("username: " + this.mainUser.getUsername());
+		System.out.println("");
 		
 		setTitle("Home - Professor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

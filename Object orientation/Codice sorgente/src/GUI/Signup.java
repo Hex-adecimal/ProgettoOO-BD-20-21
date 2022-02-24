@@ -6,10 +6,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Controller.Controller;
 import PostgreImplementationDAO.ProfessorPostgre;
 import PostgreImplementationDAO.StudentPostgre;
 import DAO.ProfessorDAO;
 import DAO.StudentDAO;
+import Model.User;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -31,31 +33,26 @@ public class Signup extends JFrame {
 	private JTextField usernameField;
 	private JTextField emailField;
 	private JPasswordField passwordField;
-	
+	private Controller controller;
 	private String userType;
-
+	private JFrame signUp;
+	private User user;
+	private HomeProfessor homeProfessor;
+	private HomeStudent homeStudent;
+	
 	/**
 	 * Launch the application.
 	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Signup frame = new Signup();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public Signup(String userType) {
+	
+	public Signup(String userType, Controller controller, JFrame login) {
 		setResizable(false);
 		this.userType = userType;
+		this.controller = controller;
+		login.setVisible(false);
+		signUp = this;
+		this.setVisible(true);
+		
+		System.out.println("You are in the sign in interface!");
 		
 		setTitle("Quizzone - Signup");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -181,8 +178,7 @@ public class Signup extends JFrame {
 		contentPane.add(btnSignupButton, gbc_btnSignupButton);
 	}
 	
-	private void checkSignupResult()
-	{
+	private void checkSignupResult() {
 		String firstName = firstNameField.getText();
 		String lastName = lastNameField.getText();
 		String username = usernameField.getText();
@@ -211,34 +207,25 @@ public class Signup extends JFrame {
 		else
 		{
 			if(this.userType.equals("Student"))
-			{
-				StudentDAO mainStudentDAO = new StudentPostgre();
-				error = mainStudentDAO.registerUser(firstName, lastName, username, email, password);
-				mainStudentDAO.closeConnection();
-			}
+				user = controller.signInS(firstName, lastName, username, email, password);
+				
 			else
-			{
-				ProfessorDAO mainProfessorDAO = new ProfessorPostgre();
-				error = mainProfessorDAO.registerUser(firstName, lastName, username, email, password);
-				mainProfessorDAO.closeConnection();
-			}
+				user = controller.signInP(firstName, lastName, username, email, password);
 			
-			if(error == null)
+			if(user != null)
 			{
 				JOptionPane.showMessageDialog(null, 
-											"Congratulations! You have signed up successfully", 
-											"Successful Registration", 
-											JOptionPane.INFORMATION_MESSAGE);
+						"Congratulations! You have signed up successfully", 
+						"Successful Registration", 
+						JOptionPane.INFORMATION_MESSAGE);
 				
-				MainLogin loginScreen = new MainLogin();
-				
-				loginScreen.frmQuizzoneLogin.setVisible(true);
-				this.dispose();
+				if (user.getClassName() == "Model.Student") {
+					homeStudent = new HomeStudent(this, controller, user);
+				} else {
+					homeProfessor = new HomeProfessor(this, controller, user);
+				}
 			}
-			else
-			{
-				JOptionPane.showMessageDialog(null, error, "Failed Registration", JOptionPane.INFORMATION_MESSAGE);
-			}
+			else { JOptionPane.showMessageDialog(null, error, "Failed Registration", JOptionPane.INFORMATION_MESSAGE); }
 		}
 	}
 
