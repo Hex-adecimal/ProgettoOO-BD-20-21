@@ -10,7 +10,7 @@ public class QuizDBConnection {
 	private static QuizDBConnection instance;
 	private Connection conn = null;
 	private String nome = "postgres";
-	private String password = "basketballhype123";
+	private String password = "";
 	private String url = "jdbc:postgresql://localhost:5432/progetto_test";
 	private String driver = "org.postgresql.Driver";
 
