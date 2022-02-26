@@ -61,9 +61,9 @@ public class User {
 	public String getPassword() { return password; }
 	public void setPassword(String password) { this.password = password; }
 	
-	public String getClassName()
+	public String getTypeName()
 	{
-		String className = this.getClass().getName()/*.substring(0, getClass().getName().indexOf("$"))*/; 
+		String className = this.getClass().getName(); 
 		
 		//System.out.println(className);
 		

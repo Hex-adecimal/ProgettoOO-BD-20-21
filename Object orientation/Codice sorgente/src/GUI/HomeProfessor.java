@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import java.awt.EventQueue;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,6 +15,7 @@ import DAO.ProfessorDAO;
 import Model.Professor;
 import Model.Student;
 import Model.User;
+import Model.Class;
 import PostgreImplementationDAO.ProfessorPostgre;
 
 import javax.swing.JMenuBar;
@@ -26,6 +28,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.awt.Color;
 import javax.swing.JScrollPane;
@@ -36,6 +39,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Container;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JList;
+import javax.swing.SwingConstants;
+import javax.swing.ListSelectionModel;
 
 public class HomeProfessor extends JFrame {
 
@@ -46,29 +52,27 @@ public class HomeProfessor extends JFrame {
 	private String myTestsLabel = "My tests";
 	private String myLecturesLabel = "My lectures";
 	private HomeProfessor homeProfessor;
-	Professor mainUser;
 	
 	/**
 	 * Create the frame.
 	 */
-	public HomeProfessor(JFrame login, Controller controller, User user) {
+	public HomeProfessor(JFrame login, Controller controller) {
 		
 		login.setVisible(false);
 		this.controller = controller;
 		homeProfessor = this;
 		homeProfessor.setVisible(true);
-		Vector<String> record = new Vector<String>();
-		mainUser = (Professor) user;
+		//Vector<String> record = new Vector<String>();
 		
 		
-		System.out.println("");
+		/*System.out.println("");
 		System.out.println("You are in the professor home, your credential are:");
 		System.out.println("codP: " + this.mainUser.getCodP());
 		System.out.println("first name: " + this.mainUser.getFirstName());
 		System.out.println("last name: " + this.mainUser.getLastName());
 		System.out.println("email: " + this.mainUser.getEmail());
 		System.out.println("username: " + this.mainUser.getUsername());
-		System.out.println("");
+		System.out.println("");*/
 		
 		setTitle("Home - Professor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,23 +101,27 @@ public class HomeProfessor extends JFrame {
 		scrollPaneClasses.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		panelMain.add(scrollPaneClasses, "scrollPaneClasses");
 		
+		DefaultListModel<String> listClassesModel = new DefaultListModel<String>();
+		
+		ArrayList<Class> classes = controller.getNSetProfessorClasses();
+		
+		for(Class i : classes)
+		{
+			listClassesModel.addElement(i.getName() + " - Year " + i.getYear() + " - " + i.getCFU() + " CFU");
+		}
+		
+		JList<String> listClasses = new JList<String>(listClassesModel);
+		listClasses.setFont(new Font("Tahoma", Font.PLAIN, 26));
+		scrollPaneClasses.setViewportView(listClasses);
+		
+		JLabel lblClassesHeader = new JLabel("My classes");
+		lblClassesHeader.setBackground(Color.WHITE);
+		lblClassesHeader.setFont(new Font("Dubai Medium", Font.PLAIN, 64));
+		scrollPaneClasses.setColumnHeaderView(lblClassesHeader);
+		
+		
 		JScrollPane scrollPaneTests = new JScrollPane();
 		panelMain.add(scrollPaneTests, "scrollPaneTests");
-		
-		JPanel subpanelTests = new JPanel();
-		scrollPaneTests.setViewportView(subpanelTests);
-		GridBagLayout gbl_subpanelTests = new GridBagLayout();
-		gbl_subpanelTests.columnWidths = new int[]{0, 0, 0};
-		gbl_subpanelTests.rowHeights = new int[]{0, 0, 0};
-		gbl_subpanelTests.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_subpanelTests.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		subpanelTests.setLayout(gbl_subpanelTests);
-		
-		JLabel lblNewLabel = new JLabel("tests");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 1;
-		subpanelTests.add(lblNewLabel, gbc_lblNewLabel);
 		
 		JScrollPane scrollPaneLectures = new JScrollPane();
 		panelMain.add(scrollPaneLectures, "scrollPaneLectures");

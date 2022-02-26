@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Class {
 	// Attributes
 	private String name;
-	private String cfu;
+	private int cfu;
 	private int year;
 	
 	private Professor professor;
@@ -13,11 +13,18 @@ public class Class {
 	private ArrayList<Test> tests;
 	
 	// Methods
+	public Class(String name, int year, int cfu)
+	{
+		this.name = name;
+		this.cfu = cfu;
+		this.year = year;
+	}
+	
 	public String getName() { return name; }
 	public void setName(String name) { this.name = name; }
 	
-	public String getCFU() { return cfu; }
-	public void setCFU(String cfu) { this.cfu = cfu; }
+	public int getCFU() { return cfu; }
+	public void setCFU(int cfu) { this.cfu = cfu; }
 	
 	public int getYear() { return year; }
 	public void setYear(int year) {	this.year = year; }

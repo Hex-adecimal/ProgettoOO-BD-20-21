@@ -42,28 +42,7 @@ public class Login extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		this.setLocationRelativeTo(null);
-		
-		
-		textFieldUsername = new JTextField();
-		textFieldUsername.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) { 
-				if (textFieldUsername.getText().toString() == "Email or username") {
-					textFieldUsername.setText("");
-					textFieldUsername.setForeground(Color.BLACK);
-				}
-			}
-		});
-		textFieldUsername.setForeground(Color.GRAY);
-		textFieldUsername.setText("Email or username");
-		textFieldUsername.setBounds(30, 30, 130, 26);
-		contentPane.add(textFieldUsername);
-		textFieldUsername.setColumns(10);
-		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(30, 68, 130, 26);
-		contentPane.add(passwordField);
+		setLocationRelativeTo(null);
 		
 		JToggleButton tglbtnUser = new JToggleButton("Student");
 		tglbtnUser.addMouseListener(new MouseAdapter() {
@@ -78,69 +57,48 @@ public class Login extends JFrame {
 		tglbtnUser.setBounds(245, 46, 161, 29);
 		contentPane.add(tglbtnUser);
 		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.addKeyListener(new KeyAdapter() {
+		
+		textFieldUsername = new JTextField();
+		textFieldUsername.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
-					String password;
-					User user = null;
-					
-					if (passwordField.getPassword().length > 8) {
-						if (textFieldUsername.getText().length() > 1) {
-							System.out.println("You are trying to logging in ...");
-							
-							password = new String(passwordField.getPassword());
-							user = controller.logIn(textFieldUsername.getText(), password, tglbtnUser.getText());
-							
-							if (user != null) { 
-								System.out.println("You logged in!");
-								controller.setUser(user);
-								if (tglbtnUser.getText() == "Student") {
-									HomeStudent home = new HomeStudent(login, controller, user);
-								} else { 
-									HomeProfessor home = new HomeProfessor(login, controller, user);
-								}
-							}
-							
-						} else {
-							System.out.println("The input box cannot be empty.");
-						}
-					} else {
-						System.out.println("The password is not long enough.");
-					}
+					checkLoginResult(tglbtnUser.getText());
 				}
 			}
 		});
+		textFieldUsername.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) { 
+				if (textFieldUsername.getText().equals("Email or username")) {
+					textFieldUsername.setText("");
+					textFieldUsername.setForeground(Color.BLACK);
+				}
+			}
+		});
+		textFieldUsername.setForeground(Color.GRAY);
+		textFieldUsername.setText("Email or username");
+		textFieldUsername.setBounds(30, 30, 130, 26);
+		contentPane.add(textFieldUsername);
+		textFieldUsername.setColumns(10);
+		
+		passwordField = new JPasswordField();
+		passwordField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+					checkLoginResult(tglbtnUser.getText());
+				}
+			}
+		});
+		passwordField.setBounds(30, 68, 130, 26);
+		contentPane.add(passwordField);
+		
+		JButton btnLogin = new JButton("Login");
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String password;
-				User user = null;
-				
-				if (passwordField.getPassword().length > 8) {
-					if (textFieldUsername.getText().length() > 1) {
-						System.out.println("You are trying to logging in ...");
-						
-						password = new String(passwordField.getPassword());
-						user = controller.logIn(textFieldUsername.getText(), password, tglbtnUser.getText());
-						
-						if (user != null) { 
-							System.out.println("You logged in!");
-							controller.setUser(user);
-							if (tglbtnUser.getText() == "Student") {
-								HomeStudent home = new HomeStudent(login, controller, user);
-							} else { 
-								HomeProfessor home = new HomeProfessor(login, controller, user);
-							}
-						}
-						
-					} else {
-						System.out.println("The input box cannot be empty.");
-					}
-				} else {
-					System.out.println("The password is not long enough.");
-				}
+				checkLoginResult(tglbtnUser.getText());
 			}
 		});
 		btnLogin.setBounds(43, 106, 117, 29);
@@ -150,11 +108,11 @@ public class Login extends JFrame {
 		lblNewLabel.setBounds(196, 51, 51, 16);
 		contentPane.add(lblNewLabel);
 		
-		JButton btnNewButton = new JButton("Sign in");
+		JButton btnNewButton = new JButton("Sign up");
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("You are trying to signin in ...");
+				System.out.println("You are trying to signup...");
 				Signup signup = new Signup(tglbtnUser.getText() , controller, login);
 				
 			}
@@ -162,5 +120,34 @@ public class Login extends JFrame {
 		btnNewButton.setBounds(172, 106, 117, 29);
 		contentPane.add(btnNewButton);
 	}
-
+	
+	private void checkLoginResult(String tglbtnText)
+	{
+		String password;
+		User user = null;
+		
+		if (passwordField.getPassword().length > 8) {
+			if (textFieldUsername.getText().length() > 1) {
+				System.out.println("You are trying to logging in ...");
+				
+				password = new String(passwordField.getPassword());
+				user = controller.logIn(textFieldUsername.getText(), password, tglbtnText);
+				
+				if (user != null) { 
+					System.out.println("You logged in!");
+					controller.setUser(user);
+					if (tglbtnText == "Student") {
+						HomeStudent home = new HomeStudent(login, controller);
+					} else { 
+						HomeProfessor home = new HomeProfessor(login, controller);
+					}
+				}
+				
+			} else {
+				System.out.println("The input box cannot be empty.");
+			}
+		} else {
+			System.out.println("The password is not long enough.");
+		}
+	}
 }

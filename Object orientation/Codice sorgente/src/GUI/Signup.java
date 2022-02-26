@@ -207,10 +207,10 @@ public class Signup extends JFrame {
 		else
 		{
 			if(this.userType.equals("Student"))
-				user = controller.signInS(firstName, lastName, username, email, password);
+				user = controller.signUpS(firstName, lastName, username, email, password);
 				
 			else
-				user = controller.signInP(firstName, lastName, username, email, password);
+				user = controller.signUpP(firstName, lastName, username, email, password);
 			
 			if(user != null)
 			{
@@ -219,10 +219,10 @@ public class Signup extends JFrame {
 						"Successful Registration", 
 						JOptionPane.INFORMATION_MESSAGE);
 				
-				if (user.getClassName() == "Model.Student") {
-					homeStudent = new HomeStudent(this, controller, user);
+				if (user.getTypeName() == "Model.Student") {
+					homeStudent = new HomeStudent(this, controller);
 				} else {
-					homeProfessor = new HomeProfessor(this, controller, user);
+					homeProfessor = new HomeProfessor(this, controller);
 				}
 			}
 			else { JOptionPane.showMessageDialog(null, error, "Failed Registration", JOptionPane.INFORMATION_MESSAGE); }
