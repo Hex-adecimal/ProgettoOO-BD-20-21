@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Professor;
 import Model.Student;
+import Model.Test;
 import Model.User;
 import Model.Class;
 import PostgreImplementationDAO.*;
@@ -86,13 +87,31 @@ public class Controller {
 	{
 		Professor p = (Professor)user;
 		
-		ArrayList<Class> classes = classDAO.getProfessorClasses(p.getCodP());
+		ArrayList<Class> classes = p.getClasses();
 		
-		p.setClasses(classes);
+		if(classes == null)
+		{
+			classes = classDAO.getProfessorClasses(p.getCodP());
+			p.setClasses(classes);
+		}
 		
 		return classes;
 	}
 	
+	public ArrayList<Test> getNSetProfessorTests()
+	{
+		Professor p = (Professor)user;
+		
+		ArrayList<Test> tests = p.getCreatedTests();
+		
+		if(tests == null)
+		{
+			tests = testDAO.getProfessorTests(p.getCodP());
+			p.setCreatedTests(tests);
+		}
+		
+		return tests;
+	}
 	// Getter & Setter
 	public void setUser(User user) { this.user = user; }
 }

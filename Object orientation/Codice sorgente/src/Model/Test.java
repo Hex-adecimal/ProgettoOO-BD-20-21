@@ -8,8 +8,11 @@ public class Test {
 	// Attributes
 	private String name;
 	private Date creationDate;
-	private Time startingDateTime;
-	private Time closingDateTime;
+	private Time creationTime;
+	private Date startingDate;
+	private Time startingTime;
+	private Date closingDate;
+	private Time closingTime;
 	private float minScore;
 	
 	private Class receivingClass;
@@ -18,17 +21,45 @@ public class Test {
 	private ArrayList<Quiz> quizzes;
 	
 	// Methods
+	public Test(String name, 
+				Date creationDate, 
+				Time creationTime, 
+				Date startingDate, 
+				Time startingTime,
+				Date closingDate,
+				Time closingTime,
+				float minScore)
+	{
+		this.name = name;
+		this.creationDate = creationDate;
+		this.creationTime = creationTime;
+		this.startingDate = startingDate;
+		this.startingTime = startingTime;
+		this.closingDate = closingDate;
+		this.closingTime = closingTime;
+		this.minScore = minScore;
+	}
+	
 	public String getName() {return name;}
 	public void setName(String name) { this.name = name;}
 	
 	public Date getCreationDate() {	return creationDate;}
 	public void setCreationDate(Date creationDate) { this.creationDate = creationDate;}
 	
-	public Time getStartingDateTime() {	return startingDateTime;}
-	public void setStartingDateTime(Time startingDateTime) { this.startingDateTime = startingDateTime;}
+	public Time getCreationTime() {	return creationTime;}
+	public void setCreationTime(Time creationTime) { this.creationTime = creationTime;}
 	
-	public Time getClosingDateTime() { return closingDateTime;}
-	public void setClosingDateTime(Time closingDateTime) { this.closingDateTime = closingDateTime;}
+	public Date getStartingDate() {	return startingDate;}
+	public void setStartingDate(Date startingDate) { this.startingDate = startingDate;}
+	
+	public Time getStartingTime() {	return startingTime;}
+	public void setStartingTime(Time startingTime) { this.startingTime = startingTime;}
+	
+	public Date getClosingDate() { return closingDate;}
+	public void setClosingDate(Date closingDate) { this.closingDate = closingDate;}
+	
+	public Time getClosingTime() { return closingTime;}
+	public void setClosingTime(Time closingTime) { this.closingTime = closingTime;}
 	
 	public float getMinScore() { return minScore;}
 	public void setMinScore(float minScore) { this.minScore = minScore;}

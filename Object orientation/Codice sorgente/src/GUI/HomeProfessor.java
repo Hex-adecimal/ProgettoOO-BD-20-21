@@ -14,6 +14,7 @@ import Controller.Controller;
 import DAO.ProfessorDAO;
 import Model.Professor;
 import Model.Student;
+import Model.Test;
 import Model.User;
 import Model.Class;
 import PostgreImplementationDAO.ProfessorPostgre;
@@ -42,6 +43,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 import javax.swing.ListSelectionModel;
+import javax.swing.JButton;
 
 public class HomeProfessor extends JFrame {
 
@@ -123,23 +125,57 @@ public class HomeProfessor extends JFrame {
 		JScrollPane scrollPaneTests = new JScrollPane();
 		panelMain.add(scrollPaneTests, "scrollPaneTests");
 		
+		JLabel lblTestsHeader = new JLabel("My tests");
+		lblTestsHeader.setFont(new Font("Dubai Medium", Font.PLAIN, 64));
+		scrollPaneTests.setColumnHeaderView(lblTestsHeader);
+		
+		JPanel subpanelTests = new JPanel();
+		scrollPaneTests.setViewportView(subpanelTests);
+		subpanelTests.setLayout(new BorderLayout(0, 0));
+		
+		DefaultListModel<String> listTestsModel = new DefaultListModel<String>();
+		
+		ArrayList<Test> tests = controller.getNSetProfessorTests();
+		
+		for(Test i : tests)
+		{
+			listTestsModel.addElement(i.getName() + " - created on: " + 
+									  i.getCreationDate() + " " + 
+									  i.getCreationTime() + " - starting time: " + 
+									  i.getStartingDate() + " " + 
+									  i.getStartingTime() + " - turn in deadline: " + 
+									  i.getClosingDate() + " " + 
+									  i.getClosingTime() + " - minimal score: " + 
+									  i.getMinScore());
+		}
+		
+		JList<String> listTests = new JList<String>(listTestsModel);
+		listTests.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		subpanelTests.add(listTests, BorderLayout.CENTER);
+		
+		JButton btnNewTest = new JButton("+ New Test");
+		btnNewTest.setHorizontalAlignment(SwingConstants.LEFT);
+		btnNewTest.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		subpanelTests.add(btnNewTest, BorderLayout.SOUTH);
+		
 		JScrollPane scrollPaneLectures = new JScrollPane();
 		panelMain.add(scrollPaneLectures, "scrollPaneLectures");
 		
+		JLabel lblLecturesHeader = new JLabel("My lectures");
+		lblLecturesHeader.setFont(new Font("Dubai Medium", Font.PLAIN, 64));
+		scrollPaneLectures.setColumnHeaderView(lblLecturesHeader);
+		
 		JPanel subpanelLectures = new JPanel();
 		scrollPaneLectures.setViewportView(subpanelLectures);
-		GridBagLayout gbl_subpanelLectures = new GridBagLayout();
-		gbl_subpanelLectures.columnWidths = new int[]{0, 0, 0};
-		gbl_subpanelLectures.rowHeights = new int[]{0, 0, 0};
-		gbl_subpanelLectures.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_subpanelLectures.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		subpanelLectures.setLayout(gbl_subpanelLectures);
+		subpanelLectures.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel_2 = new JLabel("lectures");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.gridx = 1;
-		gbc_lblNewLabel_2.gridy = 1;
-		subpanelLectures.add(lblNewLabel_2, gbc_lblNewLabel_2);
+		JList listLectures = new JList();
+		subpanelLectures.add(listLectures, BorderLayout.CENTER);
+		
+		JButton btnNewLecture = new JButton("+ New Lecture");
+		btnNewLecture.setHorizontalAlignment(SwingConstants.LEFT);
+		btnNewLecture.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		subpanelLectures.add(btnNewLecture, BorderLayout.SOUTH);
 		
 		
 		JLabel lblMyClasses = new JLabel(myClassesLabel);

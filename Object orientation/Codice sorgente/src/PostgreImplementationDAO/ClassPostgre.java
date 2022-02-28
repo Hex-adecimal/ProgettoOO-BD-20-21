@@ -27,7 +27,6 @@ public class ClassPostgre implements ClassDAO{
 			Statement stmt = connection.createStatement();
 			ResultSet rs;
 			String query = "SELECT name, year, cfu FROM CLASS_T WHERE codp = '" + codP + "';";
-			//Class class1;
 			
 			rs = stmt.executeQuery(query);
 			

@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.ArrayList;
 
 import DAO.TestDAO;
 import DAO.TestTakenDAO;
 import Database.QuizDBConnection;
+import Model.Test;
 
 public class TestTakenPostgre implements TestTakenDAO, TestDAO {
 	private Connection connection;
@@ -15,6 +17,12 @@ public class TestTakenPostgre implements TestTakenDAO, TestDAO {
 	public TestTakenPostgre() {
 		try { connection = QuizDBConnection.getInstance().getConnection(); }
 		catch (SQLException e){ e.printStackTrace(); }
+	}
+	
+	@Override
+	public ArrayList<Test> getProfessorTests(String codP)
+	{
+		return null;
 	}
 	
 	@Override
