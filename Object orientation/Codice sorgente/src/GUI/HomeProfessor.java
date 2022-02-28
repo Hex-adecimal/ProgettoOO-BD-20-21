@@ -154,6 +154,12 @@ public class HomeProfessor extends JFrame {
 		subpanelTests.add(listTests, BorderLayout.CENTER);
 		
 		JButton btnNewTest = new JButton("+ New Test");
+		btnNewTest.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				startTestCreation();
+			}
+		});
 		btnNewTest.setHorizontalAlignment(SwingConstants.LEFT);
 		btnNewTest.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		subpanelTests.add(btnNewTest, BorderLayout.SOUTH);
@@ -251,6 +257,11 @@ public class HomeProfessor extends JFrame {
 		gbc_lblMyLectures.gridx = 0;
 		gbc_lblMyLectures.gridy = 2;
 		panelSide.add(lblMyLectures, gbc_lblMyLectures);
+	}
+	
+	private void startTestCreation()
+	{
+		TestCreation t = new TestCreation(this, controller);
 	}
 
 }
