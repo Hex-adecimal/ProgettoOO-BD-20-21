@@ -58,9 +58,9 @@ public class HomeProfessor extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public HomeProfessor(JFrame login, Controller controller) {
+	public HomeProfessor(JFrame parent, Controller controller) {
 		
-		login.setVisible(false);
+		parent.setVisible(false);
 		this.controller = controller;
 		homeProfessor = this;
 		homeProfessor.setVisible(true);
@@ -148,6 +148,10 @@ public class HomeProfessor extends JFrame {
 									  i.getClosingTime() + " - minimal score: " + 
 									  i.getMinScore());
 		}
+		
+		// TODO: Add ListSelectionListener to listTests;
+		// when you select a test, call TestCreation
+		// with the info of the selected test.
 		
 		JList<String> listTests = new JList<String>(listTestsModel);
 		listTests.setFont(new Font("Tahoma", Font.PLAIN, 15));
