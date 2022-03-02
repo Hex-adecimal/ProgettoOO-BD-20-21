@@ -60,7 +60,7 @@ public class HomeProfessor extends JFrame {
 	 */
 	public HomeProfessor(JFrame parent, Controller controller) {
 		
-		parent.setVisible(false);
+		parent.dispose();
 		this.controller = controller;
 		homeProfessor = this;
 		homeProfessor.setVisible(true);

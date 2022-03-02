@@ -48,7 +48,7 @@ public class Signup extends JFrame {
 		setResizable(false);
 		this.userType = userType;
 		this.controller = controller;
-		login.setVisible(false);
+		login.dispose();
 		signUp = this;
 		this.setVisible(true);
 		

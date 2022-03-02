@@ -28,27 +28,12 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JComboBox;
+
 public class TestCreation extends JFrame {
 
 	private JPanel contentPane;
 	private Controller controller;
-	private JTextField textFieldName;
-
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TestCreation frame = new TestCreation();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
 
 	/**
 	 * Create the frame.
@@ -56,7 +41,7 @@ public class TestCreation extends JFrame {
 	public TestCreation(JFrame homeProfessor, Controller c) {
 		setTitle("Create a new test");
 		setResizable(false);
-		homeProfessor.setVisible(false);
+		homeProfessor.dispose();
 		this.controller = c;
 		this.setVisible(true);
 		
@@ -73,10 +58,10 @@ public class TestCreation extends JFrame {
 		
 		JPanel panelTestInfo = new JPanel();
 		GridBagLayout gbl_panelTestInfo = new GridBagLayout();
-		gbl_panelTestInfo.columnWidths = new int[]{124, 260, 58, 46, 257, 0};
+		gbl_panelTestInfo.columnWidths = new int[]{124, 246, 58, 46, 257, 0};
 		gbl_panelTestInfo.rowHeights = new int[]{20, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelTestInfo.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panelTestInfo.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelTestInfo.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		panelTestInfo.setLayout(gbl_panelTestInfo);
 		scrollPane.setColumnHeaderView(panelTestInfo);
 		
@@ -89,7 +74,7 @@ public class TestCreation extends JFrame {
 		gbc_lblTestName.gridy = 1;
 		panelTestInfo.add(lblTestName, gbc_lblTestName);
 		
-		textFieldName = new JTextField();
+		JTextField textFieldName = new JTextField();
 		textFieldName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_textFieldName = new GridBagConstraints();
 		gbc_textFieldName.fill = GridBagConstraints.HORIZONTAL;
@@ -126,13 +111,13 @@ public class TestCreation extends JFrame {
 		gbc_lblStartingDate.gridy = 3;
 		panelTestInfo.add(lblStartingDate, gbc_lblStartingDate);
 		
-		/*JCalendar calendarStartingDate = new JCalendar();
+		JCalendar calendarStartingDate = new JCalendar();
 		GridBagConstraints gbc_calendarStartingDate = new GridBagConstraints();
 		gbc_calendarStartingDate.insets = new Insets(0, 0, 5, 5);
 		gbc_calendarStartingDate.fill = GridBagConstraints.BOTH;
 		gbc_calendarStartingDate.gridx = 1;
 		gbc_calendarStartingDate.gridy = 3;
-		panelTestInfo.add(calendarStartingDate, gbc_calendarStartingDate);*/
+		panelTestInfo.add(calendarStartingDate, gbc_calendarStartingDate);
 		
 		JLabel lblClosingDate = new JLabel("Closing date:");
 		lblClosingDate.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -143,7 +128,7 @@ public class TestCreation extends JFrame {
 		gbc_lblClosingDate.gridy = 3;
 		panelTestInfo.add(lblClosingDate, gbc_lblClosingDate);
 		
-		/*JCalendar calendarClosingDate = new JCalendar();
+		JCalendar calendarClosingDate = new JCalendar();
 		GridBagConstraints gbc_calendarClosingDate = new GridBagConstraints();
 		gbc_calendarClosingDate.insets = new Insets(0, 0, 5, 0);
 		gbc_calendarClosingDate.fill = GridBagConstraints.BOTH;
@@ -151,7 +136,7 @@ public class TestCreation extends JFrame {
 		gbc_calendarClosingDate.gridy = 3;
 		panelTestInfo.add(calendarClosingDate, gbc_calendarClosingDate);
 		
-		calendarClosingDate.setMinSelectableDate(new Date());*/
+		calendarClosingDate.setMinSelectableDate(new Date());
 		
 		JLabel lblStartingTime = new JLabel("Starting time:");
 		lblStartingTime.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -162,6 +147,39 @@ public class TestCreation extends JFrame {
 		gbc_lblStartingTime.gridy = 5;
 		panelTestInfo.add(lblStartingTime, gbc_lblStartingTime);
 		
+		JPanel panelStartingTime = new JPanel();
+		GridBagConstraints gbc_panelStartingTime = new GridBagConstraints();
+		gbc_panelStartingTime.anchor = GridBagConstraints.WEST;
+		gbc_panelStartingTime.insets = new Insets(0, 0, 5, 5);
+		gbc_panelStartingTime.fill = GridBagConstraints.VERTICAL;
+		gbc_panelStartingTime.gridx = 1;
+		gbc_panelStartingTime.gridy = 5;
+		panelTestInfo.add(panelStartingTime, gbc_panelStartingTime);
+		
+		
+		String[] hours = new String[24];
+		for(int i = 0; i < 24; i++)
+		{
+			if(i < 10)	hours[i] = "0" + Integer.toString(i);
+			else		hours[i] = Integer.toString(i);
+		}
+		
+		String[] minutes = new String[60];
+		for(int i = 0; i < 60; i++)
+		{
+			if(i < 10)	minutes[i] = "0" + Integer.toString(i);
+			else		minutes[i] = Integer.toString(i);
+		}
+		
+		JComboBox comboBoxStartingHour = new JComboBox(hours);
+		panelStartingTime.add(comboBoxStartingHour);
+		
+		JLabel lblHourMinSeparator = new JLabel(":");
+		panelStartingTime.add(lblHourMinSeparator);
+		
+		JComboBox comboBoxStartingMinute = new JComboBox(minutes);
+		panelStartingTime.add(comboBoxStartingMinute);
+		
 		JLabel lblClosingTime = new JLabel("Closing time:");
 		lblClosingTime.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		GridBagConstraints gbc_lblClosingTime = new GridBagConstraints();
@@ -170,6 +188,25 @@ public class TestCreation extends JFrame {
 		gbc_lblClosingTime.gridx = 3;
 		gbc_lblClosingTime.gridy = 5;
 		panelTestInfo.add(lblClosingTime, gbc_lblClosingTime);
+		
+		JPanel panelClosingTime = new JPanel();
+		GridBagConstraints gbc_panelClosingTime = new GridBagConstraints();
+		gbc_panelClosingTime.anchor = GridBagConstraints.WEST;
+		gbc_panelClosingTime.insets = new Insets(0, 0, 5, 0);
+		gbc_panelClosingTime.fill = GridBagConstraints.VERTICAL;
+		gbc_panelClosingTime.gridx = 4;
+		gbc_panelClosingTime.gridy = 5;
+		panelTestInfo.add(panelClosingTime, gbc_panelClosingTime);
+		
+		JComboBox comboBoxClosingHour = new JComboBox(hours);
+		panelClosingTime.add(comboBoxClosingHour);
+		
+		JLabel lblHourMinSeparator_1 = new JLabel(":");
+		panelClosingTime.add(lblHourMinSeparator_1);
+		
+		JComboBox comboBoxClosingMinute = new JComboBox(minutes);
+		panelClosingTime.add(comboBoxClosingMinute);
+		
 		
 		JPanel panelQuizzes = new JPanel();
 		scrollPane.setViewportView(panelQuizzes);
