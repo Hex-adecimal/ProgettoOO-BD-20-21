@@ -102,16 +102,13 @@ public class Controller {
 	{
 		Professor p = (Professor)user;
 		
-		ArrayList<Test> tests = p.getCreatedTests();
+		ArrayList<Test> tests = testDAO.getProfessorTests(p.getCodP());
 		
-		if(tests == null)
-		{
-			tests = testDAO.getProfessorTests(p.getCodP());
-			p.setCreatedTests(tests);
-		}
+		p.setCreatedTests(tests);
 		
 		return tests;
 	}
+	
 	// Getter & Setter
 	public void setUser(User user) { this.user = user; }
 }

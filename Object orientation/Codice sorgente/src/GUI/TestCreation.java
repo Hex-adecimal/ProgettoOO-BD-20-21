@@ -29,11 +29,28 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JComboBox;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import java.awt.FlowLayout;
+import java.awt.Color;
+import javax.swing.JSeparator;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SpinnerDateModel;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TestCreation extends JFrame {
 
 	private JPanel contentPane;
 	private Controller controller;
+	private JPanel panelQuizzes;
+	private JTextField textFieldName;
+	private JCalendar calendarClosingDate;
+	private ArrayList<OpenQuizCreationPanel> openQuizzes = new ArrayList<OpenQuizCreationPanel>();
+	private ArrayList<ClosedQuizCreationPanel> closedQuizzes = new ArrayList<ClosedQuizCreationPanel>();
+	
+	private int nextAvailableRow;
 
 	/**
 	 * Create the frame.
@@ -44,12 +61,12 @@ public class TestCreation extends JFrame {
 		homeProfessor.dispose();
 		this.controller = c;
 		this.setVisible(true);
+		nextAvailableRow = 1;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 909, 719);
+		setBounds(100, 100, 923, 767);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
@@ -59,7 +76,7 @@ public class TestCreation extends JFrame {
 		JPanel panelTestInfo = new JPanel();
 		GridBagLayout gbl_panelTestInfo = new GridBagLayout();
 		gbl_panelTestInfo.columnWidths = new int[]{124, 246, 58, 46, 257, 0};
-		gbl_panelTestInfo.rowHeights = new int[]{20, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panelTestInfo.rowHeights = new int[]{20, 0, 0, 0, 0, 0, 42, 0};
 		gbl_panelTestInfo.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelTestInfo.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		panelTestInfo.setLayout(gbl_panelTestInfo);
@@ -74,7 +91,7 @@ public class TestCreation extends JFrame {
 		gbc_lblTestName.gridy = 1;
 		panelTestInfo.add(lblTestName, gbc_lblTestName);
 		
-		JTextField textFieldName = new JTextField();
+		textFieldName = new JTextField();
 		textFieldName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_textFieldName = new GridBagConstraints();
 		gbc_textFieldName.fill = GridBagConstraints.HORIZONTAL;
@@ -94,6 +111,7 @@ public class TestCreation extends JFrame {
 		panelTestInfo.add(lblMinScore, gbc_lblMinScore);
 		
 		JSpinner spinnerMinScore = new JSpinner();
+		spinnerMinScore.setModel(new SpinnerNumberModel(new Float(0), null, null, new Float(1)));
 		spinnerMinScore.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_spinnerMinScore = new GridBagConstraints();
 		gbc_spinnerMinScore.fill = GridBagConstraints.HORIZONTAL;
@@ -128,7 +146,7 @@ public class TestCreation extends JFrame {
 		gbc_lblClosingDate.gridy = 3;
 		panelTestInfo.add(lblClosingDate, gbc_lblClosingDate);
 		
-		JCalendar calendarClosingDate = new JCalendar();
+		calendarClosingDate = new JCalendar();
 		GridBagConstraints gbc_calendarClosingDate = new GridBagConstraints();
 		gbc_calendarClosingDate.insets = new Insets(0, 0, 5, 0);
 		gbc_calendarClosingDate.fill = GridBagConstraints.BOTH;
@@ -208,8 +226,14 @@ public class TestCreation extends JFrame {
 		panelClosingTime.add(comboBoxClosingMinute);
 		
 		
-		JPanel panelQuizzes = new JPanel();
+		panelQuizzes = new JPanel();
 		scrollPane.setViewportView(panelQuizzes);
+		GridBagLayout gbl_panelQuizzes = new GridBagLayout();
+		gbl_panelQuizzes.columnWidths = new int[]{0, 0};
+		gbl_panelQuizzes.rowHeights = new int[]{0, 0};
+		gbl_panelQuizzes.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelQuizzes.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		panelQuizzes.setLayout(gbl_panelQuizzes);
 		
 		JPanel panelButtons = new JPanel();
 		contentPane.add(panelButtons, BorderLayout.SOUTH);
@@ -221,6 +245,12 @@ public class TestCreation extends JFrame {
 		panelButtons.setLayout(gbl_panelButtons);
 		
 		JButton btnAddOpenQuiz = new JButton("+ Add Open Quiz");
+		btnAddOpenQuiz.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				createOpenQuizPanel();
+			}
+		});
 		btnAddOpenQuiz.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnAddOpenQuiz = new GridBagConstraints();
 		gbc_btnAddOpenQuiz.anchor = GridBagConstraints.NORTHWEST;
@@ -230,6 +260,12 @@ public class TestCreation extends JFrame {
 		panelButtons.add(btnAddOpenQuiz, gbc_btnAddOpenQuiz);
 		
 		JButton btnAddClosedQuiz = new JButton("+ Add Closed Quiz");
+		btnAddClosedQuiz.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				createClosedQuizPanel();
+			}
+		});
 		btnAddClosedQuiz.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnAddClosedQuiz = new GridBagConstraints();
 		gbc_btnAddClosedQuiz.anchor = GridBagConstraints.NORTHWEST;
@@ -241,7 +277,7 @@ public class TestCreation extends JFrame {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				cancelCreation();
 			}
 		});
@@ -254,6 +290,12 @@ public class TestCreation extends JFrame {
 		panelButtons.add(btnCancel, gbc_btnCancel);
 		
 		JButton btnFinish = new JButton("Finish");
+		btnFinish.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				createTest();
+			}
+		});
 		btnFinish.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnFinish = new GridBagConstraints();
 		gbc_btnFinish.insets = new Insets(0, 0, 0, 5);
@@ -266,5 +308,36 @@ public class TestCreation extends JFrame {
 	private void cancelCreation()
 	{
 		HomeProfessor home = new HomeProfessor(this, controller);
+	}
+	
+	private void createOpenQuizPanel()
+	{
+		OpenQuizCreationPanel panelOpenQuiz = new OpenQuizCreationPanel();
+		openQuizzes.add(panelOpenQuiz);
+		GridBagConstraints gbc_panelOpenQuiz = new GridBagConstraints();
+		gbc_panelOpenQuiz.fill = GridBagConstraints.BOTH;
+		gbc_panelOpenQuiz.gridx = 0;
+		gbc_panelOpenQuiz.gridy = nextAvailableRow++;
+		panelQuizzes.add(panelOpenQuiz, gbc_panelOpenQuiz);
+		
+		this.validate();
+	}
+	
+	private void createClosedQuizPanel()
+	{
+		ClosedQuizCreationPanel panelClosedQuiz = new ClosedQuizCreationPanel();
+		closedQuizzes.add(panelClosedQuiz);
+		GridBagConstraints gbc_panelClosedQuiz = new GridBagConstraints();
+		gbc_panelClosedQuiz.fill = GridBagConstraints.BOTH;
+		gbc_panelClosedQuiz.gridx = 0;
+		gbc_panelClosedQuiz.gridy = nextAvailableRow++;
+		panelQuizzes.add(panelClosedQuiz, gbc_panelClosedQuiz);
+		
+		this.validate();
+	}
+	
+	private void createTest()
+	{
+		String testName = textFieldName.getText();
 	}
 }

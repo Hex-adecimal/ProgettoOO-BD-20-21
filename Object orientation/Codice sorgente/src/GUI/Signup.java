@@ -166,7 +166,7 @@ public class Signup extends JFrame {
 		JButton btnSignupButton = new JButton("Sign Up");
 		btnSignupButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				checkSignupResult();
 			}
 		});

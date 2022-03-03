@@ -47,7 +47,7 @@ public class Login extends JFrame {
 		JToggleButton tglbtnUser = new JToggleButton("Student");
 		tglbtnUser.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				if (tglbtnUser.getText() == "Student")
 					tglbtnUser.setText("Professor");
 				else
@@ -97,7 +97,7 @@ public class Login extends JFrame {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				checkLoginResult(tglbtnUser.getText());
 			}
 		});
@@ -111,7 +111,7 @@ public class Login extends JFrame {
 		JButton btnNewButton = new JButton("Sign up");
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				System.out.println("You are trying to signup...");
 				Signup signup = new Signup(tglbtnUser.getText() , controller, login);
 				

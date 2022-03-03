@@ -59,6 +59,7 @@ public class HomeProfessor extends JFrame {
 	 * Create the frame.
 	 */
 	public HomeProfessor(JFrame parent, Controller controller) {
+		setResizable(false);
 		
 		parent.dispose();
 		this.controller = controller;
@@ -160,7 +161,7 @@ public class HomeProfessor extends JFrame {
 		JButton btnNewTest = new JButton("+ New Test");
 		btnNewTest.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				startTestCreation();
 			}
 		});
@@ -199,7 +200,7 @@ public class HomeProfessor extends JFrame {
 				lblMyClasses.setForeground(new Color(148, 0, 211));
 			}
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				CardLayout cl = (CardLayout)panelMain.getLayout();
 				cl.show(panelMain, "scrollPaneClasses");
 			}
@@ -224,7 +225,7 @@ public class HomeProfessor extends JFrame {
 				lblMyTests.setForeground(new Color(148, 0, 211));
 			}
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				CardLayout cl = (CardLayout)panelMain.getLayout();
 				cl.show(panelMain, "scrollPaneTests");
 			}
@@ -249,7 +250,7 @@ public class HomeProfessor extends JFrame {
 				lblMyLectures.setForeground(new Color(148, 0, 211));
 			}
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseReleased(MouseEvent e) {
 				CardLayout cl = (CardLayout)panelMain.getLayout();
 				cl.show(panelMain, "scrollPaneLectures");
 			}
