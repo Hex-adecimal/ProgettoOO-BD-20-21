@@ -11,7 +11,7 @@ import DAO.TestTakenDAO;
 import Database.QuizDBConnection;
 import Model.Test;
 
-public class TestTakenPostgre implements TestTakenDAO, TestDAO {
+public class TestTakenPostgre implements TestTakenDAO{
 	private Connection connection;
 	
 	public TestTakenPostgre() {
@@ -19,7 +19,7 @@ public class TestTakenPostgre implements TestTakenDAO, TestDAO {
 		catch (SQLException e){ e.printStackTrace(); }
 	}
 	
-	@Override
+	/*@Override
 	public ArrayList<Test> getProfessorTests(String codP)
 	{
 		return null;
@@ -77,7 +77,7 @@ public class TestTakenPostgre implements TestTakenDAO, TestDAO {
 	public Void setMinScore(int codTest, float minScore) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	@Override
 	public boolean isRevised(int codTestTaken) {

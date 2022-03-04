@@ -15,9 +15,20 @@ public interface TestDAO {
 	public Time getStartingDateTime(int codTest);
 	public Time getClosingDateTime(int codTest);
 	public float getMinScore(int codTest);
+	public String getCodTestByName(String name);
 	
 	public Void setName(int codTest, String name);
 	public Void setStartingDateTime(int codTest, Time startingDatetime);
 	public Void setClosingDateTime(int codTest, Time closingDatetime);
 	public Void setMinScore(int codTest, float minScore);
+	
+	public void insertNewTest(String name, 
+							String creationDate,
+							String creationTime, 
+							String startingDate, 
+							String startingTime, 
+							String closingDate, 
+							String closingTime, 
+							float minScore,
+							String codP);
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Test {
 	// Attributes
+	private String codTest;
 	private String name;
 	private Date creationDate;
 	private Time creationTime;
@@ -21,7 +22,8 @@ public class Test {
 	private ArrayList<Quiz> quizzes;
 	
 	// Methods
-	public Test(String name, 
+	public Test(String codTest,
+				String name, 
 				Date creationDate, 
 				Time creationTime, 
 				Date startingDate, 
@@ -30,6 +32,7 @@ public class Test {
 				Time closingTime,
 				float minScore)
 	{
+		this.setCodTest(codTest);
 		this.name = name;
 		this.creationDate = creationDate;
 		this.creationTime = creationTime;
@@ -78,4 +81,12 @@ public class Test {
 	
 	public ArrayList<Quiz> getQuizzes() { return quizzes; }
 	public void setQuizzes(ArrayList<Quiz> quizzes) { this.quizzes = quizzes; }
+
+	public String getCodTest() {
+		return codTest;
+	}
+
+	public void setCodTest(String codTest) {
+		this.codTest = codTest;
+	}
 }

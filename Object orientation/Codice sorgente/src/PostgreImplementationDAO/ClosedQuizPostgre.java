@@ -2,6 +2,7 @@ package PostgreImplementationDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import DAO.ClosedQuizDAO;
 import Database.QuizDBConnection;
@@ -15,15 +16,51 @@ public class ClosedQuizPostgre implements ClosedQuizDAO{
 	}
 	
 	@Override
+	public void insertClosedQuiz(String question,
+			String answerA,
+			String answerB,
+			String answerC,
+			String answerD,
+			char rightAnswer,
+			float scoreIfRight,
+			float scoreIfWrong,
+			String codTest)
+	{
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "INSERT INTO CLOSED_QUIZ" + 
+							"(question, answerA, answerB, answerC, answerD," + 
+							"rightanswer, scoreifright, scoreifwrong, codtest)" + 
+							" VALUES ('" +
+							question + "', '" +
+							answerA + "', '" +
+							answerB + "', '" +
+							answerC + "', '" +
+							answerD + "', '" +
+							Character.toLowerCase(rightAnswer) + "', " +
+							scoreIfRight + ", " + 
+							scoreIfWrong + ", " +
+							codTest + ");";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public String getQuestion(int codQuiz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Void setQuestion(int codQuiz, String question) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setQuestion(int codQuiz, String question) {
+		
 	}
 
 	@Override

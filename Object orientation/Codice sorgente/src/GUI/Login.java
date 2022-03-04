@@ -69,7 +69,7 @@ public class Login extends JFrame {
 		});
 		textFieldUsername.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) { 
+			public void mousePressed(MouseEvent e) { 
 				if (textFieldUsername.getText().equals("Email or username")) {
 					textFieldUsername.setText("");
 					textFieldUsername.setForeground(Color.BLACK);

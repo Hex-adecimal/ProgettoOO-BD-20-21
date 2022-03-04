@@ -6,7 +6,13 @@ public interface OpenQuizDAO extends QuizDAO {
 	public float getMinScore(int codOpenQuiz);
 	public int getMaxLength(int codOpenQuiz);
 	
-	public Void setMaxScore(int codOpenQuiz, float maxScore);
-	public Void setMinScore(int codOpenQuiz, float minScore);
-	public Void setMaxLength(int codOpenQuiz, int maxLength);
+	public void setMaxScore(int codOpenQuiz, float maxScore);
+	public void setMinScore(int codOpenQuiz, float minScore);
+	public void setMaxLength(int codOpenQuiz, int maxLength);
+	
+	public void insertOpenQuiz(String question, 
+								float maxScore, 
+								float minScore, 
+								int maxLength, 
+								String codTest);
 }

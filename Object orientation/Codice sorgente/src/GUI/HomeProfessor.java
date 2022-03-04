@@ -108,6 +108,8 @@ public class HomeProfessor extends JFrame {
 		
 		ArrayList<Class> classes = controller.getNSetProfessorClasses();
 		
+		// TODO: GUI CANNOT communicate with Model
+		
 		for(Class i : classes)
 		{
 			listClassesModel.addElement(i.getName() + " - Year " + i.getYear() + " - " + i.getCFU() + " CFU");
@@ -137,6 +139,8 @@ public class HomeProfessor extends JFrame {
 		DefaultListModel<String> listTestsModel = new DefaultListModel<String>();
 		
 		ArrayList<Test> tests = controller.getNSetProfessorTests();
+		
+		// TODO: GUI CANNOT communicate with Model
 		
 		for(Test i : tests)
 		{

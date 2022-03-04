@@ -17,4 +17,14 @@ public interface ClosedQuizDAO extends QuizDAO {
 	public Void setRightAnswer(int codClosedQuiz, char rightAnswer);
 	public Void setScoreIfRight(int codClosedQuiz, float scoreIfRight);
 	public Void setScoreIfWrong(int codClosedQuiz, float scoreIfWrong);
+	
+	public void insertClosedQuiz(String question,
+								String answerA,
+								String answerB,
+								String answerC,
+								String answerD,
+								char rightAnswer,
+								float scoreIfRight,
+								float scoreIfWrong,
+								String codTest);
 }

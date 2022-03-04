@@ -21,9 +21,8 @@ public class QuizPostgre implements QuizDAO {
 	}
 
 	@Override
-	public Void setQuestion(int codQuiz, String question) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setQuestion(int codQuiz, String question) {
+		
 	}
 
 }

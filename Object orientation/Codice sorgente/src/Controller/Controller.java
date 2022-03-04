@@ -10,6 +10,9 @@ import PostgreImplementationDAO.*;
 import java.util.ArrayList;
 
 import DAO.*;
+import GUI.ClosedQuizCreationPanel;
+import GUI.OpenQuizCreationPanel;
+import GUI.TestCreation;
 
 public class Controller {
 	private User user;
@@ -107,6 +110,62 @@ public class Controller {
 		p.setCreatedTests(tests);
 		
 		return tests;
+	}
+	
+	public String getCodTestByName(String name)
+	{
+		return testDAO.getCodTestByName(name);
+	}
+	
+	public void insertTestNQuizzes(TestCreation TCWizard, 
+									String testCreationDateString, 
+									String testCreationTimeString)
+	{
+		String testName = TCWizard.getTestName();
+		String startingDateString = TCWizard.getStartingDateString();
+		String closingDateString = TCWizard.getClosingDateString();
+		String startingTimeString = TCWizard.getStartingTimeString();
+		String closingTimeString = TCWizard.getClosingTimeString();
+		float minScore = TCWizard.getMinScore();
+		
+		Professor p = (Professor)user;
+		
+		testDAO.insertNewTest(testName,
+							testCreationDateString, 
+							testCreationTimeString,
+							startingDateString, 
+							startingTimeString, 
+							closingDateString, 
+							closingTimeString, 
+							minScore,
+							p.getCodP());
+		
+		ArrayList<OpenQuizCreationPanel> openQuizPanels = TCWizard.getOpenQuizzes();
+		ArrayList<ClosedQuizCreationPanel> closedQuizPanels = TCWizard.getClosedQuizzes();
+		
+		String codTest = getCodTestByName(testName);
+		
+		for(OpenQuizCreationPanel i : openQuizPanels)
+		{
+			openQuizDAO.insertOpenQuiz(i.getQuestion(), 
+										i.getMaxScore(), 
+										i.getMaxScore(), 
+										i.getMaxLength(),
+										codTest);
+		}
+		
+		for(ClosedQuizCreationPanel i : closedQuizPanels)
+		{
+			closedQuizDAO.insertClosedQuiz(i.getQuestion(), 
+											i.getAnswerA(), 
+											i.getAnswerB(), 
+											i.getAnswerC(), 
+											i.getAnswerD(), 
+											i.getRightAnswer(), 
+											i.getRightScore(), 
+											i.getWrongScore(), 
+											codTest);
+		}
 	}
 	
 	// Getter & Setter

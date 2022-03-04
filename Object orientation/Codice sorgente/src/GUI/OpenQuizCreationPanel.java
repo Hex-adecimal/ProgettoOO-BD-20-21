@@ -12,6 +12,8 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class OpenQuizCreationPanel extends JPanel {
 	
@@ -27,6 +29,13 @@ public class OpenQuizCreationPanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 		
 		txtrInsertQuestionHere = new JTextArea();
+		txtrInsertQuestionHere.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(txtrInsertQuestionHere.getText().equals("Insert question here"))
+					txtrInsertQuestionHere.setText("");
+			}
+		});
 		txtrInsertQuestionHere.setText("Insert question here");
 		txtrInsertQuestionHere.setFont(new Font("Lucida Bright", Font.PLAIN, 20));
 		this.add(txtrInsertQuestionHere, BorderLayout.CENTER);
@@ -69,6 +78,7 @@ public class OpenQuizCreationPanel extends JPanel {
 		panelQuizInfo.add(lblQuizMinScore, gbc_lblQuizMinScore);
 		
 		spinnerQuizMinScore = new JSpinner();
+		spinnerQuizMinScore.setModel(new SpinnerNumberModel(Float.valueOf(0), Float.valueOf(0), null, Float.valueOf(1)));
 		GridBagConstraints gbc_spinnerQuizMinScore = new GridBagConstraints();
 		gbc_spinnerQuizMinScore.insets = new Insets(0, 0, 5, 0);
 		gbc_spinnerQuizMinScore.fill = GridBagConstraints.HORIZONTAL;
@@ -121,7 +131,7 @@ public class OpenQuizCreationPanel extends JPanel {
 		return (float)spinnerQuizMinScore.getValue();
 	}
 	
-	public float getMaxLength()
+	public int getMaxLength()
 	{
 		return (int)spinnerMaxLength.getValue();
 	}

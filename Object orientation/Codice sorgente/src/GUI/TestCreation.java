@@ -9,9 +9,12 @@ import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.*;
 
 import Controller.Controller;
+import Model.Test;
+
 import javax.swing.JScrollPane;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -19,14 +22,12 @@ import java.util.Date;
 
 import javax.swing.JSpinner;
 
-/*import com.toedter.calendar.JCalendar;
-import com.toedter.calendar.JDayChooser;
-import com.toedter.calendar.JMonthChooser;
-import com.toedter.calendar.JYearChooser;*/
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextPane;
@@ -46,14 +47,31 @@ public class TestCreation extends JFrame {
 	private Controller controller;
 	private JPanel panelQuizzes;
 	private JTextField textFieldName;
+	private JSpinner spinnerMinScore;
+	private JCalendar calendarStartingDate;
 	private JCalendar calendarClosingDate;
+	private JComboBox comboBoxStartingHour;
+	private JComboBox comboBoxStartingMinute;
+	private JComboBox comboBoxClosingHour;
+	private JComboBox comboBoxClosingMinute;
 	private ArrayList<OpenQuizCreationPanel> openQuizzes = new ArrayList<OpenQuizCreationPanel>();
 	private ArrayList<ClosedQuizCreationPanel> closedQuizzes = new ArrayList<ClosedQuizCreationPanel>();
 	
 	private int nextAvailableRow;
+	
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
 	/**
 	 * Create the frame.
+	 */
+	public TestCreation(JFrame homeProfessor, Controller c, Test selectedTest)
+	{
+		this(homeProfessor, c);
+	}
+	
+	/**
+	 * @wbp.parser.constructor
 	 */
 	public TestCreation(JFrame homeProfessor, Controller c) {
 		setTitle("Create a new test");
@@ -110,7 +128,7 @@ public class TestCreation extends JFrame {
 		gbc_lblMinScore.gridy = 1;
 		panelTestInfo.add(lblMinScore, gbc_lblMinScore);
 		
-		JSpinner spinnerMinScore = new JSpinner();
+		spinnerMinScore = new JSpinner();
 		spinnerMinScore.setModel(new SpinnerNumberModel(new Float(0), null, null, new Float(1)));
 		spinnerMinScore.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GridBagConstraints gbc_spinnerMinScore = new GridBagConstraints();
@@ -129,13 +147,15 @@ public class TestCreation extends JFrame {
 		gbc_lblStartingDate.gridy = 3;
 		panelTestInfo.add(lblStartingDate, gbc_lblStartingDate);
 		
-		JCalendar calendarStartingDate = new JCalendar();
+		calendarStartingDate = new JCalendar();
 		GridBagConstraints gbc_calendarStartingDate = new GridBagConstraints();
 		gbc_calendarStartingDate.insets = new Insets(0, 0, 5, 5);
 		gbc_calendarStartingDate.fill = GridBagConstraints.BOTH;
 		gbc_calendarStartingDate.gridx = 1;
 		gbc_calendarStartingDate.gridy = 3;
 		panelTestInfo.add(calendarStartingDate, gbc_calendarStartingDate);
+		
+		calendarStartingDate.setMinSelectableDate(new java.util.Date());
 		
 		JLabel lblClosingDate = new JLabel("Closing date:");
 		lblClosingDate.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -154,7 +174,7 @@ public class TestCreation extends JFrame {
 		gbc_calendarClosingDate.gridy = 3;
 		panelTestInfo.add(calendarClosingDate, gbc_calendarClosingDate);
 		
-		calendarClosingDate.setMinSelectableDate(new Date());
+		calendarClosingDate.setMinSelectableDate(new java.util.Date());
 		
 		JLabel lblStartingTime = new JLabel("Starting time:");
 		lblStartingTime.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -189,13 +209,13 @@ public class TestCreation extends JFrame {
 			else		minutes[i] = Integer.toString(i);
 		}
 		
-		JComboBox comboBoxStartingHour = new JComboBox(hours);
+		comboBoxStartingHour = new JComboBox(hours);
 		panelStartingTime.add(comboBoxStartingHour);
 		
 		JLabel lblHourMinSeparator = new JLabel(":");
 		panelStartingTime.add(lblHourMinSeparator);
 		
-		JComboBox comboBoxStartingMinute = new JComboBox(minutes);
+		comboBoxStartingMinute = new JComboBox(minutes);
 		panelStartingTime.add(comboBoxStartingMinute);
 		
 		JLabel lblClosingTime = new JLabel("Closing time:");
@@ -216,13 +236,13 @@ public class TestCreation extends JFrame {
 		gbc_panelClosingTime.gridy = 5;
 		panelTestInfo.add(panelClosingTime, gbc_panelClosingTime);
 		
-		JComboBox comboBoxClosingHour = new JComboBox(hours);
+		comboBoxClosingHour = new JComboBox(hours);
 		panelClosingTime.add(comboBoxClosingHour);
 		
 		JLabel lblHourMinSeparator_1 = new JLabel(":");
 		panelClosingTime.add(lblHourMinSeparator_1);
 		
-		JComboBox comboBoxClosingMinute = new JComboBox(minutes);
+		comboBoxClosingMinute = new JComboBox(minutes);
 		panelClosingTime.add(comboBoxClosingMinute);
 		
 		
@@ -338,6 +358,139 @@ public class TestCreation extends JFrame {
 	
 	private void createTest()
 	{
+		String error = null;
+		String errorTitle = "Failed Test Creation";
+		
 		String testName = textFieldName.getText();
+		
+		String startingDateString = getStartingDateString();
+		String closingDateString = getClosingDateString();
+		
+		String startingTimeString = getStartingTimeString();
+		String closingTimeString = getClosingTimeString();
+		
+		java.util.Date currentDateTime = new java.util.Date();
+		
+		String currentDateString = dateFormat.format(currentDateTime);
+		String currentTimeString = timeFormat.format(currentDateTime);
+		
+		if(openQuizzes.isEmpty() && closedQuizzes.isEmpty())
+			error = "Create some quizzes first!";
+		
+		if(( testName.equals("") || testName.contains("'") ) && error == null)
+			error = "Test name is invalid!";
+		
+		if(!( controller.getCodTestByName(testName).equals("0") ) && error == null)	
+			error = "Test name is already in use! Pick another name!";
+		
+		if(closingDateString.compareTo(startingDateString) < 0 && error == null)
+			error = "The closing date of a test cannot come before its starting date!";
+		
+		if(startingDateString.compareTo(currentDateString) == 0 && 
+			startingTimeString.compareTo(currentTimeString) < 0 &&
+			error == null)
+				error = "The starting time of a test cannot come before the time of its creation!";
+		
+		if(closingDateString.compareTo(startingDateString) == 0 && 
+			closingTimeString.compareTo(startingTimeString) < 0 && 
+			error == null)
+				error = "The closing time of a test cannot come before its starting time when the two dates are the same!";
+		
+		for(ClosedQuizCreationPanel i : closedQuizzes)
+		{
+			if(( i.getQuestion().equals("") || i.getQuestion().contains("'") ) && 
+				error == null)
+					error = "There's a closed quiz with an invalid question!";
+			
+			if(i.getWrongScore() >= i.getRightScore() && error == null)
+				error = "There's a closed quiz with the wrong answer score greater than or equal to the right answer score!";
+			
+			if( ( i.getAnswerA().equals("") || i.getAnswerB().equals("") ||
+				i.getAnswerA().contains("'") || i.getAnswerA().contains("'") ) &&
+					error == null)
+				error = "There's a closed quiz with invalid answer A or B!";
+			
+			if(( i.getAnswerC().equals("") || i.getAnswerC().contains("'") ) && 
+					i.getRightAnswer().equals('C') && error == null)
+				error = "There's a closed quiz with right answer C, but the answer C field is invalid!";
+			
+			if(( i.getAnswerD().equals("") || i.getAnswerD().contains("'") ) && 
+					i.getRightAnswer().equals('D') && error == null)
+				error = "There's a closed quiz with right answer D, but the answer D field is invalid!";
+		}
+		
+		for(OpenQuizCreationPanel i : openQuizzes)
+		{
+			if(( i.getQuestion().equals("") || i.getQuestion().contains("'") ) && 
+				error == null)
+					error = "There's a open quiz with an invalid question!";
+			
+			if(i.getMinScore() >= i.getMaxScore() && error == null)
+				error = "There's a open quiz with the min score greater than or equal to the max score!";
+		}
+		
+		if(error != null)
+		{
+			JOptionPane.showMessageDialog(null, error, errorTitle, JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		
+		controller.insertTestNQuizzes(this, currentDateString, currentTimeString);
+		HomeProfessor home = new HomeProfessor(this, controller);
+	}
+	
+	public String getTestName()
+	{
+		return textFieldName.getText();
+	}
+	
+	public float getMinScore()
+	{
+		return (float)spinnerMinScore.getValue();
+	}
+	
+	public String getStartingDateString()
+	{
+		String startingDateString = dateFormat.format(calendarStartingDate.getDate());
+		
+		return startingDateString;
+	}
+	
+	public String getClosingDateString()
+	{
+		String closingDateString = dateFormat.format(calendarClosingDate.getDate());
+		
+		return closingDateString;
+	}
+	
+	public String getStartingTimeString()
+	{
+		String startingTimeString = (String)comboBoxStartingHour.getSelectedItem() + 
+				":" + 
+				(String)comboBoxStartingMinute.getSelectedItem() + 
+				":00";
+		
+		return startingTimeString;
+	}
+	
+	public String getClosingTimeString()
+	{
+		String closingTimeString = (String)comboBoxClosingHour.getSelectedItem() + 
+				":" + 
+				(String)comboBoxClosingMinute.getSelectedItem() + 
+				":00";
+		
+		return closingTimeString;
+	}
+	
+	public ArrayList<OpenQuizCreationPanel> getOpenQuizzes()
+	{
+		return openQuizzes;
+	}
+	
+	public ArrayList<ClosedQuizCreationPanel> getClosedQuizzes()
+	{
+		return closedQuizzes; 
 	}
 }

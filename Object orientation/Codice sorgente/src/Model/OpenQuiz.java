@@ -2,7 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 
-public class OpenQuiz {
+public class OpenQuiz extends Quiz{
 	// Attributes
 	private float maxScore;
 	private float minScore;

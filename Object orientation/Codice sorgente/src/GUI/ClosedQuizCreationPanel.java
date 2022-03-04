@@ -15,6 +15,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ClosedQuizCreationPanel extends JPanel {
 	
@@ -98,6 +100,13 @@ public class ClosedQuizCreationPanel extends JPanel {
 		thisInfo.add(comboBoxAnswers, gbc_comboBoxAnswers);
 		
 		txtrInsertQuestionHereC = new JTextArea();
+		txtrInsertQuestionHereC.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(txtrInsertQuestionHereC.getText().equals("Insert question here"))
+					txtrInsertQuestionHereC.setText("");
+			}
+		});
 		txtrInsertQuestionHereC.setFont(new Font("Lucida Bright", Font.PLAIN, 20));
 		txtrInsertQuestionHereC.setText("Insert question here");
 		this.add(txtrInsertQuestionHereC, BorderLayout.NORTH);

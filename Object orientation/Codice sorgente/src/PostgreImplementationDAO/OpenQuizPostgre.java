@@ -2,6 +2,7 @@ package PostgreImplementationDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import DAO.OpenQuizDAO;
 import Database.QuizDBConnection;
@@ -15,15 +16,40 @@ public class OpenQuizPostgre implements OpenQuizDAO {
 	}
 	
 	@Override
+	public void insertOpenQuiz(String question, 
+								float maxScore, 
+								float minScore, 
+								int maxLength, 
+								String codTest)
+	{
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "INSERT INTO OPEN_QUIZ(question, maxscore, minscore, maxlength, codtest) VALUES ('" +
+							question + "', " +
+							maxScore + ", " +
+							minScore + ", " +
+							maxLength + ", " +
+							codTest + ");";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public String getQuestion(int codQuiz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Void setQuestion(int codQuiz, String question) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setQuestion(int codQuiz, String question) {
+		
 	}
 
 	@Override
@@ -45,21 +71,21 @@ public class OpenQuizPostgre implements OpenQuizDAO {
 	}
 
 	@Override
-	public Void setMaxScore(int codOpenQuiz, float maxScore) {
+	public void setMaxScore(int codOpenQuiz, float maxScore) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
-	public Void setMinScore(int codOpenQuiz, float minScore) {
+	public void setMinScore(int codOpenQuiz, float minScore) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
-	public Void setMaxLength(int codOpenQuiz, int maxLength) {
+	public void setMaxLength(int codOpenQuiz, int maxLength) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }
