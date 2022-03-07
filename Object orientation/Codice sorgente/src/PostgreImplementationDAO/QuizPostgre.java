@@ -15,13 +15,18 @@ public class QuizPostgre implements QuizDAO {
 	}
 	
 	@Override
-	public String getQuestion(int codQuiz) {
+	public String getQuestion(String codQuiz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setQuestion(int codQuiz, String question) {
+	public void setQuestion(String codQuiz, String question) {
+		
+	}
+	
+	public void deleteQuizzes(String codTest)
+	{
 		
 	}
 

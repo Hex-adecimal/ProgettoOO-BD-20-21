@@ -11,16 +11,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Controller.Controller;
-import DAO.ProfessorDAO;
-import Model.Professor;
-import Model.Student;
-import Model.Test;
-import Model.User;
-import Model.Class;
-import PostgreImplementationDAO.ProfessorPostgre;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagLayout;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
@@ -29,6 +24,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.awt.Color;
@@ -44,6 +41,8 @@ import javax.swing.JList;
 import javax.swing.SwingConstants;
 import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class HomeProfessor extends JFrame {
 
@@ -106,13 +105,11 @@ public class HomeProfessor extends JFrame {
 		
 		DefaultListModel<String> listClassesModel = new DefaultListModel<String>();
 		
-		ArrayList<Class> classes = controller.getNSetProfessorClasses();
+		ArrayList<String> classes = controller.getNSetProfessorClasses();
 		
-		// TODO: GUI CANNOT communicate with Model
-		
-		for(Class i : classes)
+		for(String i : classes)
 		{
-			listClassesModel.addElement(i.getName() + " - Year " + i.getYear() + " - " + i.getCFU() + " CFU");
+			listClassesModel.addElement(i);
 		}
 		
 		JList<String> listClasses = new JList<String>(listClassesModel);
@@ -138,20 +135,11 @@ public class HomeProfessor extends JFrame {
 		
 		DefaultListModel<String> listTestsModel = new DefaultListModel<String>();
 		
-		ArrayList<Test> tests = controller.getNSetProfessorTests();
+		ArrayList<String> tests = controller.getNSetProfessorTests();
 		
-		// TODO: GUI CANNOT communicate with Model
-		
-		for(Test i : tests)
+		for(String i : tests)
 		{
-			listTestsModel.addElement(i.getName() + " - created on: " + 
-									  i.getCreationDate() + " " + 
-									  i.getCreationTime() + " - starting time: " + 
-									  i.getStartingDate() + " " + 
-									  i.getStartingTime() + " - turn in deadline: " + 
-									  i.getClosingDate() + " " + 
-									  i.getClosingTime() + " - minimal score: " + 
-									  i.getMinScore());
+			listTestsModel.addElement(i);
 		}
 		
 		// TODO: Add ListSelectionListener to listTests;
@@ -159,6 +147,12 @@ public class HomeProfessor extends JFrame {
 		// with the info of the selected test.
 		
 		JList<String> listTests = new JList<String>(listTestsModel);
+		listTests.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				startTestCustomization((String)listTests.getSelectedValue());
+			}
+		});
+		listTests.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listTests.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		subpanelTests.add(listTests, BorderLayout.CENTER);
 		
@@ -271,6 +265,32 @@ public class HomeProfessor extends JFrame {
 	private void startTestCreation()
 	{
 		TestCreation t = new TestCreation(this, controller);
+	}
+	
+	private void startTestCustomization(String selectedTest)
+	{
+		String trimmedSelTest = selectedTest.substring(selectedTest.indexOf(":") + 1);
+		
+		String codTest = trimmedSelTest.substring(0, trimmedSelTest.indexOf(" "));
+		
+		java.sql.Date currentDate = new java.sql.Date(new java.util.Date().getTime());
+		java.sql.Date testStartingDate = controller.getTestStartingDate(codTest);
+		java.sql.Time currentTime = new java.sql.Time(new java.util.Date().getTime());
+		java.sql.Time testStartingTime = controller.getTestStartingTime(codTest);
+		
+		if( currentDate.toString().compareTo(testStartingDate.toString()) > 0 ||
+			(currentDate.toString().compareTo(testStartingDate.toString()) == 0 &&
+			 currentTime.toString().compareTo(testStartingTime.toString()) > 0) )
+		{
+			JOptionPane.showMessageDialog(null, 
+										"You cannot customize a test that has already started and/or has already been closed!", 
+										null, 
+										JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+		{
+			TestCreation t = new TestCreation(this, controller, selectedTest);
+		}
 	}
 
 }

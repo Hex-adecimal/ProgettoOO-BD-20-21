@@ -7,11 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.Controller;
-import PostgreImplementationDAO.ProfessorPostgre;
-import PostgreImplementationDAO.StudentPostgre;
-import DAO.ProfessorDAO;
-import DAO.StudentDAO;
-import Model.User;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -36,7 +31,6 @@ public class Signup extends JFrame {
 	private Controller controller;
 	private String userType;
 	private JFrame signUp;
-	private User user;
 	private HomeProfessor homeProfessor;
 	private HomeStudent homeStudent;
 	
@@ -207,19 +201,19 @@ public class Signup extends JFrame {
 		else
 		{
 			if(this.userType.equals("Student"))
-				user = controller.signUpS(firstName, lastName, username, email, password);
+				controller.signUpS(firstName, lastName, username, email, password);
 				
 			else
-				user = controller.signUpP(firstName, lastName, username, email, password);
+				controller.signUpP(firstName, lastName, username, email, password);
 			
-			if(user != null)
+			if(!controller.userIsNull())
 			{
 				JOptionPane.showMessageDialog(null, 
 						"Congratulations! You have signed up successfully", 
 						"Successful Registration", 
 						JOptionPane.INFORMATION_MESSAGE);
 				
-				if (user.getTypeName() == "Model.Student") {
+				if (this.userType.equals("Student")) {
 					homeStudent = new HomeStudent(this, controller);
 				} else {
 					homeProfessor = new HomeProfessor(this, controller);

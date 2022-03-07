@@ -29,6 +29,8 @@ public class ClosedQuizCreationPanel extends JPanel {
 	private JTextField textFieldC;
 	private JTextField textFieldD;
 	
+	private String codQuiz;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -213,20 +215,36 @@ public class ClosedQuizCreationPanel extends JPanel {
 	{
 		return (float)spinnerRightScore.getValue();
 	}
+	public void setRightScore(float rightScore)
+	{
+		spinnerRightScore.setValue(Float.valueOf(rightScore));
+	}
 	
 	public float getWrongScore()
 	{
 		return (float)spinnerWrongScore.getValue();
+	}
+	public void setWrongScore(float wrongScore)
+	{
+		spinnerWrongScore.setValue(Float.valueOf(wrongScore));
 	}
 	
 	public Character getRightAnswer()
 	{
 		return (Character)comboBoxAnswers.getSelectedItem();
 	}
+	public void setRightAnswer(char rightAnswer)
+	{
+		comboBoxAnswers.setSelectedItem(Character.valueOf(rightAnswer));
+	}
 	
 	public String getQuestion()
 	{
 		return txtrInsertQuestionHereC.getText();
+	}
+	public void setQuestion(String question)
+	{
+		txtrInsertQuestionHereC.setText(question);
 	}
 	
 	public String getAnswerA()
@@ -236,6 +254,10 @@ public class ClosedQuizCreationPanel extends JPanel {
 		if(answer == "")	return null;
 		else				return answer;
 	}
+	public void setAnswerA(String answer)
+	{
+		textFieldA.setText(answer);
+	}
 	
 	public String getAnswerB()
 	{
@@ -243,6 +265,10 @@ public class ClosedQuizCreationPanel extends JPanel {
 		
 		if(answer == "")	return null;
 		else				return answer;
+	}
+	public void setAnswerB(String answer)
+	{
+		textFieldB.setText(answer);
 	}
 	
 	public String getAnswerC()
@@ -252,6 +278,10 @@ public class ClosedQuizCreationPanel extends JPanel {
 		if(answer == "")	return null;
 		else				return answer;
 	}
+	public void setAnswerC(String answer)
+	{
+		textFieldC.setText(answer);
+	}
 	
 	public String getAnswerD()
 	{
@@ -259,5 +289,16 @@ public class ClosedQuizCreationPanel extends JPanel {
 		
 		if(answer == "")	return null;
 		else				return answer;
+	}
+	public void setAnswerD(String answer)
+	{
+		textFieldD.setText(answer);
+	}
+	
+	public String getCodQuiz() {
+		return codQuiz;
+	}
+	public void setCodQuiz(String codQuiz) {
+		this.codQuiz = codQuiz;
 	}
 }

@@ -1,7 +1,8 @@
 package DAO;
 
 public interface QuizDAO {
-	public String getQuestion(int codQuiz);
+	public String getQuestion(String codQuiz);
+	public void setQuestion(String codQuiz, String question);
 	
-	public void setQuestion(int codQuiz, String question);
+	public void deleteQuizzes(String codTest);
 }

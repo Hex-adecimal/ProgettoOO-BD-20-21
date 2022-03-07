@@ -22,6 +22,8 @@ public class OpenQuizCreationPanel extends JPanel {
 	private JSpinner spinnerQuizMinScore;
 	private JSpinner spinnerMaxLength;
 	
+	private String codQuiz;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -120,19 +122,42 @@ public class OpenQuizCreationPanel extends JPanel {
 	{
 		return txtrInsertQuestionHere.getText();
 	}
+	public void setQuestion(String question)
+	{
+		txtrInsertQuestionHere.setText(question);
+	}
 	
 	public float getMaxScore()
 	{
 		return (float)spinnerQuizMaxScore.getValue();
+	}
+	public void setMaxScore(float maxScore)
+	{
+		spinnerQuizMaxScore.setValue(Float.valueOf(maxScore));
 	}
 	
 	public float getMinScore()
 	{
 		return (float)spinnerQuizMinScore.getValue();
 	}
+	public void setMinScore(float minScore)
+	{
+		spinnerQuizMinScore.setValue(Float.valueOf(minScore));
+	}
 	
 	public int getMaxLength()
 	{
 		return (int)spinnerMaxLength.getValue();
+	}
+	public void setMaxLength(int maxLength)
+	{
+		spinnerMaxLength.setValue(Integer.valueOf(maxLength));
+	}
+
+	public String getCodQuiz() {
+		return codQuiz;
+	}
+	public void setCodQuiz(String codQuiz) {
+		this.codQuiz = codQuiz;
 	}
 }

@@ -15,6 +15,26 @@ public class ClosedQuiz extends Quiz{
 	private ArrayList<ClosedAnswer> answers;
 	
 	// Methods
+	public ClosedQuiz(String codQuiz,
+						String question,
+						String answerA,
+						String answerB,
+						String answerC,
+						String answerD,
+						char rightAnswer,
+						float scoreIfRight,
+						float scoreIfWrong)
+	{
+		super(codQuiz, question);
+		this.answerA = answerA;
+		this.answerB = answerB;
+		this.answerC = answerC;
+		this.answerD = answerD;
+		this.rightAnswer = rightAnswer;
+		this.scoreIfRight = scoreIfRight;
+		this.scoreIfWrong = scoreIfWrong;
+	}
+	
 	public String getAnswerA() { return answerA; }
 	public void setAnswerA(String answerA) { this.answerA = answerA; }
 	

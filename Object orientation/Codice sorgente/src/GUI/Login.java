@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.Controller;
-import Model.User;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -124,18 +123,16 @@ public class Login extends JFrame {
 	private void checkLoginResult(String tglbtnText)
 	{
 		String password;
-		User user = null;
 		
 		if (passwordField.getPassword().length > 8) {
 			if (textFieldUsername.getText().length() > 1) {
 				System.out.println("You are trying to logging in ...");
 				
 				password = new String(passwordField.getPassword());
-				user = controller.logIn(textFieldUsername.getText(), password, tglbtnText);
+				controller.logIn(textFieldUsername.getText(), password, tglbtnText);
 				
-				if (user != null) { 
+				if (!controller.userIsNull()) { 
 					System.out.println("You logged in!");
-					controller.setUser(user);
 					if (tglbtnText == "Student") {
 						HomeStudent home = new HomeStudent(login, controller);
 					} else { 

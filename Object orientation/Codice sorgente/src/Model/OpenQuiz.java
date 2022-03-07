@@ -11,6 +11,18 @@ public class OpenQuiz extends Quiz{
 	private ArrayList<OpenAnswer> answers;
 	
 	// Methods
+	public OpenQuiz(String codQuiz,
+					String question, 
+					float maxScore,
+					float minScore,
+					int maxLength)
+	{
+		super(codQuiz, question);
+		this.maxScore = maxScore;
+		this.minScore = minScore;
+		this.maxLength = maxLength;
+	}
+	
 	public float getMaxScore() { return maxScore; }
 	public void setMaxScore(float maxScore) { this.maxScore = maxScore; }
 	

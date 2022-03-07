@@ -110,6 +110,23 @@ public class TestPostgre implements TestDAO {
 	}
 	
 	@Override
+	public void deleteTest(String codTest)
+	{
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "DELETE FROM TEST WHERE codtest = " + codTest + ";";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public String getName(int codTest) {
 		// TODO Auto-generated method stub
 		return null;
@@ -140,26 +157,70 @@ public class TestPostgre implements TestDAO {
 	}
 
 	@Override
-	public Void setName(int codTest, String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setName(String codTest, String name) {
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "UPDATE TEST SET name = '" + name + "'" +
+							" WHERE codtest = " + codTest + ";";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public Void setStartingDateTime(int codTest, Time startingDatetime) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setStartingDateTime(String codTest, String startingDateTime) {
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "UPDATE TEST SET startingdatetime = '" + startingDateTime + "'" + 
+							" WHERE codtest = " + codTest + ";";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public Void setClosingDateTime(int codTest, Time closingDatetime) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setClosingDateTime(String codTest, String closingDateTime) {
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "UPDATE TEST SET closingdatetime = '" + closingDateTime + "'" + 
+							" WHERE codtest = " + codTest + ";";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public Void setMinScore(int codTest, float minScore) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setMinScore(String codTest, float minScore) {
+		try
+		{
+			Statement stmt = connection.createStatement();
+			
+			String query = "UPDATE TEST SET minscore = " + minScore + 
+							" WHERE codtest = " + codTest + ";";
+			
+			stmt.executeUpdate(query);
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
