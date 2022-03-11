@@ -2,7 +2,9 @@ package PostgreImplementationDAO;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -10,6 +12,7 @@ import DAO.TestDAO;
 import DAO.TestTakenDAO;
 import Database.QuizDBConnection;
 import Model.Test;
+import Model.TestTaken;
 
 public class TestTakenPostgre implements TestTakenDAO{
 	private Connection connection;
@@ -17,6 +20,27 @@ public class TestTakenPostgre implements TestTakenDAO{
 	public TestTakenPostgre() {
 		try { connection = QuizDBConnection.getInstance().getConnection(); }
 		catch (SQLException e){ e.printStackTrace(); }
+	}
+	
+	public ArrayList<String> getTestsTakenByStudent(int studentID) {
+		String query = "select * from test_taken tt join test t on t.codTest = tt.codTest where StudentID = " + studentID + ";";
+		
+		ResultSet rs;
+		ArrayList<String> v = new ArrayList<String>();
+		
+		try {
+			Statement stmt = connection.createStatement();
+			rs = stmt.executeQuery(query);
+			
+			while (rs.next()) {
+				if (rs.getBoolean("revised") == true)
+					v.add(rs.getString("name") + " --- " + rs.getBoolean("revised") + " --- " + rs.getBoolean("passed") + " --- " + rs.getFloat("totalScore"));
+				else 
+					v.add(rs.getString("name") + " --- "  + rs.getBoolean("revised"));
+			}
+			
+		} catch (Exception e) { e.printStackTrace(); }
+		return v;
 	}
 	
 	/*@Override
