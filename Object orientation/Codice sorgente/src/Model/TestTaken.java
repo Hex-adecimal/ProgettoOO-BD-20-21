@@ -13,6 +13,12 @@ public class TestTaken {
 	private ArrayList<OpenAnswer> openAnswers;
 	private ArrayList<ClosedAnswer> closedAnswers;
 	
+	public TestTaken(boolean revised, boolean passed, float totalScore) {
+		this.revised = revised;
+		this.passed = passed;
+		this.totalScore = totalScore;
+	}
+	
 	// Methods
 	public TestTaken(Boolean bool) { this.setRevised(bool);	}
 	
