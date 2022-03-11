@@ -1,28 +1,55 @@
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.Controller;
-import Model.Student;
-import Model.User;
+import javax.swing.JTextField;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.awt.CardLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
 
 public class HomeStudent extends JFrame {
 
 	private JPanel contentPane;
 	private Controller controller;
 	private JFrame homeStudent;
-	
+	private JTextField textFieldCodTest;
+	private DefaultListModel<String> dlm;
+	private DefaultListModel<String> deflismod;
 	
 	public HomeStudent(JFrame login, Controller controller) {
+		setResizable(false);
 		login.setVisible(false);
 		this.controller = controller;
 		homeStudent = this;
 		homeStudent.setVisible(true);
+		
+		deflismod = new DefaultListModel<String>();
+		dlm = new DefaultListModel<String>();
+		ArrayList<String> tests = null;
+		ArrayList<String> classes = null;
+		
+		classes = controller.getStudentClasses();
+		tests = controller.getStudentTestsTaken();
+		
+		deflismod.addElement("Name --- Year --- CFU");
+		for (String i : classes) {
+			deflismod.addElement(i);
+		}
+		
+		dlm.addElement("Name --- Revised --- Passed --- Score");
+		for (String i : tests) {
+			dlm.addElement(i);
+		}
 		
 		/*System.out.println("");
 		System.out.println("You are in the student home, your credential are:");
@@ -37,7 +64,98 @@ public class HomeStudent extends JFrame {
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel panelSide = new JPanel();
+		panelSide.setBounds(6, 6, 164, 680);
+		contentPane.add(panelSide);
+		panelSide.setLayout(null);
+		
+		textFieldCodTest = new JTextField();
+		textFieldCodTest.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (textFieldCodTest.getText().equals("Insert test here")) {
+					textFieldCodTest.setText("");
+					textFieldCodTest.setForeground(Color.BLACK);
+				}
+			}
+		});
+		textFieldCodTest.setForeground(Color.GRAY);
+		textFieldCodTest.setText("Insert test here");
+		textFieldCodTest.setBounds(6, 6, 107, 26);
+		panelSide.add(textFieldCodTest);
+		textFieldCodTest.setColumns(10);
+		
+		JButton btnSearchTest = new JButton("...");
+		
+		btnSearchTest.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// Function for search a test, and go to next gui
+			}
+		});
+		btnSearchTest.setBounds(114, 6, 44, 26);
+		panelSide.add(btnSearchTest);
+		
+		JPanel panelMain = new JPanel();
+		panelMain.setBounds(182, 6, 1092, 680);
+		contentPane.add(panelMain);
+		
+		JLabel lblMyClasses = new JLabel("My Classes");
+		lblMyClasses.setForeground(new Color(148, 0, 211));
+		lblMyClasses.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblMyClasses.setForeground(new Color(135, 206, 250));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblMyClasses.setForeground(new Color(148, 0, 211));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// Function for search classes, and update the home
+				CardLayout cl = (CardLayout)panelMain.getLayout();
+				cl.show(panelMain, "scrollPaneMyClasses");
+			}
+		});
+		lblMyClasses.setBounds(16, 44, 142, 16);
+		panelSide.add(lblMyClasses);
+		panelMain.setLayout(new CardLayout(0, 0));
+		
+		JScrollPane scrollPaneMyTests = new JScrollPane();
+		panelMain.add(scrollPaneMyTests, "scrollPaneMyTests");
+		
+		JList listTests = new JList(dlm);
+		scrollPaneMyTests.setViewportView(listTests);
+		
+		JScrollPane scrollPaneMyClasses = new JScrollPane();
+		panelMain.add(scrollPaneMyClasses, "scrollPaneMyClasses");
+		
+		JList listClasses = new JList(deflismod);
+		scrollPaneMyClasses.setViewportView(listClasses);
+		
+		JLabel lblMyTests = new JLabel("My Tests");
+		lblMyTests.setForeground(new Color(148, 0, 211));
+		lblMyTests.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblMyTests.setForeground(new Color(135, 206, 250));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblMyTests.setForeground(new Color(148, 0, 211));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// Function for search tests done, and update the home
+				CardLayout cl = (CardLayout)panelMain.getLayout();
+				cl.show(panelMain, "scrollPaneMyTests");
+			}
+		});
+		lblMyTests.setBounds(16, 87, 61, 16);
+		panelSide.add(lblMyTests);
 	}
 }
