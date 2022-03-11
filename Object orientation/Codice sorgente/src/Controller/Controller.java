@@ -495,11 +495,25 @@ public class Controller {
 		}
 	}
 	
-	public void deleteTestNQuizzes(String codTest)
-	{
+	public void deleteTestNQuizzes(String codTest) {
 		openQuizDAO.deleteQuizzes(codTest);
 		closedQuizDAO.deleteQuizzes(codTest);
 		testDAO.deleteTest(codTest);
+	}
+	
+		public ArrayList<String> getStudentTestsTaken() {
+		return testTakenDAO.getTestsTakenByStudent( Integer.valueOf( ((Student) user).getStudentID()) );
+	}
+	
+	public ArrayList<String> getStudentClasses() {
+		ArrayList<Class> classes =  classDAO.getStudentClasses(((Student) user).getStudentID() );
+		ArrayList<String> ss = new ArrayList<String>();
+		
+		for (Class i : classes) {
+			ss.add(i.getName() + " --- " + i.getYear() + " --- " + i.getCFU());
+		}
+		
+		return ss;
 	}
 	
 	// Getter & Setter
