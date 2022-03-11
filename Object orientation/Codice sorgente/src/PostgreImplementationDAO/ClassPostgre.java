@@ -43,6 +43,27 @@ public class ClassPostgre implements ClassDAO{
 		return classes;
 	}
 	
+	public ArrayList<Class> getStudentClasses(String studentID)	{
+		ArrayList<Class> classes = new ArrayList<Class>();
+		
+		try
+		{
+			Statement stmt = connection.createStatement();
+			ResultSet rs;
+			String query = "SELECT * FROM CLASS_T C JOIN TAKE T ON T.codC = C.codC WHERE studentID = '" + studentID + "';";
+			
+			rs = stmt.executeQuery(query);
+			
+			while(rs.next())
+			{
+				classes.add(new Class(rs.getString("name"), rs.getInt("year"), rs.getInt("cfu")));
+			}
+		}
+		catch(Exception e) { e.printStackTrace(); };
+		
+		return classes;
+	}
+	
 	@Override
 	public String getName(int codClass) {
 		// TODO Auto-generated method stub
