@@ -13,4 +13,5 @@ public interface ClassDAO {
 	public Void setCfu(int codClass, int cfu);
 	
 	public ArrayList<Class> getProfessorClasses(String codP);
+	public ArrayList<Class> getStudentClasses(String studentID);
 }
