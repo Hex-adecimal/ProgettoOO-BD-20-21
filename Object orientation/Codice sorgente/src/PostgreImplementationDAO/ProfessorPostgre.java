@@ -165,50 +165,50 @@ public class ProfessorPostgre implements ProfessorDAO {
 	}
 
 	@Override
-	public Void setFirstName(int codUser, String firstName) {
+	public Void setFirstName(String codUser, String firstName) {
 		try { 
 			Statement stmt = conn.createStatement();
-			String query = "UPDATE PROFESSOR SET firstname = " + firstName + " WHERE CodP = " + codUser + ";";			
+			String query = "UPDATE PROFESSOR SET firstname = '" + firstName + "' WHERE CodP = " + codUser + ";";			
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return null;
 	}
 		
 	@Override
-	public Void setLastName(int codUser, String lastName) {
+	public Void setLastName(String codUser, String lastName) {
 		try { 
 			Statement stmt = conn.createStatement();
-			String query = "UPDATE PROFESSOR SET lastname = " + lastName + " WHERE CodP = " + codUser + ";";			
+			String query = "UPDATE PROFESSOR SET lastname = '" + lastName + "' WHERE CodP = " + codUser + ";";			
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return null;
 	}
 	
 	@Override
-	public Void setEmail(int codUser, String email) {
+	public Void setEmail(String codUser, String email) {
 		try { 
 			Statement stmt = conn.createStatement();
-			String query = "UPDATE PROFESSOR SET email = " + email + " WHERE CodP = " + codUser + ";";			
+			String query = "UPDATE PROFESSOR SET email = '" + email + "' WHERE CodP = " + codUser + ";";			
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return null;
 	}
 
 	@Override
-	public Void setUsername(int codUser, String username) {
+	public Void setUsername(String codUser, String username) {
 		try { 
 			Statement stmt = conn.createStatement();
-			String query = "UPDATE PROFESSOR SET username = " + username + " WHERE CodP = " + codUser + ";";			
+			String query = "UPDATE PROFESSOR SET username = '" + username + "' WHERE CodP = " + codUser + ";";			
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return null;
 	}
 
 	@Override
-	public Void setPassword(int codUser, String password) {
+	public Void setPassword(String codUser, String password) {
 		try { 
 			Statement stmt = conn.createStatement();
-			String query = "UPDATE PROFESSOR SET password = " + password + " WHERE CodP = " + codUser + ";";			
+			String query = "UPDATE PROFESSOR SET password = '" + password + "' WHERE CodP = " + codUser + ";";			
 			stmt.executeQuery(query);
 		} catch (Exception e) { e.printStackTrace(); }
 		return null;

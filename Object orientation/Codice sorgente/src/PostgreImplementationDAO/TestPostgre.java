@@ -223,4 +223,45 @@ public class TestPostgre implements TestDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Boolean testExists(String codTest) {
+		String query = "SELECT * FROM TEST WHERE CodTest = " + codTest + ";";
+		ResultSet rs;
+		
+		try {
+			Statement stmt = connection.createStatement();
+			rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) { e.printStackTrace(); }
+		return false;
+	}
+	
+	public ResultSet getOpenQuiz(String codTest) {
+		String query = "SELECT * "
+				+ "FROM  OPEN_QUIZ "
+				+ "WHERE codTest = " + codTest + ";";
+		try { 
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			return rs;
+		} catch (Exception e) { e.printStackTrace(); }
+		return null;
+	}
+	
+	public ResultSet getClosedQuiz(String codTest) {
+		String query = "SELECT * "
+				+ "FROM  CLOSED_QUIZ "
+				+ "WHERE codTest = " + codTest + ";";
+		try { 
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			return rs;
+		} catch (Exception e) { e.printStackTrace(); }
+		return null;
+	}
 }

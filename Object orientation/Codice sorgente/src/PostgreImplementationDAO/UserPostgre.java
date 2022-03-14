@@ -87,31 +87,31 @@ public class UserPostgre implements UserDAO{
 	}
 
 	@Override
-	public Void setFirstName(int codUser, String firstName) {
+	public Void setFirstName(String codUser, String firstName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public Void setLastName(int codUser, String lastName) {
+	public Void setLastName(String codUser, String lastName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Void setEmail(int codUser, String email) {
+	public Void setEmail(String codUser, String email) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Void setUsername(int codUser, String username) {
+	public Void setUsername(String codUser, String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Void setPassword(int codUser, String password) {
+	public Void setPassword(String codUser, String password) {
 		// TODO Auto-generated method stub
 		return null;
 	}

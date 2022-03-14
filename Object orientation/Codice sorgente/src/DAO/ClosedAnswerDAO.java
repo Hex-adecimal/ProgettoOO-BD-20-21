@@ -1,9 +1,6 @@
 package DAO;
 
-import Model.ClosedAnswer;
-
 public interface ClosedAnswerDAO {
-	public Void reviseClosedAnswer(ClosedAnswer answer);
 
 	public char getGivenAnswer(int codClosedAnswer);
 	public float getScore(int codClosedAnswer);

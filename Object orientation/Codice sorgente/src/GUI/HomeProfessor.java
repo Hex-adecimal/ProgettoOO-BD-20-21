@@ -2,40 +2,27 @@ package GUI;
 
 import java.awt.BorderLayout;
 
-import java.awt.EventQueue;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 
 import Controller.Controller;
 
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.GridBagLayout;
-import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Vector;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.CardLayout;
-import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.Container;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
@@ -89,9 +76,9 @@ public class HomeProfessor extends JFrame {
 		contentPane.add(panelSide, BorderLayout.WEST);
 		GridBagLayout gbl_panelSide = new GridBagLayout();
 		gbl_panelSide.columnWidths = new int[]{164, 0};
-		gbl_panelSide.rowHeights = new int[]{41, 0, 0, 0};
+		gbl_panelSide.rowHeights = new int[]{41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelSide.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_panelSide.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelSide.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelSide.setLayout(gbl_panelSide);
 		
 		JPanel panelMain = new JPanel();
@@ -256,10 +243,33 @@ public class HomeProfessor extends JFrame {
 		lblMyLectures.setForeground(new Color(148, 0, 211));
 		lblMyLectures.setFont(new Font("Nirmala UI Semilight", Font.PLAIN, 30));
 		GridBagConstraints gbc_lblMyLectures = new GridBagConstraints();
+		gbc_lblMyLectures.insets = new Insets(0, 0, 5, 0);
 		gbc_lblMyLectures.anchor = GridBagConstraints.WEST;
 		gbc_lblMyLectures.gridx = 0;
 		gbc_lblMyLectures.gridy = 2;
 		panelSide.add(lblMyLectures, gbc_lblMyLectures);
+		
+		JLabel lblUpdateAccount = new JLabel("Account");
+		lblUpdateAccount.setForeground(new Color(148, 0, 211));
+		GridBagConstraints gbc_lblUpdateAccount = new GridBagConstraints();
+		gbc_lblUpdateAccount.gridx = 0;
+		gbc_lblUpdateAccount.gridy = 10;
+		panelSide.add(lblUpdateAccount, gbc_lblUpdateAccount);
+		lblUpdateAccount.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblUpdateAccount.setForeground(new Color(135, 206, 250));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblUpdateAccount.setForeground(new Color(148, 0, 211));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// Go to new gui
+				UpdateAccount ua = new UpdateAccount(controller, homeProfessor);
+			}
+		});
 	}
 	
 	private void startTestCreation()

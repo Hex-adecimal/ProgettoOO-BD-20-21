@@ -37,10 +37,4 @@ public class ClosedAnswerPostgre implements ClosedAnswerDAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public Void reviseClosedAnswer(Model.ClosedAnswer answer) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
 }

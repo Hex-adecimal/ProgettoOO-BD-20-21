@@ -2,8 +2,6 @@ package DAO;
 
 import java.util.ArrayList;
 
-import Model.TestTaken;
-
 public interface TestTakenDAO {
 	// revised - passed - totalscore
 	public boolean isRevised(int codTestTaken);

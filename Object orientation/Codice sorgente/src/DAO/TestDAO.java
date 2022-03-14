@@ -1,6 +1,7 @@
 package DAO;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -32,4 +33,9 @@ public interface TestDAO {
 							float minScore,
 							String codP);
 	public void deleteTest(String codTest);
+	
+	public Boolean testExists(String codTest);
+	
+	public ResultSet getOpenQuiz(String codTest);
+	public ResultSet getClosedQuiz(String codTest);
 }

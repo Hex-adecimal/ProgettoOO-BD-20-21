@@ -3,7 +3,6 @@ package DAO;
 import java.util.ArrayList;
 
 import Model.ClosedQuiz;
-import Model.OpenQuiz;
 
 public interface ClosedQuizDAO extends QuizDAO {
 	// Answer A B C D - rightanswer - scoreifright - scoreifwrong

@@ -10,6 +10,7 @@ import Model.OpenQuiz;
 import PostgreImplementationDAO.*;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -21,13 +22,9 @@ import GUI.TestCreation;
 public class Controller {
 	private User user;
 	private ClassDAO classDAO;
-	private ClosedAnswerDAO closedAnswerDAO;
 	private ClosedQuizDAO closedQuizDAO;
-	private LectureDAO lectureDAO;
-	private OpenAnswerDAO openAnswerDAO;
 	private OpenQuizDAO openQuizDAO;
 	private ProfessorDAO professorDAO;
-	private QuizDAO quizDAO;
 	private StudentDAO studentDAO;
 	private TestDAO testDAO;
 	private TestTakenDAO testTakenDAO;
@@ -35,13 +32,9 @@ public class Controller {
 	
 	public Controller() {
 		this.classDAO = new ClassPostgre();
-		this.closedAnswerDAO = new ClosedAnswerPostgre();
 		this.closedQuizDAO = new ClosedQuizPostgre();
-		this.lectureDAO = new LecturePostgre();
-		this.openAnswerDAO = new OpenAnswerPostgre();
 		this.openQuizDAO = new OpenQuizPostgre();
 		this.professorDAO = new ProfessorPostgre();
-		this.quizDAO = new QuizPostgre();
 		this.studentDAO = new StudentPostgre();
 		this.testDAO = new TestPostgre();
 		this.testTakenDAO = new TestTakenPostgre();
@@ -516,6 +509,53 @@ public class Controller {
 		return ss;
 	}
 	
+	
+	public void updateAccount(String cod, String firstName, String lastName, String email, String username, String password) {
+		if ( user instanceof Model.Professor ) {
+			professorDAO.setFirstName(cod, firstName);
+			professorDAO.setLastName(cod, lastName);
+			professorDAO.setEmail(cod, email);
+			professorDAO.setUsername(cod, username);
+			professorDAO.setPassword(cod, password);
+		} else {
+			studentDAO.setFirstName(cod, firstName);
+			studentDAO.setLastName(cod, lastName);
+			studentDAO.setEmail(cod, email);
+			studentDAO.setUsername(cod, username);
+			studentDAO.setPassword(cod, password);
+		}
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setEmail(email);
+		user.setUsername(username);
+		user.setPassword(password);
+		return ;
+	}
+	
+	public ArrayList<String> getTestInformations(String codTest) {
+		ArrayList<String> array = new ArrayList<String>();
+		
+		try {
+			ResultSet rsOpen = testDAO.getOpenQuiz(codTest);
+			ResultSet rsClosed = testDAO.getClosedQuiz(codTest);
+			
+			while(rsOpen.next()) {
+				array.add("0 --- " + rsOpen.getString("Question") + " --- " + rsOpen.getString("MaxLength"));
+			}
+			while(rsClosed.next()) {
+				array.add("1 --- " + rsClosed.getString("Question") + " --- " + rsClosed.getString("AnswerA") + " --- " + rsClosed.getString("AnswerB") + " --- "
+						+ rsClosed.getString("AnswerC") + " --- " + rsClosed.getString("AnswerD"));
+			}
+			
+		} catch (Exception e) { e.printStackTrace(); }
+		
+		return array;
+	}
+	
+	
+	
 	// Getter & Setter
 	public void setUser(User user) { this.user = user; }
+	public TestDAO getTest() { return this.testDAO; }
+	public User getUser() { return this.user; }
 }
