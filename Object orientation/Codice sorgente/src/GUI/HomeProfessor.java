@@ -35,10 +35,8 @@ public class HomeProfessor extends JFrame {
 
 	private JPanel contentPane;
 	private Controller controller;
-	private JTable tableClasses;
 	private String myClassesLabel = "My classes";
 	private String myTestsLabel = "My tests";
-	private String myLecturesLabel = "My lectures";
 	private HomeProfessor homeProfessor;
 	
 	/**
@@ -51,8 +49,6 @@ public class HomeProfessor extends JFrame {
 		this.controller = controller;
 		homeProfessor = this;
 		homeProfessor.setVisible(true);
-		//Vector<String> record = new Vector<String>();
-		
 		
 		/*System.out.println("");
 		System.out.println("You are in the professor home, your credential are:");
@@ -129,10 +125,6 @@ public class HomeProfessor extends JFrame {
 			listTestsModel.addElement(i);
 		}
 		
-		// TODO: Add ListSelectionListener to listTests;
-		// when you select a test, call TestCreation
-		// with the info of the selected test.
-		
 		JList<String> listTests = new JList<String>(listTestsModel);
 		listTests.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -153,25 +145,6 @@ public class HomeProfessor extends JFrame {
 		btnNewTest.setHorizontalAlignment(SwingConstants.LEFT);
 		btnNewTest.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		subpanelTests.add(btnNewTest, BorderLayout.SOUTH);
-		
-		JScrollPane scrollPaneLectures = new JScrollPane();
-		panelMain.add(scrollPaneLectures, "scrollPaneLectures");
-		
-		JLabel lblLecturesHeader = new JLabel("My lectures");
-		lblLecturesHeader.setFont(new Font("Dubai Medium", Font.PLAIN, 64));
-		scrollPaneLectures.setColumnHeaderView(lblLecturesHeader);
-		
-		JPanel subpanelLectures = new JPanel();
-		scrollPaneLectures.setViewportView(subpanelLectures);
-		subpanelLectures.setLayout(new BorderLayout(0, 0));
-		
-		JList listLectures = new JList();
-		subpanelLectures.add(listLectures, BorderLayout.CENTER);
-		
-		JButton btnNewLecture = new JButton("+ New Lecture");
-		btnNewLecture.setHorizontalAlignment(SwingConstants.LEFT);
-		btnNewLecture.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		subpanelLectures.add(btnNewLecture, BorderLayout.SOUTH);
 		
 		
 		JLabel lblMyClasses = new JLabel(myClassesLabel);
@@ -224,32 +197,8 @@ public class HomeProfessor extends JFrame {
 		gbc_lblMyTests.gridy = 1;
 		panelSide.add(lblMyTests, gbc_lblMyTests);
 		
-		JLabel lblMyLectures = new JLabel(myLecturesLabel);
-		lblMyLectures.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				lblMyLectures.setForeground(new Color(135, 206, 250));
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				lblMyLectures.setForeground(new Color(148, 0, 211));
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				CardLayout cl = (CardLayout)panelMain.getLayout();
-				cl.show(panelMain, "scrollPaneLectures");
-			}
-		});
-		lblMyLectures.setForeground(new Color(148, 0, 211));
-		lblMyLectures.setFont(new Font("Nirmala UI Semilight", Font.PLAIN, 30));
-		GridBagConstraints gbc_lblMyLectures = new GridBagConstraints();
-		gbc_lblMyLectures.insets = new Insets(0, 0, 5, 0);
-		gbc_lblMyLectures.anchor = GridBagConstraints.WEST;
-		gbc_lblMyLectures.gridx = 0;
-		gbc_lblMyLectures.gridy = 2;
-		panelSide.add(lblMyLectures, gbc_lblMyLectures);
-		
 		JLabel lblUpdateAccount = new JLabel("Account");
+		lblUpdateAccount.setFont(new Font("Nirmala UI Semilight", Font.PLAIN, 30));
 		lblUpdateAccount.setForeground(new Color(148, 0, 211));
 		GridBagConstraints gbc_lblUpdateAccount = new GridBagConstraints();
 		gbc_lblUpdateAccount.gridx = 0;

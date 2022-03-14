@@ -117,12 +117,6 @@ public class ClosedQuizPostgre implements ClosedQuizDAO{
 	}
 	
 	@Override
-	public String getQuestion(String codQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setQuestion(String codQuiz, String question) {
 		try
 		{
@@ -138,49 +132,7 @@ public class ClosedQuizPostgre implements ClosedQuizDAO{
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public String getAnswerA(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getAnswerB(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getAnswerC(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getAnswerD(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getRightAnswer(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getScoreIfRight(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getScoreIfWrong(int codClosedQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public void setAnswerA(String codQuiz, String answerA) {
 		try

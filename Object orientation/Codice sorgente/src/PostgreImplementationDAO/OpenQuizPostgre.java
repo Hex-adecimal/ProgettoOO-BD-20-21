@@ -93,12 +93,6 @@ public class OpenQuizPostgre implements OpenQuizDAO {
 	}
 	
 	@Override
-	public String getQuestion(String codQuiz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setQuestion(String codQuiz, String question) {
 		try
 		{
@@ -113,24 +107,6 @@ public class OpenQuizPostgre implements OpenQuizDAO {
 		{
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public float getMaxScore(String codQuiz) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float getMinScore(String codQuiz) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getMaxLength(String codQuiz) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override

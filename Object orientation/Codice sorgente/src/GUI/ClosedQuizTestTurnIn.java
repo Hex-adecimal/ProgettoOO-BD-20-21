@@ -8,7 +8,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.BoxLayout;
 import java.awt.FlowLayout;
-import net.miginfocom.swing.MigLayout;
+//import net.miginfocom.swing.MigLayout;
 import javax.swing.JComboBox;
 
 public class ClosedQuizTestTurnIn extends JPanel {
@@ -17,7 +17,7 @@ public class ClosedQuizTestTurnIn extends JPanel {
 	 * Create the panel.
 	 */
 	public ClosedQuizTestTurnIn(String string) {
-		setLayout(new MigLayout("", "[grow][]", "[][][][][][]"));
+		//setLayout(new MigLayout("", "[grow][]", "[][][][][][]"));
 		
 		string = string.substring(string.indexOf(" --- ") + 5);
 		JLabel lblQuestion = new JLabel(string.substring(0, string.indexOf(" --- ")));

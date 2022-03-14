@@ -9,7 +9,6 @@ public class Professor extends User{
 	private String codP;
 	
 	private ArrayList<Class> classes;
-	private ArrayList<Lecture> lectures;
 	private ArrayList<Test> createdTests;
 	
 	// Methods
@@ -39,9 +38,6 @@ public class Professor extends User{
 	
 	public ArrayList<Class> getClasses() { return classes; }
 	public void setClasses(ArrayList<Class> classes) { this.classes = classes; }
-
-	public ArrayList<Lecture> getLectures() { return lectures; }
-	public void setLectures(ArrayList<Lecture> lectures) { this.lectures = lectures; }
 
 	public ArrayList<Test> getCreatedTests() { return createdTests; }
 	public void setCreatedTests(ArrayList<Test> createdTests) { this.createdTests = createdTests; }

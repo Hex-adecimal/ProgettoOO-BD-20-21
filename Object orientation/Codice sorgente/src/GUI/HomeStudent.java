@@ -94,7 +94,7 @@ public class HomeStudent extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// Function for search a test, and go to next gui
-				if ( controller.getTest().testExists(textFieldCodTest.getText()) ) {
+				if ( controller.testExists(textFieldCodTest.getText()) ) {
 					TestTurnIn tti = new TestTurnIn(controller, homeStudent, textFieldCodTest.getText());
 				}
 			}

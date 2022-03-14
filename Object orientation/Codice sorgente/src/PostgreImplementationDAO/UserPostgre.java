@@ -4,9 +4,6 @@ import java.sql.*;
 
 import DAO.UserDAO;
 import Database.QuizDBConnection;
-import Model.Professor;
-import Model.Student;
-import Model.User;
 
 public class UserPostgre implements UserDAO{
 	private Connection conn = null;
@@ -48,71 +45,5 @@ public class UserPostgre implements UserDAO{
 			
 			return ris;
 		} catch(SQLException e) { e.printStackTrace(); return null; }
-	}
-
-	@Override
-	public String registerUser(String firstName, String lastName, String username, String email, String password) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getFirstName(int codUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getLastName(int codUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getEmail(int codUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername(int codUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword(int codUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Void setFirstName(String codUser, String firstName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public Void setLastName(String codUser, String lastName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Void setEmail(String codUser, String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Void setUsername(String codUser, String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Void setPassword(String codUser, String password) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

@@ -1,16 +1,13 @@
 package PostgreImplementationDAO;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.ArrayList;
 
 import DAO.TestDAO;
 import Database.QuizDBConnection;
-import Model.Class;
 import Model.Test;
 
 public class TestPostgre implements TestDAO {
@@ -127,36 +124,6 @@ public class TestPostgre implements TestDAO {
 	}
 	
 	@Override
-	public String getName(int codTest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Date getCreationDate(int codTest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Time getStartingDateTime(int codTest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Time getClosingDateTime(int codTest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public float getMinScore(int codTest) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void setName(String codTest, String name) {
 		try
 		{
@@ -232,11 +199,8 @@ public class TestPostgre implements TestDAO {
 		try {
 			Statement stmt = connection.createStatement();
 			rs = stmt.executeQuery(query);
-			if (rs.next()) {
-				return true;
-			} else {
-				return false;
-			}
+			
+			return rs.next();
 		} catch (Exception e) { e.printStackTrace(); }
 		return false;
 	}

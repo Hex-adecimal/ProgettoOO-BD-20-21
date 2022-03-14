@@ -494,7 +494,7 @@ public class Controller {
 		testDAO.deleteTest(codTest);
 	}
 	
-		public ArrayList<String> getStudentTestsTaken() {
+	public ArrayList<String> getStudentTestsTaken() {
 		return testTakenDAO.getTestsTakenByStudent( Integer.valueOf( ((Student) user).getStudentID()) );
 	}
 	
@@ -552,10 +552,12 @@ public class Controller {
 		return array;
 	}
 	
-	
+	public Boolean testExists(String codTest)
+	{
+		return testDAO.testExists(codTest);
+	}
 	
 	// Getter & Setter
 	public void setUser(User user) { this.user = user; }
-	public TestDAO getTest() { return this.testDAO; }
 	public User getUser() { return this.user; }
 }

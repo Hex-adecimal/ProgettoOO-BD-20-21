@@ -6,14 +6,6 @@ import Model.ClosedQuiz;
 
 public interface ClosedQuizDAO extends QuizDAO {
 	// Answer A B C D - rightanswer - scoreifright - scoreifwrong
-	public String getAnswerA(int codClosedQuiz);
-	public String getAnswerB(int codClosedQuiz);
-	public String getAnswerC(int codClosedQuiz);
-	public String getAnswerD(int codClosedQuiz);
-	public String getRightAnswer(int codClosedQuiz);
-	public String getScoreIfRight(int codClosedQuiz);
-	public String getScoreIfWrong(int codClosedQuiz);
-	
 	public void setAnswerA(String codQuiz, String answerA);
 	public void setAnswerB(String codQuiz, String answerB);
 	public void setAnswerC(String codQuiz, String answerC);

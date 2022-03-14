@@ -56,12 +56,6 @@ public class StudentPostgre implements StudentDAO {
 	}
 	
 	@Override
-	public String logUser(String email, String password, String kindOfUser) {
-		
-		return null;
-	}
-	
-	@Override
 	public int turnInTest(Test test) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -97,62 +91,6 @@ public class StudentPostgre implements StudentDAO {
 		return tt;
 	}
 	
-	// Getter & Setter
-	@Override
-	public String getFirstName(int codUser) {
-		try { 
-			Statement stmt = conn.createStatement();
-			String query = "SELECT firstname FROM STUDENT WHERE StudentID = " + codUser + ");";			
-			ResultSet rs = stmt.executeQuery(query);
-			return rs.toString();
-		} catch (Exception e) { e.printStackTrace(); }
-		return null;
-	}
-
-	@Override
-	public String getLastName(int codUser) {
-		try { 
-			Statement stmt = conn.createStatement();
-			String query = "SELECT lastname FROM STUDENT WHERE StudentID = " + codUser + ");";			
-			ResultSet rs = stmt.executeQuery(query);
-			return rs.toString();
-		} catch (Exception e) { e.printStackTrace(); }
-		return null;
-	}
-
-	@Override
-	public String getEmail(int codUser) {
-		try { 
-			Statement stmt = conn.createStatement();
-			String query = "SELECT email FROM STUDENT WHERE StudentID = " + codUser + ");";			
-			ResultSet rs = stmt.executeQuery(query);
-			return rs.toString();
-		} catch (Exception e) { e.printStackTrace(); }
-		return null;
-	}
-
-	@Override
-	public String getUsername(int codUser) {
-		try { 
-			Statement stmt = conn.createStatement();
-			String query = "SELECT username FROM STUDENT WHERE StudentID = " + codUser + ");";			
-			ResultSet rs = stmt.executeQuery(query);
-			return rs.toString();
-		} catch (Exception e) { e.printStackTrace(); }
-		return null;
-	}
-
-	@Override
-	public String getPassword(int codUser) {
-		try { 
-			Statement stmt = conn.createStatement();
-			String query = "SELECT password FROM STUDENT WHERE StudentID = " + codUser + ");";			
-			ResultSet rs = stmt.executeQuery(query);
-			return rs.toString();
-		} catch (Exception e) { e.printStackTrace(); }
-		return null;
-	}
-
 	@Override
 	public Void setFirstName(String codUser, String firstName) {
 		try { 
