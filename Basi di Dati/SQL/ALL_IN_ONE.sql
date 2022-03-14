@@ -21,8 +21,7 @@ CREATE DOMAIN EMAIL AS VARCHAR(254)
 -- almeno una lettera, almeno un numero ed almeno carattere speciale
 -- (!"£$%&/()=_:;,.-+*#)
 CREATE DOMAIN PASSWORD_D AS VARCHAR(128)
-	CHECK (VALUE ~ '^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).*$'
-		AND VALUE LIKE '________%');
+	CHECK (VALUE LIKE '________%');
 
 -- Valid_Right_Answer : La risposta di una domanda multipla deve tra quelle
 -- possibili (Dominio = {'a', 'b', 'c', 'd'})
